@@ -33,6 +33,7 @@ Getting going - sending your template emails
 Example usage using vanilla_django TemplateBackend backend
 
 Python to send mail::
+
     from templated_email import send_templated_email
     send_templated_email(
             template_name='welcome',
@@ -47,6 +48,7 @@ Python to send mail::
 
 Which looks in django template directories/loaders for  
 *templated_email/welcome.txt* ::
+
     Hey {{full_name}},
 
     You just signed up for my website, using:
