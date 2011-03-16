@@ -16,7 +16,7 @@ Getting going - installation
 
 Installing::
 
-    pip install -e git://github.com/bradwhittington/django-templated-email.git#egg=templated_email
+    pip install templated_email
 
 You can add the following to your settings.py (but it works out the box)::
 
