@@ -11,6 +11,9 @@ intended for use with transactional mailers (ala mailchimp, silverpop,
 etc.), but currently comes out of the box with a backend class which 
 uses django's templating system, and django's core.mail functions.
 
+The send_templated_email method can be thought of as the render_to_response
+shortcut for email.
+
 Getting going - installation
 =============
 
