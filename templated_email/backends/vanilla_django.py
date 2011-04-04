@@ -36,14 +36,7 @@ class TemplateBackend:
     def __init__(self, fail_silently=False, template_prefix='templated_email/', **kwargs):
         self.template_prefix = template_prefix
 
-    def send(self, template_name, from_email, recipient_list, context, fail_silently=False):
-        subject = getattr(
-                        settings,'TEMPLATED_EMAIL_DJANGO_SUBJECTS',{}
-                    ).get(
-                        template_name,
-                        _('%s email subject' % template_name)
-                    ) % context
-
+    def _render_email(template_name, context):
         prefixed_template_name=''.join((self.template_prefix,template_name))
 
         try:
@@ -62,13 +55,33 @@ class TemplateBackend:
         #TODO: Should we WARN if we only found an html part?
 
         render_context = Context(context)
+        
+        response = {}
 
-        #TODO: Handle bundling in assets/attachments
+        if plain_part:
+            response['plain'] = plain_part.render(render_context),
+
+        if html_part:
+            response['html'] = html_part.render(render_context),
+
+        return response
+
+    def send(self, template_name, from_email, recipient_list, context, fail_silently=False):
+        subject = getattr(
+                        settings,'TEMPLATED_EMAIL_DJANGO_SUBJECTS',{}
+                    ).get(
+                        template_name,
+                        _('%s email subject' % template_name)
+                    ) % context
+
+        parts = self._render_email(template_name, context)
+        plain_part = parts.has_key('plain')
+        html_part = parts.has_key('html')
         
         if plain_part and not html_part:
             e=EmailMessage(
                 subject,
-                plain_part.render(render_context),
+                parts['plain'],
                 from_email,
                 recipient_list,
             )
@@ -77,7 +90,7 @@ class TemplateBackend:
         if html_part and not plain_part:
             e=EmailMessage(
                 subject,
-                html_part.render(render_context),
+                parts['html'],
                 from_email,
                 recipient_list,
             )
@@ -87,10 +100,10 @@ class TemplateBackend:
         if plain_part and html_part:
             e=EmailMultiAlternatives(
                 subject,
-                plain_part.render(render_context),
+                parts['plain'],
                 from_email,
                 recipient_list,
             )
-            e.attach_alternative(html_part.render(render_context),'text/html')
+            e.attach_alternative(parts['html'],'text/html')
             e.send(fail_silently)
 
