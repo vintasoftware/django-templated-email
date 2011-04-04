@@ -36,7 +36,7 @@ class TemplateBackend:
     def __init__(self, fail_silently=False, template_prefix='templated_email/', **kwargs):
         self.template_prefix = template_prefix
 
-    def _render_email(template_name, context):
+    def _render_email(self,template_name, context):
         prefixed_template_name=''.join((self.template_prefix,template_name))
 
         try:
@@ -59,10 +59,10 @@ class TemplateBackend:
         response = {}
 
         if plain_part:
-            response['plain'] = plain_part.render(render_context),
+            response['plain'] = plain_part.render(render_context)
 
         if html_part:
-            response['html'] = html_part.render(render_context),
+            response['html'] = html_part.render(render_context)
 
         return response
 
