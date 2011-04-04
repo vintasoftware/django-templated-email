@@ -64,4 +64,28 @@ It will also use *templated_email/welcome.html* for the html part
 of the email allowing you to make it so much pretty. It is plausible
 that one day there will be support for attachments and inline mime / images
 
+Using MAILCHIMP STS:
+=============
+
+To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
+
+    pip install git://github.com/bradwhittington/mailsnake.git#egg=mailsnake
+
+And add the following to your settings.py::
+
+    TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.mailchimp_sts.TemplateBackend'
+
+    MAILCHIMP_API_KEY = 'yourapikey'
+
+    # For the django back-end specifically
+    TEMPLATED_EMAIL_MAILCHIMP = {
+        'welcome':{
+          'subject':'Welcome to my website',
+          'track_opens':True,
+          'track_clicks':False,
+          'tags':['my','little','pony'],
+        }
+    }
+
+
 .. _Django: http://djangoproject.com
