@@ -1,0 +1,5 @@
+v0.1.3
+Disables autoescaping when rendering templates.
+
+v0.1.2
+Adds initial support for Mailchimp STS backend

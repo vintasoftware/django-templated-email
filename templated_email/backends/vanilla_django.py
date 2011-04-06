@@ -54,7 +54,7 @@ class TemplateBackend:
 
         #TODO: Should we WARN if we only found an html part?
 
-        render_context = Context(context)
+        render_context = Context(context, autoescape=False)
         
         response = {}
 

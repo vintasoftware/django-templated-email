@@ -22,7 +22,7 @@ CLASSIFIERS = [
 
 setup(
     name='django-templated-email',
-    version='0.1.2',
+    version='0.1.3',
     packages=['templated_email','templated_email.backends'],
     author='Bradley Whittington',
     author_email='radbrad182@gmail.com',
