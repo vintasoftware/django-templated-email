@@ -19,8 +19,8 @@ class TemplateBackend:
     django-postageapp)
     """
 
-    def __init__(self, fail_silently=False, **kwargs):
-        api_key = getattr(settings,'POSTAGEAPP_API_KEY',getattr(settings,'EMAIL_POSTAGEAPP_API_KEY',None))
+    def __init__(self, fail_silently=False, api_key=None, **kwargs):
+        api_key = api_key or getattr(settings,'POSTAGEAPP_API_KEY',getattr(settings,'EMAIL_POSTAGEAPP_API_KEY',None))
         if api_key:
             self.conn = PostageApp(api_key)
         else:
