@@ -64,6 +64,23 @@ It will also use *templated_email/welcome.html* for the html part
 of the email allowing you to make it so much pretty. It is plausible
 that one day there will be support for attachments and inline mime / images
 
+Using PostageApp:
+=============
+
+To use the PostageApp (http://postageapp.com) send method, you will need to install python-postageapp::
+
+    pip install -e git://github.com/bradwhittington/python-postageapp.git#egg=postageapp
+
+And add the following to your settings.py::
+
+    TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.postageapp_backend.TemplateBackend'
+
+    POSTAGEAPP_API_KEY = 'yourapikey'
+
+    #If you are already using django-postageapp:
+
+    EMAIL_POSTAGEAPP_API_KEY = POSTAGEAPP_API_KEY
+
 Using MAILCHIMP STS:
 =============
 
