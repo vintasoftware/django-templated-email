@@ -46,7 +46,8 @@ Python to send mail::
                 'username':request.user.username,
                 'full_name':request.user.get_full_name(),
                 'signup_date':request.user.date_joined
-            }
+            },
+            headers={'My-Custom-Header':'Custom Value'}
     )
 
 Which looks in django template directories/loaders for  
