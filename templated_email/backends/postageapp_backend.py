@@ -26,13 +26,18 @@ class TemplateBackend:
         else:
             raise ImproperlyConfigured('You need to provide POSTAGEAPP_API_KEY or EMAIL_POSTAGEAPP_API_KEY in your Django settings file') 
 
-    def send(self, template_name, from_email, recipient_list, context, fail_silently=False):
+    def send(self, template_name, from_email, recipient_list, context, fail_silently=False, message_id=None):
+        headers = {}
+        if message_id:
+            headers['Message-ID'] = message_id
+
         try:
             result = self.conn.send_message(
                 recipients=recipient_list,
                 from_email=from_email,
                 template=template_name,
                 variables=context,
+                headers=headers
             )
         except Exception, e:
             if not fail_silently:

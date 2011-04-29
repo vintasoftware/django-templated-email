@@ -66,13 +66,17 @@ class TemplateBackend:
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, fail_silently=False):
+    def send(self, template_name, from_email, recipient_list, context, fail_silently=False, message_id=None):
         subject = getattr(
                         settings,'TEMPLATED_EMAIL_DJANGO_SUBJECTS',{}
                     ).get(
                         template_name,
                         _('%s email subject' % template_name)
                     ) % context
+
+        headers = {}
+        if message_id:
+            headers['Message-ID'] = message_id
 
         parts = self._render_email(template_name, context)
         plain_part = parts.has_key('plain')
@@ -84,6 +88,7 @@ class TemplateBackend:
                 parts['plain'],
                 from_email,
                 recipient_list,
+                headers = headers,
             )
             e.send(fail_silently)
 
@@ -93,6 +98,7 @@ class TemplateBackend:
                 parts['html'],
                 from_email,
                 recipient_list,
+                headers = headers,
             )
             e.content_subtype = 'html'
             e.send(fail_silently)
@@ -103,6 +109,7 @@ class TemplateBackend:
                 parts['plain'],
                 from_email,
                 recipient_list,
+                headers = headers,
             )
             e.attach_alternative(parts['html'],'text/html')
             e.send(fail_silently)

@@ -1,3 +1,9 @@
+v0.2.1
+Adds support for adding a custom Message-ID where possible
+
+v0.2
+Adds support for postageapp
+
 v0.1.3
 Disables autoescaping when rendering templates.
 
