@@ -34,4 +34,4 @@ def send_templated_mail(template_name, from_email, recipient_list, context, fail
     See BackendClass.send.__doc__
     """ 
     connection = connection or get_connection()
-    return connection.send(template_name, from_email, recipient_list, context, fail_silently, headers=header)
+    return connection.send(template_name, from_email, recipient_list, context, fail_silently, headers=headers)
