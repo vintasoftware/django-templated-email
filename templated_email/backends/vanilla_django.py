@@ -113,4 +113,6 @@ class TemplateBackend:
             )
             e.attach_alternative(parts['html'],'text/html')
             e.send(fail_silently)
+        
+        return e.extra_headers.get('Message-Id',None)
 
