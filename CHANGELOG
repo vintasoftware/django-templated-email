@@ -1,5 +1,5 @@
 v0.2.1
-Adds support for adding a custom Message-ID where possible
+Adds support for adding custom headers where supported
 
 v0.2
 Adds support for postageapp

@@ -27,7 +27,7 @@ def get_connection(backend=None, template_prefix=None, fail_silently=False, **kw
     return klass(fail_silently=fail_silently, template_prefix=template_prefix, **kwargs)
 
 
-def send_templated_mail(template_name, from_email, recipient_list, context, fail_silently=False, connection=None, message_id=None):
+def send_templated_mail(template_name, from_email, recipient_list, context, fail_silently=False, connection=None, headers = {}):
     """Easy wrapper for sending a templated email to a recipient list. 
 
     Final behaviour of sending depends on the currently selected engine.
