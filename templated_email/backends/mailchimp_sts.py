@@ -17,7 +17,7 @@ class TemplateBackend(django_vanilla.TemplateBackend):
                 'from_name':' '.join(from_email.split(' ')[:-1]) or 'Nobody',
                 'from_email':from_email,
                 'to_email':recipient_list,
-            }
+            },
             'track_opens':config.get('track_opens',False),
             'track_clicks':config.get('track_clicks',False),
             'tags':config.get('tags',[]),
