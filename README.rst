@@ -87,7 +87,7 @@ Using MAILCHIMP STS:
 
 To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
 
-    pip install -e git://github.com/bradwhittington/mailsnake.git#egg=mailsnake
+    pip install -e git://github.com/nitinhayaran/greatape.git#egg=greatape
 
 And add the following to your settings.py::
 

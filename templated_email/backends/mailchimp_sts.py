@@ -1,10 +1,12 @@
-import django_vanilla
-from mailsnake import MailSnakeSTS
+import vanilla_django
+from greatape import MailChimpSTS
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
-class TemplateBackend(django_vanilla.TemplateBackend):
+class TemplateBackend(vanilla_django.TemplateBackend):
     def __init__(self, *args, **kwargs):
-        self.connection = MailSnakeSTS(apikey = settings.MAILCHIMP_API_KEY)
+        vanilla_django.TemplateBackend.__init__(self, **kwargs)
+        self.connection = MailChimpSTS(settings.MAILCHIMP_API_KEY, debug=True)
         
     def send(self, template_name, from_email, recipient_list, context, fail_silently=False, headers={}):
         config = getattr(settings,'TEMPLATED_EMAIL_MAILCHIMP',{}).get(template_name,{})
