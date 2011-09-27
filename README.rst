@@ -19,7 +19,7 @@ Getting going - installation
 
 Installing::
 
-    pip install templated_email
+    pip install django-templated-email
 
 You can add the following to your settings.py (but it works out the box)::
 
@@ -37,8 +37,8 @@ Example usage using vanilla_django TemplateBackend backend
 
 Python to send mail::
 
-    from templated_email import send_templated_email
-    send_templated_email(
+    from templated_email import send_templated_mail
+    send_templated_mail(
             template_name='welcome',
             from_email='from@example.com',
             recipient_list=['to@example.com'],
