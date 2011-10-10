@@ -50,8 +50,37 @@ Python to send mail::
             headers={'My-Custom-Header':'Custom Value'}
     )
 
-Which looks in django template directories/loaders for  
-*templated_email/welcome.txt* ::
+**Your template**
+The backend will look in *templated_email/welcome.email* ::
+    {% block subject %}My subject for {{username}}{% endblock %}
+    {% block plain %}
+      Hi {{full_name}}, 
+
+      You just signed up for my website, using:
+          username: {{username}}
+          join date: {{signup_date}}
+
+      Thanks, you rock!
+    {% endblock %}
+
+If you want to include an HTML part to your emails, simply use the 'html' block ::
+    {% block html %}
+      <p>Hi {{full_name}},</p>
+
+      <p>You just signed up for my website, using:
+          <dl>
+            <dt>username</dt><dd>{{username}}</dd>
+            <dt>join date</dt><dd>{{signup_date}}</dd>
+          </dl>
+      </p>
+
+      <p>Thanks, you rock!</p>
+    {% endblock %}
+
+
+**Legacy Behaviour**
+The 0.2.x version of the library looked in django template directories/loaders 
+for *templated_email/welcome.txt* ::
 
     Hey {{full_name}},
 
@@ -61,7 +90,7 @@ Which looks in django template directories/loaders for
 
     Thanks, you rock!
 
-It will also use *templated_email/welcome.html* for the html part 
+It will use *templated_email/welcome.html* for the html part 
 of the email allowing you to make it so much pretty. It is plausible
 that one day there will be support for attachments and inline mime / images
 

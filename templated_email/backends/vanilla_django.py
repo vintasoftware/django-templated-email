@@ -4,30 +4,40 @@ from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 
+from templated_email.utils import _get_node, BlockNotFound
+
 class TemplateBackend:
     """
     Backend which uses Django's templates, and django's send_mail function.
     
     Heavily inspired by http://stackoverflow.com/questions/2809547/creating-email-templates-with-django
- 
-    Templates are loaded from (by default):
-    text/plain part:
-        templated_email/<template_name>.txt
-    text/html part:
-        templated_email/<template_name>.html
 
-    Subjects for email templates can be configured in one of two ways:
+    Default / preferred behaviour works like so:
+        templates named 
+            templated_email/<template_name>.email
 
-    * If you are using internationalisation, you can simply create entries for
-      "<template_name> email subject" as a msgid in your PO file
+        {% block subject %} declares the subject
+        {% block plain %} declares text/plain
+        {% block html %} declares text/html
 
-    * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS, 
-      for e.g.: 
-      TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
-        'welcome':'Welcome to my website',
-      }
+    Legacy behaviour loads from:
+        text/plain part:
+            templated_email/<template_name>.txt
+        text/html part:
+            templated_email/<template_name>.html
 
-    Additionally subjects are templatable using the context, i.e. A subject
+        Subjects for email templates can be configured in one of two ways:
+
+        * If you are using internationalisation, you can simply create entries for
+          "<template_name> email subject" as a msgid in your PO file
+
+        * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS, 
+          for e.g.: 
+          TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
+            'welcome':'Welcome to my website',
+          }
+
+    Subjects are templatable using the context, i.e. A subject
     that resolves to 'Welcome to my website, %(username)s', requires that
     the context passed in to the send() method contains 'username' as one
     of it's keys
@@ -37,46 +47,59 @@ class TemplateBackend:
         self.template_prefix = template_prefix
 
     def _render_email(self,template_name, context):
+        response = {}
         prefixed_template_name=''.join((self.template_prefix,template_name))
 
         try:
-            html_part = get_template('%s.html' % prefixed_template_name)
+            multi_part = get_template('%s.email' % prefixed_template_name)
         except TemplateDoesNotExist:
-            html_part = None
+            multi_part = None
 
-        try:
-            plain_part = get_template('%s.txt' % prefixed_template_name)
-        except TemplateDoesNotExist:
-            if not html_part:
-                raise TemplateDoesNotExist('%s.txt' % prefixed_template_name)
-            else:
-                plain_part = None
+        if multi_part:
+            for part in ['subject','html','plain']:
+                try:
+                    response[part] = _get_node(multi_part,part)
+                except BlockNotFound:
+                    pass
+        else:
+            try:
+                html_part = get_template('%s.html' % prefixed_template_name)
+            except TemplateDoesNotExist:
+                html_part = None
 
-        #TODO: Should we WARN if we only found an html part?
+            try:
+                plain_part = get_template('%s.txt' % prefixed_template_name)
+            except TemplateDoesNotExist:
+                if not html_part:
+                    raise TemplateDoesNotExist('%s.txt' % prefixed_template_name)
+                else:
+                    plain_part = None
 
-        render_context = Context(context, autoescape=False)
-        
-        response = {}
+            #TODO: Should we WARN if we only found an html part?
 
-        if plain_part:
-            response['plain'] = plain_part.render(render_context)
+            render_context = Context(context, autoescape=False)
+            
+            if plain_part:
+                response['plain'] = plain_part.render(render_context)
 
-        if html_part:
-            response['html'] = html_part.render(render_context)
+            if html_part:
+                response['html'] = html_part.render(render_context)
 
         return response
 
     def send(self, template_name, from_email, recipient_list, context, fail_silently=False, headers={}):
-        subject = getattr(
+        parts = self._render_email(template_name, context)
+        plain_part = parts.has_key('plain')
+        html_part = parts.has_key('html')
+
+        subject = parts.get('subject',
+                    getattr(
                         settings,'TEMPLATED_EMAIL_DJANGO_SUBJECTS',{}
                     ).get(
                         template_name,
                         _('%s email subject' % template_name)
                     ) % context
-
-        parts = self._render_email(template_name, context)
-        plain_part = parts.has_key('plain')
-        html_part = parts.has_key('html')
+                )
         
         if plain_part and not html_part:
             e=EmailMessage(
