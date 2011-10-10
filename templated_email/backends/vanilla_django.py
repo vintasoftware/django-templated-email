@@ -49,6 +49,7 @@ class TemplateBackend:
     def _render_email(self,template_name, context):
         response = {}
         prefixed_template_name=''.join((self.template_prefix,template_name))
+        render_context = Context(context, autoescape=False)
 
         try:
             multi_part = get_template('%s.email' % prefixed_template_name)
@@ -58,7 +59,7 @@ class TemplateBackend:
         if multi_part:
             for part in ['subject','html','plain']:
                 try:
-                    response[part] = _get_node(multi_part,part)
+                    response[part] = _get_node(multi_part, render_context, name=part)
                 except BlockNotFound:
                     pass
         else:
@@ -75,10 +76,6 @@ class TemplateBackend:
                 else:
                     plain_part = None
 
-            #TODO: Should we WARN if we only found an html part?
-
-            render_context = Context(context, autoescape=False)
-            
             if plain_part:
                 response['plain'] = plain_part.render(render_context)
 
