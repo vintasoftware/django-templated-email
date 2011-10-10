@@ -1,3 +1,6 @@
+v0.3
+Plain part, subject, and HTML part now supported as blocks in a single .email template
+
 v0.2.1
 Adds support for adding custom headers where supported
 
