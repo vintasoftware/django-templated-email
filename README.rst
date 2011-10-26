@@ -52,6 +52,7 @@ Python to send mail::
 
 **Your template**
 The backend will look in *templated_email/welcome.email* ::
+
     {% block subject %}My subject for {{username}}{% endblock %}
     {% block plain %}
       Hi {{full_name}}, 
@@ -63,7 +64,9 @@ The backend will look in *templated_email/welcome.email* ::
       Thanks, you rock!
     {% endblock %}
 
+
 If you want to include an HTML part to your emails, simply use the 'html' block ::
+
     {% block html %}
       <p>Hi {{full_name}},</p>
 
@@ -77,9 +80,12 @@ If you want to include an HTML part to your emails, simply use the 'html' block 
       <p>Thanks, you rock!</p>
     {% endblock %}
 
+
 You can override the template dir, and file extension using the following variables in settings.py ::
+
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
 
 **Legacy Behaviour**
 The 0.2.x version of the library looked in django template directories/loaders 
