@@ -43,8 +43,13 @@ class TemplateBackend:
     of it's keys
     """
 
-    def __init__(self, fail_silently=False, template_prefix='templated_email/', **kwargs):
+    def __init__(self, 
+            fail_silently=False, 
+            template_prefix=getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/'), 
+            template_suffix=getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email'),
+            **kwargs):
         self.template_prefix = template_prefix
+        self.template_suffix = template_suffix
 
     def _render_email(self,template_name, context):
         response = {}
@@ -52,7 +57,7 @@ class TemplateBackend:
         render_context = Context(context, autoescape=False)
 
         try:
-            multi_part = get_template('%s.email' % prefixed_template_name)
+            multi_part = get_template('%s.%s' % (prefixed_template_name, self.template_suffix))
         except TemplateDoesNotExist:
             multi_part = None
 
