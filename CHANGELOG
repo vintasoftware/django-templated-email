@@ -1,3 +1,6 @@
+v0.3.2
+Bubble up errors on templates when there is an issue with finding blocks 
+
 v0.3.1
 Adds configuration variables for settings.py to change template dir, and template extension
 

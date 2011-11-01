@@ -6,6 +6,9 @@ from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
 
+class EmailRenderException(Exception):
+    pass
+
 class TemplateBackend:
     """
     Backend which uses Django's templates, and django's send_mail function.
@@ -53,6 +56,7 @@ class TemplateBackend:
 
     def _render_email(self,template_name, context):
         response = {}
+        errors = {}
         prefixed_template_name=''.join((self.template_prefix,template_name))
         render_context = Context(context, autoescape=False)
 
@@ -65,8 +69,8 @@ class TemplateBackend:
             for part in ['subject','html','plain']:
                 try:
                     response[part] = _get_node(multi_part, render_context, name=part)
-                except BlockNotFound:
-                    pass
+                except BlockNotFound, error:
+                    errors[part] = error
         else:
             try:
                 html_part = get_template('%s.html' % prefixed_template_name)
@@ -86,6 +90,9 @@ class TemplateBackend:
 
             if html_part:
                 response['html'] = html_part.render(render_context)
+
+        if response == {}:
+            raise EmailRenderException("Couldn't render email parts. Errors: %s" % errors)
 
         return response
 
