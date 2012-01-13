@@ -1,3 +1,6 @@
+v0.3.3
+Fixes template prefix dir not being used correctly
+
 v0.3.2
 Bubble up errors on templates when there is an issue with finding blocks 
 

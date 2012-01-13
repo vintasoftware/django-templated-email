@@ -11,7 +11,7 @@ def get_connection(backend=None, template_prefix=None, fail_silently=False, **kw
     constructor of the backend.
     """
     # This method is mostly a copy of the backend loader present in django.core.mail.get_connection
-    template_prefix = template_prefix or getattr(settings,'TEMPLATED_EMAIL_PREFIX','templated_email/')
+    template_prefix = template_prefix or getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/')
     path = backend or getattr(settings,'TEMPLATED_EMAIL_BACKEND','templated_email.backends.vanilla_django.TemplateBackend')
     try:
         mod_name, klass_name = path.rsplit('.', 1)
