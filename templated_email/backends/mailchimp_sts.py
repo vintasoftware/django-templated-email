@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 class TemplateBackend(vanilla_django.TemplateBackend):
     def __init__(self, *args, **kwargs):
-        vanilla_django.TemplateBackend.__init__(self, **kwargs)
+        vanilla_django.TemplateBackend.__init__(self, *args, **kwargs)
         self.connection = MailChimpSTS(settings.MAILCHIMP_API_KEY, debug=True)
         
     def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}):
