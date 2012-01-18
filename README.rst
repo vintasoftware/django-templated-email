@@ -50,6 +50,8 @@ Python to send mail::
             headers={'My-Custom-Header':'Custom Value'}
     )
 
+You can also *cc* and *bcc* recipients using *cc=['example@example.com']*
+
 **Your template**
 The backend will look in *templated_email/welcome.email* ::
 

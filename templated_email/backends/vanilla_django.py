@@ -96,7 +96,7 @@ class TemplateBackend:
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, fail_silently=False, headers={}):
+    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}):
         parts = self._render_email(template_name, context)
         plain_part = parts.has_key('plain')
         html_part = parts.has_key('html')
@@ -116,6 +116,8 @@ class TemplateBackend:
                 parts['plain'],
                 from_email,
                 recipient_list,
+                cc = cc,
+                bcc = bcc,
                 headers = headers,
             )
             e.send(fail_silently)
@@ -126,6 +128,8 @@ class TemplateBackend:
                 parts['html'],
                 from_email,
                 recipient_list,
+                cc = cc,
+                bcc = bcc,
                 headers = headers,
             )
             e.content_subtype = 'html'
@@ -137,6 +141,8 @@ class TemplateBackend:
                 parts['plain'],
                 from_email,
                 recipient_list,
+                cc = cc,
+                bcc = bcc,
                 headers = headers,
             )
             e.attach_alternative(parts['html'],'text/html')

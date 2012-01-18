@@ -6,7 +6,7 @@ class TemplateBackend(django_vanilla.TemplateBackend):
     def __init__(self, *args, **kwargs):
         self.connection = MailSnakeSTS(apikey = settings.MAILCHIMP_API_KEY)
         
-    def send(self, template_name, from_email, recipient_list, context, fail_silently=False, headers={}):
+    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}):
         config = getattr(settings,'TEMPLATED_EMAIL_MAILCHIMP',{}).get(template_name,{})
         parts = self._render_email(template_name, context)
         params={
@@ -22,4 +22,8 @@ class TemplateBackend(django_vanilla.TemplateBackend):
             'track_clicks':config.get('track_clicks',False),
             'tags':config.get('tags',[]),
         }
+        if cc:
+            params['message']['cc_email'] = ', '.join(cc)
+        if bcc:
+            params['message']['bcc_email'] = ', '.join(bcc)
         self.connection.SendEmail(params)

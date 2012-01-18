@@ -1,3 +1,6 @@
+v0.4
+Adds support for cc'ing and bcc'in recipients
+
 v0.3.3
 Fixes template prefix dir not being used correctly
 
