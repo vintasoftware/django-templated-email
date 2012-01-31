@@ -7,9 +7,13 @@ Django-Templated-Email
 Overview
 =================
 django-templated-email is oriented towards sending templated emails 
-intended for use with transactional mailers (ala mailchimp, silverpop, 
-etc.), but currently comes out of the box with a backend class which 
-uses django's templating system, and django's core.mail functions.
+intended for use with transactional mailers (with support for 
+MailchimpSTS, and PostageApp), and defaults out of the box to  
+a backend class which uses django's templating system, and django's core.mail 
+functions. The library supports template inheritence, adding cc'd and bcc'd 
+recipients, configurable template naming and location, with easy switching 
+between backends/providers.
+
 
 The send_templated_email method can be thought of as the render_to_response
 shortcut for email.
