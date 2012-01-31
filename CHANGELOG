@@ -1,3 +1,6 @@
+v0.4.1
+Basic fix for issue #3 (https://github.com/bradwhittington/django-templated-email/issues/3) to support better template inheritence
+
 v0.4
 Adds support for cc'ing and bcc'in recipients, switches mailchimp backend to use greatape, via @nitinhayaran
 

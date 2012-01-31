@@ -88,6 +88,9 @@ You can override the template dir, and file extension using the following variab
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
+**Please note / Warning about template inheritence**
+There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
+
 
 **Legacy Behaviour**
 The 0.2.x version of the library looked in django template directories/loaders 
