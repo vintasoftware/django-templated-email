@@ -14,10 +14,16 @@ def get_connection(backend=None, template_prefix=None, fail_silently=False, **kw
     template_prefix = template_prefix or getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/')
     path = backend or getattr(settings,'TEMPLATED_EMAIL_BACKEND','templated_email.backends.vanilla_django.TemplateBackend')
     try:
-        mod_name, klass_name = path.rsplit('.', 1)
-        mod = import_module(mod_name)
+        # First check if class name is omited and we have module in settings
+        mod = import_module(path)
+        klass_name = 'TemplateBackend'
     except ImportError, e:
-        raise ImproperlyConfigured(('Error importing templated email backend module %s: "%s"'
+        # Fallback to class name
+        try:
+            mod_name, klass_name = path.rsplit('.', 1)
+            mod = import_module(mod_name)
+        except ImportError, e:
+            raise ImproperlyConfigured(('Error importing templated email backend module %s: "%s"'
                                     % (mod_name, e)))
     try:
         klass = getattr(mod, klass_name)
