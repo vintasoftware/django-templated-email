@@ -29,6 +29,10 @@ You can add the following to your settings.py (but it works out the box)::
 
     TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
 
+    # You can also use shortcut version
+    TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
+
+
     # For the django back-end specifically
     TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
         'welcome':'Welcome to my website',
