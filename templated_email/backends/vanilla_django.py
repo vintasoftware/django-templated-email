@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 from django.template import Context, TemplateDoesNotExist
-from django.template.loader import get_template
+from django.template.loader import get_template, select_template
 from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
@@ -61,8 +61,8 @@ class TemplateBackend:
         render_context = Context(context, autoescape=False)
 
         try:
-            multi_part = get_template([template_name,
-                                       '%s.%s' % (prefixed_template_name, self.template_suffix)])
+            multi_part = select_template([template_name,
+                                          '%s.%s' % (prefixed_template_name, self.template_suffix)])
         except TemplateDoesNotExist:
             multi_part = None
 
