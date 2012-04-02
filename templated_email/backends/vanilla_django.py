@@ -61,8 +61,8 @@ class TemplateBackend:
         render_context = Context(context, autoescape=False)
 
         try:
-            multi_part = get_template([template_name,
-                                       '%s.%s' % (prefixed_template_name, self.template_suffix)])
+            multi_part = select_template([template_name,
+                                          '%s.%s' % (prefixed_template_name, self.template_suffix)])
         except TemplateDoesNotExist:
             multi_part = None
 
