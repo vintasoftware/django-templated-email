@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
@@ -96,7 +96,19 @@ class TemplateBackend:
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}, template_dir=None, **kwargs):
+    def send(self, template_name, from_email, recipient_list, context, 
+                cc=[], bcc=[], 
+                fail_silently=False, 
+                headers={}, 
+                template_dir=None, 
+                auth_user=None, auth_password=None,
+                connection=None,
+                **kwargs):
+
+        connection = connection or get_connection(username=auth_user,
+                                                password=auth_password,
+                                                fail_silently=fail_silently)
+
         parts = self._render_email(template_name, context, template_dir)
         plain_part = parts.has_key('plain')
         html_part = parts.has_key('html')
@@ -119,6 +131,7 @@ class TemplateBackend:
                 cc = cc,
                 bcc = bcc,
                 headers = headers,
+                connection = connection,
             )
 
         if html_part and not plain_part:
@@ -130,6 +143,7 @@ class TemplateBackend:
                 cc = cc,
                 bcc = bcc,
                 headers = headers,
+                connection = connection,
             )
             e.content_subtype = 'html'
 
@@ -142,6 +156,7 @@ class TemplateBackend:
                 cc = cc,
                 bcc = bcc,
                 headers = headers,
+                connection = connection,
             )
             e.attach_alternative(parts['html'],'text/html')
 
