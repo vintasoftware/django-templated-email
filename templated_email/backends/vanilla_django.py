@@ -120,7 +120,6 @@ class TemplateBackend:
                 bcc = bcc,
                 headers = headers,
             )
-            e.send(fail_silently)
 
         if html_part and not plain_part:
             e=EmailMessage(
@@ -133,7 +132,6 @@ class TemplateBackend:
                 headers = headers,
             )
             e.content_subtype = 'html'
-            e.send(fail_silently)
 
         if plain_part and html_part:
             e=EmailMultiAlternatives(
@@ -146,7 +144,11 @@ class TemplateBackend:
                 headers = headers,
             )
             e.attach_alternative(parts['html'],'text/html')
+
+        try:
             e.send(fail_silently)
+        except NameError:
+            raise EmailRenderException("Couldn't render plain or html parts") 
         
         return e.extra_headers.get('Message-Id',None)
 
