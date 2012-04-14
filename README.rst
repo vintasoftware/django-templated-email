@@ -130,7 +130,7 @@ Notes on specific backends:
 Using vanilla_django:
 -------------
 
-This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them):
+This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them)::
 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
