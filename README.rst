@@ -8,8 +8,8 @@ Overview
 =================
 django-templated-email is oriented towards sending templated emails 
 intended for use with transactional mailers (ala mailchimp, silverpop, 
-etc.), but currently comes out of the box with a backend class which 
-uses django's templating system, and django's core.mail functions.
+etc.), but as a default with a backend class which uses django's 
+templating system, and django's core.mail functions.
 
 The send_templated_email method can be thought of as the render_to_response
 shortcut for email.
@@ -30,7 +30,7 @@ You can add the following to your settings.py (but it works out the box)::
         'welcome':'Welcome to my website',
     }
 
-Getting going - sending your template emails
+Sending templated emails
 =============
 
 Example usage using vanilla_django TemplateBackend backend
@@ -83,14 +83,15 @@ If you want to include an HTML part to your emails, simply use the 'html' block 
     {% endblock %}
 
 
-You can override the template dir, and file extension using the following variables in settings.py ::
+You can globally override the template dir, and file extension using the following variables in settings.py ::
 
-    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
+    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
+For the *vanilla_django* and *mailchimp_sts* backends you can set a value for *template_dir* for every time you call *send_templated_mail*, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
 **Please note / Warning about template inheritence**
 There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
-
 
 **Legacy Behaviour**
 The 0.2.x version of the library looked in django template directories/loaders 
@@ -108,8 +109,30 @@ It will use *templated_email/welcome.html* for the html part
 of the email allowing you to make it so much pretty. It is plausible
 that one day there will be support for attachments and inline mime / images
 
-Using PostageApp:
+Using django_templated_email in 3rd party applications:
 =============
+
+If you would like to use django_templated_email to handle mail in a reusable application, you should note that:
+
+* Your calls to *send_templated_mail* should set a value for *template_dir*, so you can keep copies of your app-specific templates local to your app (although the loader will find your email templates if you store them in **<your app>/templates/templated_email**, if *TEMPLATED_EMAIL_TEMPLATE_DIR* has not been overidden)
+* If you do (and you should) set a value for *template_dir*, remember to include a trailing slash, i.e. **'my_app_email/'**
+* The deployed app may use a different backend which doesn't use the django templating backend, and as such make a note in your README warning developers that if they are using django_templated_email already, with a different backend, they will need to ensure their email provider can send all your templates (ideally enumerate those somewhere convenient)
+
+Notes on specific backends:
+=============
+
+Using vanilla_django:
+-------------
+
+This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them):
+
+    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
+    TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
+You can also override *template_dir* when you call *send_templated_mail*, if you wish to store a set of templates in a different directory
+
+Using PostageApp:
+-------------
 
 To use the PostageApp (http://postageapp.com) send method, you will need to install python-postageapp::
 
@@ -126,7 +149,7 @@ And add the following to your settings.py::
     EMAIL_POSTAGEAPP_API_KEY = POSTAGEAPP_API_KEY
 
 Using MAILCHIMP STS:
-=============
+-------------
 
 To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
 
@@ -148,5 +171,11 @@ And add the following to your settings.py::
         }
     }
 
+The Mailchimp STS sender uses the same template processor as the VanillaDjango backend, so you can override the following settings globally::
+    
+    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
+    TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
+You can also override the *template_dir* variable when calling *send_templated_mail*
 
 .. _Django: http://djangoproject.com

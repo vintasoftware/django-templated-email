@@ -54,10 +54,10 @@ class TemplateBackend:
         self.template_prefix = template_prefix
         self.template_suffix = template_suffix
 
-    def _render_email(self,template_name, context):
+    def _render_email(self, template_name, context, template_dir=None):
         response = {}
         errors = {}
-        prefixed_template_name=''.join((self.template_prefix,template_name))
+        prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
 
         try:
@@ -96,8 +96,8 @@ class TemplateBackend:
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}):
-        parts = self._render_email(template_name, context)
+    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}, template_dir=None, **kwargs):
+        parts = self._render_email(template_name, context, template_dir)
         plain_part = parts.has_key('plain')
         html_part = parts.has_key('html')
 

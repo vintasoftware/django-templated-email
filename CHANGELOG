@@ -1,3 +1,6 @@
+v0.4.2
+Allow overriding of template_dir on a call to send_mail for issue #12 (https://github.com/bradwhittington/django-templated-email/issues/12)
+
 v0.4.1
 Basic fix for issue #3 (https://github.com/bradwhittington/django-templated-email/issues/3) to support better template inheritence
 
