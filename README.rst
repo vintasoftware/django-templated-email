@@ -135,7 +135,7 @@ This is the default backend, and as such requires no special configuration, and 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #Use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
-Additionally you can call **send_templated_mail** and optionally override the following parameters:
+Additionally you can call **send_templated_mail** and optionally override the following parameters::
 
     template_dir='your_template_dir/' #Override where the method looks for email templates
     cc=['fubar@example.com']          #Set a CC on the mail
