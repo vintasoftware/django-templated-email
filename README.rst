@@ -94,7 +94,7 @@ You can globally override the template dir, and file extension using the followi
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
-For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_dir** for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
+For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_dir** and **file_extension** for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
 **Please note / Warning about template inheritence**
 There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
@@ -138,6 +138,7 @@ This is the default backend, and as such requires no special configuration, and 
 Additionally you can call **send_templated_mail** and optionally override the following parameters::
 
     template_dir='your_template_dir/' #Override where the method looks for email templates
+    file_extension='email'            #Override the file extension of the email templates
     cc=['fubar@example.com']          #Set a CC on the mail
     bcc=['fubar@example.com']         #Set a BCC on the mail
     template_dir='your_template_dir/' #Override where the method looks for email templates

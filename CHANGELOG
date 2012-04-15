@@ -1,3 +1,6 @@
+v0.4.4
+Allow overriding of file_extension on a call to send_mail for issue #12 (https://github.com/bradwhittington/django-templated-email/issues/12)
+
 v0.4.3
 Allow overriding connection, auth_user and auth_password ala django.core.mail.send_mail for issue #10 (https://github.com/bradwhittington/django-templated-email/issues/10)
 

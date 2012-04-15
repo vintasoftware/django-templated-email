@@ -54,14 +54,14 @@ class TemplateBackend:
         self.template_prefix = template_prefix
         self.template_suffix = template_suffix
 
-    def _render_email(self, template_name, context, template_dir=None):
+    def _render_email(self, template_name, context, template_dir=None, file_extension=None):
         response = {}
         errors = {}
         prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
 
         try:
-            multi_part = get_template('%s.%s' % (prefixed_template_name, self.template_suffix))
+            multi_part = get_template('%s.%s' % (prefixed_template_name, file_extension or self.template_suffix))
         except TemplateDoesNotExist:
             multi_part = None
 
@@ -100,7 +100,7 @@ class TemplateBackend:
                 cc=[], bcc=[], 
                 fail_silently=False, 
                 headers={}, 
-                template_dir=None, 
+                template_dir=None, file_extension=None,
                 auth_user=None, auth_password=None,
                 connection=None,
                 **kwargs):
@@ -109,7 +109,7 @@ class TemplateBackend:
                                                 password=auth_password,
                                                 fail_silently=fail_silently)
 
-        parts = self._render_email(template_name, context, template_dir)
+        parts = self._render_email(template_name, context, template_dir, file_extension)
         plain_part = parts.has_key('plain')
         html_part = parts.has_key('html')
 
