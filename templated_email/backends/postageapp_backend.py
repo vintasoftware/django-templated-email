@@ -7,6 +7,9 @@ from postageapp import PostageApp
 
 from . import HeaderNotSupportedException
 
+class PostageAppException(Exception):
+    pass
+
 class TemplateBackend:
     """
     Backend which uses PostageApp to send templated emails
@@ -39,6 +42,8 @@ class TemplateBackend:
                 variables=context,
                 headers=headers
             )
+            if not result:
+                raise PostageAppException( self.conn.error )
         except Exception, e:
             if not fail_silently:
                 raise
