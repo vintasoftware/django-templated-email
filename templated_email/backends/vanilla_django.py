@@ -9,14 +9,15 @@ from templated_email.utils import _get_node, BlockNotFound
 class EmailRenderException(Exception):
     pass
 
-class TemplateBackend:
+class TemplateBackend(object):
     """
-    Backend which uses Django's templates, and django's send_mail function.
-    
+    Backend which uses Django's
+    templates, and django's send_mail function.
+
     Heavily inspired by http://stackoverflow.com/questions/2809547/creating-email-templates-with-django
 
     Default / preferred behaviour works like so:
-        templates named 
+        templates named
             templated_email/<template_name>.email
 
         {% block subject %} declares the subject
@@ -34,8 +35,8 @@ class TemplateBackend:
         * If you are using internationalisation, you can simply create entries for
           "<template_name> email subject" as a msgid in your PO file
 
-        * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS, 
-          for e.g.: 
+        * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS,
+          for e.g.:
           TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
             'welcome':'Welcome to my website',
           }
@@ -46,15 +47,16 @@ class TemplateBackend:
     of it's keys
     """
 
-    def __init__(self, 
-            fail_silently=False, 
-            template_prefix=getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/'), 
-            template_suffix=getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email'),
-            **kwargs):
+    def __init__(self, fail_silently=False,
+                 template_prefix=getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/'),
+                 template_suffix=getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email'),
+                 return_email=False, **kwargs):
         self.template_prefix = template_prefix
         self.template_suffix = template_suffix
+        self.return_email = return_email
 
-    def _render_email(self, template_name, context, template_dir=None, file_extension=None):
+    def _render_email(self, template_name, context,
+                      template_dir=None, file_extension=None):
         response = {}
         errors = {}
         prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
@@ -96,18 +98,18 @@ class TemplateBackend:
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, 
-                cc=[], bcc=[], 
-                fail_silently=False, 
-                headers={}, 
-                template_dir=None, file_extension=None,
-                auth_user=None, auth_password=None,
-                connection=None,
-                **kwargs):
+    def send(self, template_name, from_email, recipient_list, context,
+             cc=[], bcc=[],
+             fail_silently=False,
+             headers={},
+             template_dir=None, file_extension=None,
+             auth_user=None, auth_password=None,
+             connection=None,
+             **kwargs):
 
         connection = connection or get_connection(username=auth_user,
-                                                password=auth_password,
-                                                fail_silently=fail_silently)
+                                                  password=auth_password,
+                                                  fail_silently=fail_silently)
 
         parts = self._render_email(template_name, context, template_dir, file_extension)
         plain_part = parts.has_key('plain')
@@ -121,7 +123,7 @@ class TemplateBackend:
                         _('%s email subject' % template_name)
                     ) % context
                 )
-        
+
         if plain_part and not html_part:
             e=EmailMessage(
                 subject,
@@ -160,10 +162,13 @@ class TemplateBackend:
             )
             e.attach_alternative(parts['html'],'text/html')
 
+        # Return EmailMessage instance without sending
+        if self.return_email:
+            return e
+
         try:
             e.send(fail_silently)
         except NameError:
-            raise EmailRenderException("Couldn't render plain or html parts") 
-        
-        return e.extra_headers.get('Message-Id',None)
+            raise EmailRenderException("Couldn't render plain or html parts")
 
+        return e.extra_headers.get('Message-Id',None)
