@@ -6,17 +6,20 @@ from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
 
+
 class EmailRenderException(Exception):
     pass
 
-class TemplateBackend:
+
+class TemplateBackend(object):
     """
-    Backend which uses Django's templates, and django's send_mail function.
-    
+    Backend which uses Django's
+    templates, and django's send_mail function.
+
     Heavily inspired by http://stackoverflow.com/questions/2809547/creating-email-templates-with-django
 
     Default / preferred behaviour works like so:
-        templates named 
+        templates named
             templated_email/<template_name>.email
 
         {% block subject %} declares the subject
@@ -34,8 +37,8 @@ class TemplateBackend:
         * If you are using internationalisation, you can simply create entries for
           "<template_name> email subject" as a msgid in your PO file
 
-        * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS, 
-          for e.g.: 
+        * Using a dictionary in settings.py, TEMPLATED_EMAIL_DJANGO_SUBJECTS,
+          for e.g.:
           TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
             'welcome':'Welcome to my website',
           }
@@ -46,15 +49,13 @@ class TemplateBackend:
     of it's keys
     """
 
-    def __init__(self, 
-            fail_silently=False, 
-            template_prefix=getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/'), 
-            template_suffix=getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email'),
-            **kwargs):
-        self.template_prefix = template_prefix
-        self.template_suffix = template_suffix
+    def __init__(self, fail_silently=False,
+                 template_prefix=None, template_suffix=None, **kwargs):
+        self.template_prefix = template_prefix or getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/')
+        self.template_suffix = template_suffix or getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email')
 
-    def _render_email(self, template_name, context, template_dir=None, file_extension=None):
+    def _render_email(self, template_name, context,
+                      template_dir=None, file_extension=None):
         response = {}
         errors = {}
         prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
@@ -92,78 +93,87 @@ class TemplateBackend:
                 response['html'] = html_part.render(render_context)
 
         if response == {}:
-            raise EmailRenderException("Couldn't render email parts. Errors: %s" % errors)
+            raise EmailRenderException("Couldn't render email parts. Errors: %s"
+                                       % errors)
 
         return response
 
-    def send(self, template_name, from_email, recipient_list, context, 
-                cc=[], bcc=[], 
-                fail_silently=False, 
-                headers={}, 
-                template_dir=None, file_extension=None,
-                auth_user=None, auth_password=None,
-                connection=None,
-                **kwargs):
-
-        connection = connection or get_connection(username=auth_user,
-                                                password=auth_password,
-                                                fail_silently=fail_silently)
+    def get_email_message(self, template_name, context, from_email=None, to=None,
+                          cc=None, bcc=None, headers=None,
+                          template_dir=None, file_extension=None):
 
         parts = self._render_email(template_name, context, template_dir, file_extension)
-        plain_part = parts.has_key('plain')
-        html_part = parts.has_key('html')
+        plain_part = 'plain' in parts
+        html_part = 'html' in parts
 
-        subject = parts.get('subject',
-                    getattr(
-                        settings,'TEMPLATED_EMAIL_DJANGO_SUBJECTS',{}
-                    ).get(
-                        template_name,
-                        _('%s email subject' % template_name)
-                    ) % context
-                )
-        
+        if 'subject' in parts:
+            subject = parts['subject']
+        else:
+            subject_dict = getattr(settings, 'TEMPLATED_EMAIL_DJANGO_SUBJECTS', {})
+            subject_template = subject_dict.get(template_name,
+                                                _('%s email subject' % template_name))
+            subject = subject_template % context
+
         if plain_part and not html_part:
-            e=EmailMessage(
+            e = EmailMessage(
                 subject,
                 parts['plain'],
                 from_email,
-                recipient_list,
-                cc = cc,
-                bcc = bcc,
-                headers = headers,
-                connection = connection,
+                to,
+                cc=cc,
+                bcc=bcc,
+                headers=headers,
             )
 
         if html_part and not plain_part:
-            e=EmailMessage(
+            e = EmailMessage(
                 subject,
                 parts['html'],
                 from_email,
-                recipient_list,
-                cc = cc,
-                bcc = bcc,
-                headers = headers,
-                connection = connection,
+                to,
+                cc=cc,
+                bcc=bcc,
+                headers=headers,
             )
             e.content_subtype = 'html'
 
         if plain_part and html_part:
-            e=EmailMultiAlternatives(
+            e = EmailMultiAlternatives(
                 subject,
                 parts['plain'],
                 from_email,
-                recipient_list,
-                cc = cc,
-                bcc = bcc,
-                headers = headers,
-                connection = connection,
+                to,
+                cc=cc,
+                bcc=bcc,
+                headers=headers,
             )
-            e.attach_alternative(parts['html'],'text/html')
+            e.attach_alternative(parts['html'], 'text/html')
+
+        return e
+
+
+    def send(self, template_name, from_email, recipient_list, context,
+             cc=None, bcc=None,
+             fail_silently=False,
+             headers=None,
+             template_dir=None, file_extension=None,
+             auth_user=None, auth_password=None,
+             connection=None, **kwargs):
+
+        connection = connection or get_connection(username=auth_user,
+                                                  password=auth_password,
+                                                  fail_silently=fail_silently)
+
+        e = self.get_email_message(template_name, context, from_email=from_email,
+                                   to=recipient_list, cc=cc, bcc=bcc, headers=headers,
+                                   template_dir=template_dir,
+                                   file_extension=file_extension)
+
+        e.connection = connection
 
         try:
             e.send(fail_silently)
         except NameError:
-            raise EmailRenderException("Couldn't render plain or html parts") 
-        
-        return e.extra_headers.get('Message-Id',None)
+            raise EmailRenderException("Couldn't render plain or html parts")
 
+        return e.extra_headers.get('Message-Id', None)
