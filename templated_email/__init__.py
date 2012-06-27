@@ -45,7 +45,6 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
     return templater.get_email_message(template_name, context,
                                        from_email=from_email, to=to,
                                        cc=cc, bcc=bcc, headers=headers,
-                                       template_prefix=template_prefix,
                                        template_dir=template_dir)
 
 
