@@ -1,16 +1,15 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
-from django.utils.translation import ugettext as _
 
 from postageapp import PostageApp
-
 from . import HeaderNotSupportedException
+
 
 class PostageAppException(Exception):
     pass
 
-class TemplateBackend:
+
+class TemplateBackend(object):
     """
     Backend which uses PostageApp to send templated emails
 
@@ -29,10 +28,11 @@ class TemplateBackend:
         if api_key:
             self.conn = PostageApp(api_key)
         else:
-            raise ImproperlyConfigured('You need to provide POSTAGEAPP_API_KEY or EMAIL_POSTAGEAPP_API_KEY in your Django settings file') 
+            raise ImproperlyConfigured('You need to provide POSTAGEAPP_API_KEY or EMAIL_POSTAGEAPP_API_KEY in your Django settings file')
 
-    def send(self, template_name, from_email, recipient_list, context, cc=[], bcc=[], fail_silently=False, headers={}, **kwargs):
-        if cc != [] or bcc != []:
+    def send(self, template_name, from_email, recipient_list, context,
+             cc=None, bcc=None, fail_silently=False, headers=None, **kwargs):
+        if cc or bcc:
             raise HeaderNotSupportedException("PostageApp doesn't currently support CC, or BCC")
         try:
             result = self.conn.send_message(
@@ -44,7 +44,7 @@ class TemplateBackend:
             )
             if not result:
                 raise PostageAppException( self.conn.error )
-        except Exception, e:
+        except Exception:
             if not fail_silently:
                 raise
 
