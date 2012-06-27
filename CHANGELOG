@@ -1,3 +1,6 @@
+v0.4.6
+Reworked vanilla_django backend allows you to extract the EmailMessage object without sending email. Refactored code for PEP8 compliance
+
 v0.4.5
 Better error handling for the PostageApp backend
 
