@@ -82,7 +82,8 @@ If you would like finer control on sending the email, you can use **get_template
 
 You can also **cc** and **bcc** recipients using **cc=['example@example.com']**. Some backends have other parameters you can override, see below.
 
-**Your template**
+Your template
+-------------
 
 The backend will look in *templated_email/welcome.email* ::
 
@@ -119,10 +120,13 @@ You can globally override the template dir, and file extension using the followi
 
 For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_prefix** and **template_suffix** (or use the less backend-portable **template_dir** / **file_extension**) for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
-**Please note / Warning about template inheritence**
+Please note / Warning about template inheritence
+-------------
 There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
 
-**Legacy Behaviour**
+Legacy Behaviour
+----------------
+
 The 0.2.x version of the library looked in django template directories/loaders 
 for **templated_email/welcome.txt** ::
 
