@@ -52,7 +52,32 @@ Python to send mail::
                 'full_name':request.user.get_full_name(),
                 'signup_date':request.user.date_joined
             },
-            headers={'My-Custom-Header':'Custom Value'}
+            # Optional:
+            # cc=['cc@example.com'],
+            # bcc=['bcc@example.com'],
+            # headers={'My-Custom-Header':'Custom Value'},
+            # template_prefix="my_emails/",
+            # template_suffix="email",
+    )
+
+If you would like finer control on sending the email, you can use **get_templated_email**, which will return a django **EmailMessage** object, prepared using the **vanilla_django** backend::
+
+    from templated_email import get_templated_mail
+    get_templated_mail(
+            template_name='welcome',
+            from_email='from@example.com',
+            recipient_list=['to@example.com'],
+            context={
+                'username':request.user.username,
+                'full_name':request.user.get_full_name(),
+                'signup_date':request.user.date_joined
+            },
+            # Optional:
+            # cc=['cc@example.com'],
+            # bcc=['bcc@example.com'],
+            # headers={'My-Custom-Header':'Custom Value'},
+            # template_prefix="my_emails/",
+            # template_suffix="email",
     )
 
 You can also **cc** and **bcc** recipients using **cc=['example@example.com']**. Some backends have other parameters you can override, see below.
@@ -142,14 +167,14 @@ For legacy purposes you can specify email subjects in your settings file (but, t
 
 Additionally you can call **send_templated_mail** and optionally override the following parameters::
 
-    template_dir='your_template_dir/' #Override where the method looks for email templates
-    file_extension='email'            #Override the file extension of the email templates
-    cc=['fubar@example.com']          #Set a CC on the mail
-    bcc=['fubar@example.com']         #Set a BCC on the mail
-    template_dir='your_template_dir/' #Override where the method looks for email templates
-    connection=your_connection        #Takes a django mail backend connection, created using **django.core.mail.get_connection**
-    auth_user='username'              #Override the user that the django mail backend uses, same as **django.core.mail.send_mail**
-    auth_password='password'          #Override the password that the django mail backend uses, same as **django.core.mail.send_mail**
+    template_prefix='your_template_dir/'  # Override where the method looks for email templates (alternatively, use template_dir)
+    template_suffix='email'               # Override the file extension of the email templates (alternatively, use file_extension)
+    cc=['fubar@example.com']              # Set a CC on the mail
+    bcc=['fubar@example.com']             # Set a BCC on the mail
+    template_dir='your_template_dir/'     # Override where the method looks for email templates
+    connection=your_connection            # Takes a django mail backend connection, created using **django.core.mail.get_connection**
+    auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
+    auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
 Using PostageApp:
 -------------
