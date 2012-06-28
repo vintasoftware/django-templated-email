@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.utils.importlib import import_module
-from django.utils.functional import memoize
 from django.core.exceptions import ImproperlyConfigured
 from templated_email.backends.vanilla_django import TemplateBackend
 
-@memoize
 def get_connection(backend=None, template_prefix=None, template_suffix=None,
                    fail_silently=False, **kwargs):
     """Load a templated e-mail backend and return an instance of it.
@@ -40,7 +38,6 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
 
     return klass(fail_silently=fail_silently, template_prefix=template_prefix, 
                  template_suffix=template_suffix, **kwargs)
-
 
 def get_templated_mail(template_name, context, from_email=None, to=None,
                        cc=None, bcc=None, headers=None, 

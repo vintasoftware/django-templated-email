@@ -8,8 +8,6 @@ Re-formatted changelog
 
 Allow TEMPLATED_EMAIL_BACKEND to be a class
 
-Memoize get_connection to improve performance
-
 v0.4.6
 ------
 Reworked vanilla_django backend allows you to extract the EmailMessage object
