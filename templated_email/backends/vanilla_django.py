@@ -60,9 +60,10 @@ class TemplateBackend(object):
         errors = {}
         prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
+        full_template_name = '%s.%s' % (prefixed_template_name, file_extension or self.template_suffix)
 
         try:
-            multi_part = get_template('%s.%s' % (prefixed_template_name, file_extension or self.template_suffix))
+            multi_part = get_template(full_template_name)
         except TemplateDoesNotExist:
             multi_part = None
 
@@ -82,7 +83,7 @@ class TemplateBackend(object):
                 plain_part = get_template('%s.txt' % prefixed_template_name)
             except TemplateDoesNotExist:
                 if not html_part:
-                    raise TemplateDoesNotExist('%s.txt' % prefixed_template_name)
+                    raise TemplateDoesNotExist(full_template_name)
                 else:
                     plain_part = None
 
