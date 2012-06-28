@@ -139,8 +139,12 @@ for **templated_email/welcome.txt** ::
     Thanks, you rock!
 
 It will use **templated_email/welcome.html** for the html part 
-of the email allowing you to make it so much pretty. It is plausible
-that one day there will be support for attachments and inline mime / images
+of the email allowing you to make it so much pretty. 
+
+Future Plans
+------------
+
+See https://github.com/bradwhittington/django-templated-email/issues?state=open
 
 Using django_templated_email in 3rd party applications:
 =============
