@@ -1,44 +1,81 @@
+v0.4.7
+------
+Refactor to make template_prefix/suffix passed through everywhere (taking
+precedence), with template_dir/file_extension available on backends where it
+makes sense, with higher priority on template_prefix/suffix.
+
+Re-formatted changelog
+
+Allow TEMPLATED_EMAIL_BACKEND to be a class
+
+Memoize get_connection to improve performance
+
 v0.4.6
-Reworked vanilla_django backend allows you to extract the EmailMessage object without sending email. Refactored code for PEP8 compliance
+------
+Reworked vanilla_django backend allows you to extract the EmailMessage object
+without sending email. Refactored code for PEP8 compliance
 
 v0.4.5
+------
 Better error handling for the PostageApp backend
 
 v0.4.4
-Allow overriding of file_extension on a call to send_mail for issue #12 (https://github.com/bradwhittington/django-templated-email/issues/12)
+------
+Allow overriding of file_extension on a call to send_mail for issue #12 
+https://github.com/bradwhittington/django-templated-email/issues/12
 
-v0.4.3
-Allow overriding connection, auth_user and auth_password ala django.core.mail.send_mail for issue #10 (https://github.com/bradwhittington/django-templated-email/issues/10)
+v0.4.3 
+------
+Allow overriding connection, auth_user and auth_password ala
+django.core.mail.send_mail for issue #10
+https://github.com/bradwhittington/django-templated-email/issues/10
 
-v0.4.2
-Allow overriding of template_dir on a call to send_mail for issue #12 (https://github.com/bradwhittington/django-templated-email/issues/12)
+v0.4.2 
+------
+Allow overriding of template_dir on a call to send_mail for issue #12
+https://github.com/bradwhittington/django-templated-email/issues/12
 
-v0.4.1
-Basic fix for issue #3 (https://github.com/bradwhittington/django-templated-email/issues/3) to support better template inheritence
+v0.4.1 
+------
+Basic fix for issue #3
+https://github.com/bradwhittington/django-templated-email/issues/3 to support
+better template inheritence
 
-v0.4
-Adds support for cc'ing and bcc'in recipients, switches mailchimp backend to use greatape, via @nitinhayaran
+v0.4 
+----
+Adds support for cc'ing and bcc'in recipients, switches mailchimp backend
+to use greatape, via @nitinhayaran
 
-v0.3.3
+v0.3.3 
+------
 Fixes template prefix dir not being used correctly
 
-v0.3.2
+v0.3.2 
+------
 Bubble up errors on templates when there is an issue with finding blocks 
 
-v0.3.1
-Adds configuration variables for settings.py to change template dir, and template extension
+v0.3.1 
+------
+Adds configuration variables for settings.py to change template dir, and
+template extension
 
-v0.3
-Plain part, subject, and HTML part now supported as blocks in a single .email template
+v0.3 
+----
+Plain part, subject, and HTML part now supported as blocks in a single
+.email template
 
-v0.2.1
+v0.2.1 
+------
 Adds support for adding custom headers where supported
 
-v0.2
+v0.2 
+----
 Adds support for postageapp
 
-v0.1.3
+v0.1.3 
+------
 Disables autoescaping when rendering templates.
 
-v0.1.2
+v0.1.2 
+------
 Adds initial support for Mailchimp STS backend

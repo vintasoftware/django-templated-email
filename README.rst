@@ -27,14 +27,13 @@ You can add the following to your settings.py (but it works out the box)::
 
     TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
 
-    # You can also use shortcut version
+    # You can use a shortcut version
     TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
+    # You can also use a class directly
+    from templated_email.backends.vanilla_django import TemplateBackend
+    TEMPLATED_EMAIL_BACKEND = TemplateBackend 
 
-    # For the django back-end specifically
-    TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
-        'welcome':'Welcome to my website',
-    }
 
 Sending templated emails
 =============
@@ -94,7 +93,7 @@ You can globally override the template dir, and file extension using the followi
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
-For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_dir** and **file_extension** for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
+For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_prefix** and **template_suffix** (or use the less backend-portable **template_dir** / **file_extension**) for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
 **Please note / Warning about template inheritence**
 There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
@@ -134,6 +133,12 @@ This is the default backend, and as such requires no special configuration, and 
 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #Use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
+For legacy purposes you can specify email subjects in your settings file (but, the preferred method is to use a **{% block subject %}** in your template)::
+
+    TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
+        'welcome':'Welcome to my website',
+    }
 
 Additionally you can call **send_templated_mail** and optionally override the following parameters::
 

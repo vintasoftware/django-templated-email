@@ -11,9 +11,13 @@ class TemplateBackend(vanilla_django.TemplateBackend):
 
     def send(self, template_name, from_email, recipient_list, context,
                 cc=None, bcc=None, fail_silently=False, headers=None,
+                template_prefix=None, template_suffix=None,
                 template_dir=None, file_extension=None, **kwargs):
+
         config = getattr(settings,'TEMPLATED_EMAIL_MAILCHIMP',{}).get(template_name,{})
-        parts = self._render_email(template_name, context, template_dir, file_extension)
+        parts = self._render_email(template_name, context, 
+                                   template_dir = template_prefix or template_dir, 
+                                   file_extension = template_suffix or file_extension)
         params={
             'message':{
                 'subject': config.get('subject',_('%s email subject' % template_name)) % context,

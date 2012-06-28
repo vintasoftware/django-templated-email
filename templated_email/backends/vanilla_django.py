@@ -100,9 +100,12 @@ class TemplateBackend(object):
 
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
+                          template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None):
 
-        parts = self._render_email(template_name, context, template_dir, file_extension)
+        parts = self._render_email(template_name, context, 
+                                   template_prefix or template_dir, 
+                                   template_suffix or file_extension)
         plain_part = 'plain' in parts
         html_part = 'html' in parts
 
@@ -156,6 +159,7 @@ class TemplateBackend(object):
              cc=None, bcc=None,
              fail_silently=False,
              headers=None,
+             template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
              connection=None, **kwargs):
@@ -166,6 +170,8 @@ class TemplateBackend(object):
 
         e = self.get_email_message(template_name, context, from_email=from_email,
                                    to=recipient_list, cc=cc, bcc=bcc, headers=headers,
+                                   template_prefix=template_prefix,
+                                   template_suffix=template_suffix,
                                    template_dir=template_dir,
                                    file_extension=file_extension)
 
