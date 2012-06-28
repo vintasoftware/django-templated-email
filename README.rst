@@ -83,6 +83,7 @@ If you would like finer control on sending the email, you can use **get_template
 You can also **cc** and **bcc** recipients using **cc=['example@example.com']**. Some backends have other parameters you can override, see below.
 
 **Your template**
+
 The backend will look in *templated_email/welcome.email* ::
 
     {% block subject %}My subject for {{username}}{% endblock %}
@@ -95,7 +96,6 @@ The backend will look in *templated_email/welcome.email* ::
 
       Thanks, you rock!
     {% endblock %}
-
 
 If you want to include an HTML part to your emails, simply use the 'html' block ::
 
@@ -111,7 +111,6 @@ If you want to include an HTML part to your emails, simply use the 'html' block 
 
       <p>Thanks, you rock!</p>
     {% endblock %}
-
 
 You can globally override the template dir, and file extension using the following variables in settings.py ::
 
