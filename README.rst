@@ -122,7 +122,7 @@ For the **vanilla_django** and **mailchimp_sts** backends you can set a value fo
 
 Please note / Warning about template inheritence
 -------------
-There is very basic support for template inheritence (using {% extends ... %} in templates). You will run into issues if you use {{block.super}}, and will result in blank parts of emails.
+There is very basic support for template inheritence (using **{% extends ... %}** in templates). You will run into issues if you use **{{block.super}}**, and will result in blank parts of emails.
 
 Legacy Behaviour
 ----------------
