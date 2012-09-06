@@ -66,7 +66,7 @@ If you would like finer control on sending the email, you can use **get_template
     get_templated_mail(
             template_name='welcome',
             from_email='from@example.com',
-            recipient_list=['to@example.com'],
+            to=['to@example.com'],
             context={
                 'username':request.user.username,
                 'full_name':request.user.get_full_name(),
