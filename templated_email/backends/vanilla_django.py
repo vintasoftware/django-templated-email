@@ -163,7 +163,7 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, **kwargs):
+             connection=None,attach=[], **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -175,6 +175,8 @@ class TemplateBackend(object):
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
                                    file_extension=file_extension)
+        for att in attach:
+            e.attach(att['name'],att['data'],att['type'])
 
         e.connection = connection
 
