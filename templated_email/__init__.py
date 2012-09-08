@@ -59,7 +59,7 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
 def send_templated_mail(template_name, from_email, recipient_list, context,
                         cc=None, bcc=None, fail_silently=False, connection=None,
                         headers=None, template_prefix=None, 
-                        template_suffix=None,attach=None, **kwargs):
+                        template_suffix=None,attach=[], **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.
 
     Final behaviour of sending depends on the currently selected engine.
