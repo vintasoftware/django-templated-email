@@ -163,7 +163,7 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None,attach=attach **kwargs):
+             connection=None,attach=None, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
