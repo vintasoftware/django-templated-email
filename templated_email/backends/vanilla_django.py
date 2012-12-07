@@ -51,14 +51,14 @@ class TemplateBackend(object):
 
     def __init__(self, fail_silently=False,
                  template_prefix=None, template_suffix=None, **kwargs):
-        self.template_prefix = template_prefix or getattr(settings,'TEMPLATED_EMAIL_TEMPLATE_DIR','templated_email/')
-        self.template_suffix = template_suffix or getattr(settings,'TEMPLATED_EMAIL_FILE_EXTENSION','email')
+        self.template_prefix = template_prefix or getattr(settings, 'TEMPLATED_EMAIL_TEMPLATE_DIR', 'templated_email/')
+        self.template_suffix = template_suffix or getattr(settings, 'TEMPLATED_EMAIL_FILE_EXTENSION', 'email')
 
     def _render_email(self, template_name, context,
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        prefixed_template_name=''.join((template_dir or self.template_prefix, template_name))
+        prefixed_template_name = ''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
         full_template_name = '%s.%s' % (prefixed_template_name, file_extension or self.template_suffix)
 
@@ -68,7 +68,7 @@ class TemplateBackend(object):
             multi_part = None
 
         if multi_part:
-            for part in ['subject','html','plain']:
+            for part in ['subject', 'html', 'plain']:
                 try:
                     response[part] = _get_node(multi_part, render_context, name=part)
                 except BlockNotFound, error:
@@ -104,8 +104,8 @@ class TemplateBackend(object):
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None):
 
-        parts = self._render_email(template_name, context, 
-                                   template_prefix or template_dir, 
+        parts = self._render_email(template_name, context,
+                                   template_prefix or template_dir,
                                    template_suffix or file_extension)
         plain_part = 'plain' in parts
         html_part = 'html' in parts
@@ -154,7 +154,6 @@ class TemplateBackend(object):
             e.attach_alternative(parts['html'], 'text/html')
 
         return e
-
 
     def send(self, template_name, from_email, recipient_list, context,
              cc=None, bcc=None,

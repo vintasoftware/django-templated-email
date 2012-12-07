@@ -24,7 +24,7 @@ class TemplateBackend(object):
     """
 
     def __init__(self, fail_silently=False, api_key=None, **kwargs):
-        api_key = api_key or getattr(settings,'POSTAGEAPP_API_KEY',getattr(settings,'EMAIL_POSTAGEAPP_API_KEY',None))
+        api_key = api_key or getattr(settings, 'POSTAGEAPP_API_KEY', getattr(settings, 'EMAIL_POSTAGEAPP_API_KEY', None))
         if api_key:
             self.conn = PostageApp(api_key)
         else:
@@ -43,7 +43,7 @@ class TemplateBackend(object):
                 headers=headers
             )
             if not result:
-                raise PostageAppException( self.conn.error )
+                raise PostageAppException(self.conn.error)
         except Exception:
             if not fail_silently:
                 raise
