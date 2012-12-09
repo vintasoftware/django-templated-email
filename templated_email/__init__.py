@@ -3,6 +3,7 @@ from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 from templated_email.backends.vanilla_django import TemplateBackend
 
+
 def get_connection(backend=None, template_prefix=None, template_suffix=None,
                    fail_silently=False, **kwargs):
     """Load a templated e-mail backend and return an instance of it.
@@ -36,18 +37,19 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
     else:
         klass = klass_path
 
-    return klass(fail_silently=fail_silently, template_prefix=template_prefix, 
+    return klass(fail_silently=fail_silently, template_prefix=template_prefix,
                  template_suffix=template_suffix, **kwargs)
 
+
 def get_templated_mail(template_name, context, from_email=None, to=None,
-                       cc=None, bcc=None, headers=None, 
+                       cc=None, bcc=None, headers=None,
                        template_prefix=None, template_suffix=None,
                        template_dir=None, file_extension=None):
     """Returns a templated EmailMessage instance without a connection using
     the django templating backend."""
     template_prefix = template_prefix or template_dir
     template_suffix = template_suffix or file_extension
-    templater = TemplateBackend(template_prefix=template_prefix, 
+    templater = TemplateBackend(template_prefix=template_prefix,
                                 template_suffix=template_suffix)
     return templater.get_email_message(template_name, context,
                                        from_email=from_email, to=to,
@@ -58,14 +60,14 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
 
 def send_templated_mail(template_name, from_email, recipient_list, context,
                         cc=None, bcc=None, fail_silently=False, connection=None,
-                        headers=None, template_prefix=None, 
+                        headers=None, template_prefix=None,
                         template_suffix=None, **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.
 
     Final behaviour of sending depends on the currently selected engine.
     See BackendClass.send.__doc__
     """
-    connection = connection or get_connection(template_prefix=template_prefix, 
+    connection = connection or get_connection(template_prefix=template_prefix,
                                               template_suffix=template_suffix)
     return connection.send(template_name, from_email, recipient_list, context,
                            cc=cc, bcc=bcc, fail_silently=fail_silently,

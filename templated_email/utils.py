@@ -3,8 +3,10 @@
 from django.template import Context
 from django.template.loader_tags import BlockNode, ExtendsNode
 
+
 class BlockNotFound(Exception):
     pass
+
 
 def _get_node(template, context=Context(), name='subject', block_lookups={}):
     for node in template:
@@ -16,7 +18,7 @@ def _get_node(template, context=Context(), name='subject', block_lookups={}):
                     node.nodelist[i] = block_lookups[n.name]
             return node.render(context)
         elif isinstance(node, ExtendsNode):
-            lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n,BlockNode)])
+            lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
             return _get_node(node.get_parent(context), context, name, lookups)
     raise BlockNotFound("Node '%s' could not be found in template." % name)
