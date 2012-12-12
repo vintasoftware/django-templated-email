@@ -3,6 +3,7 @@ Django-Templated-Email
 ==========
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
+:Tests: .. image:: https://api.travis-ci.org/bradwhittington/django-templated-email.png
 
 Overview
 =================
