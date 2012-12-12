@@ -1,5 +1,11 @@
 v0.4.7
 ------
+Adds pep-8 fixes, and basic testing infrastructure from https://github.com/bradwhittington/django-templated-email/pull/24 and https://github.com/bradwhittington/django-templated-email/pull/23
+
+Amends AUTHORS file
+
+v0.4.7
+------
 Refactor to make template_prefix/suffix passed through everywhere (taking
 precedence), with template_dir/file_extension available on backends where it
 makes sense, with higher priority on template_prefix/suffix.
