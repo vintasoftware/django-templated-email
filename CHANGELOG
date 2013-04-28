@@ -1,4 +1,9 @@
-v0.4.7
+v0.4.9
+------
+
+Be a bit friendlier if someone sets TEMPLATED_EMAIL_FILE_EXTENSION='.html' strip the leading . so inconsistent behavior is not experienced (using '.html' will fall back to legacy loading behaviour when it doesn't find filename..html).
+
+v0.4.8
 ------
 Adds pep-8 fixes, and basic testing infrastructure from https://github.com/bradwhittington/django-templated-email/pull/24 and https://github.com/bradwhittington/django-templated-email/pull/23
 

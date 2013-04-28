@@ -60,7 +60,10 @@ class TemplateBackend(object):
         errors = {}
         prefixed_template_name = ''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
-        full_template_name = '%s.%s' % (prefixed_template_name, file_extension or self.template_suffix)
+        file_extension = file_extension or self.template_suffix
+        if file_extension.startswith('.'):
+            file_extension = file_extension[1:]
+        full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
 
         try:
             multi_part = get_template(full_template_name)
