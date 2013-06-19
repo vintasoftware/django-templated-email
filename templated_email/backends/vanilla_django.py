@@ -179,7 +179,7 @@ class TemplateBackend(object):
                                    file_extension=file_extension)
 
         for att in attach:
-            e.attach(att['name'], att['data'], att['type']) 
+            e.attach(att) 
 
         e.connection = connection
 
