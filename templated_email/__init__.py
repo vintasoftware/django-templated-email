@@ -55,7 +55,7 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
                                        from_email=from_email, to=to,
                                        cc=cc, bcc=bcc, headers=headers,
                                        template_prefix=template_prefix,
-                                       template_suffix=template_suffix
+                                       template_suffix=template_suffix,
                                        attachments=attach)
 
 
