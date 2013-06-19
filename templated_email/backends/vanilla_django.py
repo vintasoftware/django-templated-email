@@ -130,7 +130,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
-                attachments=[],
+                attachments=attachments,
             )
 
         if html_part and not plain_part:
@@ -142,7 +142,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
-                attachments=[],
+                attachments=attachments,
             )
             e.content_subtype = 'html'
 
@@ -155,7 +155,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
-                attachments=[],
+                attachments=attachments,
             )
             e.attach_alternative(parts['html'], 'text/html')
 
