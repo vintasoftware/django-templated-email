@@ -105,7 +105,7 @@ class TemplateBackend(object):
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
-                          template_dir=None, file_extension=None):
+                          template_dir=None, file_extension=None, attachments=[]):
 
         parts = self._render_email(template_name, context,
                                    template_prefix or template_dir,
@@ -130,6 +130,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
+                attachments=[],
             )
 
         if html_part and not plain_part:
@@ -141,6 +142,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
+                attachments=[],
             )
             e.content_subtype = 'html'
 
@@ -153,6 +155,7 @@ class TemplateBackend(object):
                 cc=cc,
                 bcc=bcc,
                 headers=headers,
+                attachments=[],
             )
             e.attach_alternative(parts['html'], 'text/html')
 
@@ -176,10 +179,8 @@ class TemplateBackend(object):
                                    template_prefix=template_prefix,
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
-                                   file_extension=file_extension)
-
-        for att in attach:
-            e.attach(att) 
+                                   file_extension=file_extension,
+                                   attachments=attach)
 
         e.connection = connection
 
