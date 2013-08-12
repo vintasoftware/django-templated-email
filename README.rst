@@ -86,7 +86,9 @@ You can also **cc** and **bcc** recipients using **cc=['example@example.com']**.
 Your template
 -------------
 
-The backend will look in *templated_email/welcome.email* ::
+The templated_email/ directory needs to be the templates directory.
+
+The backend will look in *my_app/templates/templated_email/welcome.email* ::
 
     {% block subject %}My subject for {{username}}{% endblock %}
     {% block plain %}
