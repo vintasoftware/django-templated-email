@@ -178,8 +178,10 @@ class TemplateBackend(object):
                                    template_dir=template_dir,
                                    file_extension=file_extension)
 
-        for path in kwargs.get('attachments', []):
-            e.attach(path)
+        # attach the attachments if they are provided
+        if hasattr(kwargs.get('attachments'), '__iter__') is True:
+            for path in kwargs.get('attachments', []):
+                e.attach_file(path)
 
         e.connection = connection
 
