@@ -178,6 +178,9 @@ class TemplateBackend(object):
                                    template_dir=template_dir,
                                    file_extension=file_extension)
 
+        for path in kwargs.get('attachments', []):
+            e.attach(path)
+
         e.connection = connection
 
         try:
