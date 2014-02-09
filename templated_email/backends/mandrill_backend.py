@@ -16,16 +16,20 @@ class TemplateBackend(vanilla_django.TemplateBackend):
         self.client = mandrill.Mandrill(settings.MANDRILL_API_KEY)
 
     def send(self, template_name, from_email, recipient_list, context, cc=None,
-            bcc=None, fail_silently=False, headers=None, template_prefix=None,
-            template_suffix=None, template_dir=None, file_extension=None,
-            extra_params=None, **kwargs):
+             bcc=None, fail_silently=False, headers=None, template_prefix=None,
+             template_suffix=None, template_dir=None, file_extension=None,
+             extra_params=None, **kwargs):
 
-        config = getattr(settings, 'TEMPLATED_EMAIL_MANDRILL', {}).get(template_name, {})
+        template_settings = getattr(settings, 'TEMPLATED_EMAIL_MANDRILL', {})
+        config = template_settings.get(template_name, {})
+        template_dir = template_prefix or template_dir
+        file_extension = template_suffix or file_extension
         parts = self._render_email(template_name, context,
-                                   template_dir=template_prefix or template_dir,
-                                   file_extension=template_suffix or file_extension)
+                                   template_dir=template_dir,
+                                   file_extension=file_extension)
+        subject = config.get('subject', _('%s email subject' % template_name))
         message = {
-            'subject': config.get('subject', _('%s email subject' % template_name)) % context,
+            'subject': subject % context,
             'html': parts.get('html', ''),
             'text': parts.get('plain', ''),
             'from_name': ' '.join(from_email.split(' ')[:-1]) or 'Nobody',
@@ -40,7 +44,7 @@ class TemplateBackend(vanilla_django.TemplateBackend):
         if bcc:
             message['bcc_address'] = ', '.join(bcc)
         if headers:
-            message['headers']: headers
+            message['headers'] = headers
         if extra_params:
             message.update(extra_params)
 
@@ -50,4 +54,3 @@ class TemplateBackend(vanilla_django.TemplateBackend):
             log.error(e)
             if not fail_silently:
                 raise
-
