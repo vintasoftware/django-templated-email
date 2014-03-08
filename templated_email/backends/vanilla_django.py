@@ -1,8 +1,11 @@
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
+from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
+import six
 
 from templated_email.utils import _get_node, BlockNotFound
 
