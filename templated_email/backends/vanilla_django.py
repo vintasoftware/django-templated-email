@@ -5,7 +5,6 @@ from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
-import six
 
 from templated_email.utils import _get_node, BlockNotFound
 
@@ -106,7 +105,7 @@ class TemplateBackend(object):
         if 'html' in response and not 'plain' in response:
             toplain = getattr(settings, 'TEMPLATED_EMAIL_PLAIN_FILTER', None)
             if toplain:
-                if isinstance(toplain, six.string_types):
+                if isinstance(toplain, basestring):
                     mod_name, klass_name = toplain.rsplit('.', 1)
                     try:
                         mod = import_module(mod_name)
