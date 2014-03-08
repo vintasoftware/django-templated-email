@@ -100,6 +100,28 @@ class TemplateBackend(object):
             raise EmailRenderException("Couldn't render email parts. Errors: %s"
                                        % errors)
 
+        if 'html' in response and not 'plain' in response:
+            toplain = getattr(settings, 'TEMPLATED_EMAIL_PLAIN_FILTER', None)
+            if toplain:
+                if isinstance(toplain, six.string_types):
+                    mod_name, klass_name = toplain.rsplit('.', 1)
+                    try:
+                        mod = import_module(mod_name)
+                    except ImportError:
+                        raise ImproperlyConfigured(
+                            'Error importing templated '
+                            'email plain text filter "%s"' % toplain)
+
+                    try:
+                        toplain = getattr(mod, klass_name)
+                    except AttributeError:
+                        raise ImproperlyConfigured(
+                            'Module "%s" does not define a '
+                            '"%s" function' % (mod_name, klass_name)
+                        )
+
+                response['plain'] = toplain(response['html'])
+
         return response
 
     def get_email_message(self, template_name, context, from_email=None, to=None,
