@@ -49,6 +49,8 @@ class TemplateBackend(object):
     of it's keys
     """
 
+    ATTACH_SUPPORT = True
+
     def __init__(self, fail_silently=False,
                  template_prefix=None, template_suffix=None, **kwargs):
         self.template_prefix = template_prefix or getattr(settings, 'TEMPLATED_EMAIL_TEMPLATE_DIR', 'templated_email/')
@@ -105,7 +107,7 @@ class TemplateBackend(object):
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
-                          template_dir=None, file_extension=None):
+                          template_dir=None, file_extension=None, attach=None):
 
         parts = self._render_email(template_name, context,
                                    template_prefix or template_dir,
@@ -156,6 +158,10 @@ class TemplateBackend(object):
             )
             e.attach_alternative(parts['html'], 'text/html')
 
+        if attach is not None:
+            for f in attach:
+                e.attach(f.get('filename'), f.get('content'), f.get('mimetype'))
+
         return e
 
     def send(self, template_name, from_email, recipient_list, context,
@@ -165,7 +171,7 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, **kwargs):
+             connection=None, attach=None, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -176,7 +182,7 @@ class TemplateBackend(object):
                                    template_prefix=template_prefix,
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
-                                   file_extension=file_extension)
+                                   file_extension=file_extension, attach=attach)
 
         e.connection = connection
 

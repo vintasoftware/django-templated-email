@@ -61,7 +61,7 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
 def send_templated_mail(template_name, from_email, recipient_list, context,
                         cc=None, bcc=None, fail_silently=False, connection=None,
                         headers=None, template_prefix=None,
-                        template_suffix=None, **kwargs):
+                        template_suffix=None, attach=None, **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.
 
     Final behaviour of sending depends on the currently selected engine.
@@ -69,6 +69,12 @@ def send_templated_mail(template_name, from_email, recipient_list, context,
     """
     connection = connection or get_connection(template_prefix=template_prefix,
                                               template_suffix=template_suffix)
+
+    if (attach is not None and
+        not getattr(connection, 'ATTACH_SUPPORT', False) and
+        not fail_silently):
+        raise ImproperlyConfigured('Email backend does not support attachments')
+
     return connection.send(template_name, from_email, recipient_list, context,
                            cc=cc, bcc=bcc, fail_silently=fail_silently,
-                           headers=headers, **kwargs)
+                           headers=headers, attach=attach, **kwargs)
