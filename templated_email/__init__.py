@@ -44,14 +44,14 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
 def get_templated_mail(template_name, context, from_email=None, to=None,
                        cc=None, bcc=None, headers=None,
                        template_prefix=None, template_suffix=None,
-                       template_dir=None, file_extension=None):
+                       template_dir=None, file_extension=None, attach=None):
     """Returns a templated EmailMessage instance without a connection using
     the django templating backend."""
     template_prefix = template_prefix or template_dir
     template_suffix = template_suffix or file_extension
     templater = TemplateBackend(template_prefix=template_prefix,
                                 template_suffix=template_suffix)
-    return templater.get_email_message(template_name, context,
+    return templater.get_email_message(template_name, context, attach=attach,
                                        from_email=from_email, to=to,
                                        cc=cc, bcc=bcc, headers=headers,
                                        template_prefix=template_prefix,
