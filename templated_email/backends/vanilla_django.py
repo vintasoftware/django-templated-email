@@ -1,10 +1,42 @@
+from email.header import Header
+import mimetypes
+
 from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import EmailMessage, EmailMultiAlternatives, \
+    DEFAULT_ATTACHMENT_MIME_TYPE, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
+from django.utils import six
 from django.utils.translation import ugettext as _
-
 from templated_email.utils import _get_node, BlockNotFound
+
+
+class EmailMessageDTE(EmailMessage):
+    # based on code of django 1.6.5 and http://stackoverflow.com/q/15496689
+    def _create_attachment(self, filename, content, mimetype=None):
+        """
+        Converts the filename, content, mimetype triple into a MIME attachment
+        object.
+        """
+        if mimetype is None:
+            mimetype, _ = mimetypes.guess_type(filename)
+            if mimetype is None:
+                mimetype = DEFAULT_ATTACHMENT_MIME_TYPE
+        attachment = self._create_mime_attachment(content, mimetype)
+        if filename:
+            try:
+                filename.encode('ascii')
+            except UnicodeEncodeError:
+                if six.PY2:
+                    filename = filename.encode('utf-8')
+                filename = Header(filename, 'utf-8').encode()
+            attachment.add_header('Content-Disposition', 'attachment',
+                                  filename=filename)
+        return attachment
+
+
+class EmailMultiAlternativesDTE(EmailMultiAlternatives, EmailMessageDTE):
+    pass
 
 
 class EmailRenderException(Exception):
@@ -124,7 +156,7 @@ class TemplateBackend(object):
             subject = subject_template % context
 
         if plain_part and not html_part:
-            e = EmailMessage(
+            e = EmailMessageDTE(
                 subject,
                 parts['plain'],
                 from_email,
@@ -135,7 +167,7 @@ class TemplateBackend(object):
             )
 
         if html_part and not plain_part:
-            e = EmailMessage(
+            e = EmailMessageDTE(
                 subject,
                 parts['html'],
                 from_email,
@@ -147,7 +179,7 @@ class TemplateBackend(object):
             e.content_subtype = 'html'
 
         if plain_part and html_part:
-            e = EmailMultiAlternatives(
+            e = EmailMultiAlternativesDTE(
                 subject,
                 parts['plain'],
                 from_email,
