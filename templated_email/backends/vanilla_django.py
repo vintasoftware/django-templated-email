@@ -12,11 +12,13 @@ from templated_email.utils import _get_node, BlockNotFound
 
 
 class EmailMessageDTE(EmailMessage):
-    # based on code of django 1.6.5 and http://stackoverflow.com/q/15496689
+
     def _create_attachment(self, filename, content, mimetype=None):
         """
         Converts the filename, content, mimetype triple into a MIME attachment
         object.
+        
+        Based on code of django 1.6.5 and http://stackoverflow.com/q/15496689
         """
         if mimetype is None:
             mimetype, _ = mimetypes.guess_type(filename)
