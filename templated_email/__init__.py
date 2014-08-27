@@ -71,8 +71,8 @@ def send_templated_mail(template_name, from_email, recipient_list, context,
                                               template_suffix=template_suffix)
 
     if (attach is not None and
-        not getattr(connection, 'ATTACH_SUPPORT', False) and
-        not fail_silently):
+            not getattr(connection, 'ATTACH_SUPPORT', False) and
+            not fail_silently):
         raise ImproperlyConfigured('Email backend does not support attachments')
 
     return connection.send(template_name, from_email, recipient_list, context,

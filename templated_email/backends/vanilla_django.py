@@ -17,7 +17,7 @@ class EmailMessageDTE(EmailMessage):
         """
         Converts the filename, content, mimetype triple into a MIME attachment
         object.
-        
+
         Based on code of django 1.6.5 and http://stackoverflow.com/q/15496689
         """
         if mimetype is None:
