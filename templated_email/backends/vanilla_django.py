@@ -74,7 +74,7 @@ class TemplateBackend(object):
             for part in ['subject', 'html', 'plain']:
                 try:
                     response[part] = _get_node(multi_part, render_context, name=part)
-                except BlockNotFound, error:
+                except BlockNotFound as error:
                     errors[part] = error
         else:
             try:
