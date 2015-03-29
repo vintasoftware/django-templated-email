@@ -1,12 +1,12 @@
 from email.header import Header
 import mimetypes
+import sys
 
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives, \
     DEFAULT_ATTACHMENT_MIME_TYPE, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
-from django.utils import six
 from django.utils.translation import ugettext as _
 from templated_email.utils import _get_node, BlockNotFound
 
@@ -29,7 +29,7 @@ class EmailMessageDTE(EmailMessage):
             try:
                 filename.encode('ascii')
             except UnicodeEncodeError:
-                if six.PY2:
+                if sys.version_info[0] == 2:
                     filename = filename.encode('utf-8')
                 filename = Header(filename, 'utf-8').encode()
             attachment.add_header('Content-Disposition', 'attachment',
