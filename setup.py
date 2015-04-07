@@ -19,7 +19,7 @@ CLASSIFIERS = [
 ]
 
 setup(
-    name='denaje-django-templated-email',
+    name='django-templated-email',
     version='0.4.9',
     packages=['templated_email', 'templated_email.backends'],
     author='Bradley Whittington',
