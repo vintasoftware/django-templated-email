@@ -9,6 +9,7 @@ class BlockNotFound(Exception):
 
 
 def _get_node(template, context=Context(), name='subject', block_lookups={}):
+    context.template = template.template
     for node in template.template:
         if isinstance(node, BlockNode) and node.name == name:
             #Rudimentary handling of extended templates, for issue #3
