@@ -1,5 +1,5 @@
 
-#From http://stackoverflow.com/questions/2687173/django-how-can-i-get-a-block-from-a-template
+# From http://stackoverflow.com/questions/2687173/django-how-can-i-get-a-block-from-a-template
 from django.template import Context
 from django.template.loader_tags import BlockNode, ExtendsNode
 
@@ -12,7 +12,7 @@ def _get_node(template, context=Context(), name='subject', block_lookups={}):
     context.template = template.template
     for node in template.template:
         if isinstance(node, BlockNode) and node.name == name:
-            #Rudimentary handling of extended templates, for issue #3
+            # Rudimentary handling of extended templates, for issue #3
             for i in xrange(len(node.nodelist)):
                 n = node.nodelist[i]
                 if isinstance(n, BlockNode) and n.name in block_lookups:
