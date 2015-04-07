@@ -8,9 +8,8 @@ class BlockNotFound(Exception):
     pass
 
 
-def _get_node(template, context=Context(), name='subject', block_lookups={}):
-    context.template = template.template
-    for node in template.template:
+def _iter_nodes(template, context, name, block_lookups):
+    for node in template:
         if isinstance(node, BlockNode) and node.name == name:
             # Rudimentary handling of extended templates, for issue #3
             for i in xrange(len(node.nodelist)):
@@ -22,4 +21,13 @@ def _get_node(template, context=Context(), name='subject', block_lookups={}):
             lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
             return _get_node(node.get_parent(context), context, name, lookups)
+
     raise BlockNotFound("Node '%s' could not be found in template." % name)
+
+
+def _get_node(template, context=Context(), name='subject', block_lookups={}):
+    try:
+        return _iter_nodes(template, context, name, block_lookups)
+    except TypeError:
+        context.template = template.template
+        return _iter_nodes(template.template, context, name, block_lookups)
