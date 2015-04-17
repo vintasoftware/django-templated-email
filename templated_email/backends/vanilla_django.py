@@ -5,6 +5,7 @@ from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
+from templated_email import block_render
 
 
 class EmailRenderException(Exception):
@@ -73,7 +74,7 @@ class TemplateBackend(object):
         if multi_part:
             for part in ['subject', 'html', 'plain']:
                 try:
-                    response[part] = _get_node(multi_part, render_context, name=part)
+                    response[part] = block_render.render_block_to_string(full_template_name, part, render_context).strip()
                 except BlockNotFound, error:
                     errors[part] = error
         else:
