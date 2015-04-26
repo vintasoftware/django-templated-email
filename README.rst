@@ -149,7 +149,7 @@ Future Plans
 
 See https://github.com/bradwhittington/django-templated-email/issues?state=open
 
-Using django_templated_email in 3rd party applications:
+Using django_templated_email in 3rd party applications
 =======================================================
 
 If you would like to use django_templated_email to handle mail in a reusable application, you should note that:
@@ -158,10 +158,10 @@ If you would like to use django_templated_email to handle mail in a reusable app
 * If you do (and you should) set a value for **template_dir**, remember to include a trailing slash, i.e. *'my_app_email/'*
 * The deployed app may use a different backend which doesn't use the django templating backend, and as such make a note in your README warning developers that if they are using django_templated_email already, with a different backend, they will need to ensure their email provider can send all your templates (ideally enumerate those somewhere convenient)
 
-Notes on specific backends:
+Notes on specific backends
 ==============================
 
-Using vanilla_django:
+Using vanilla_django
 --------------------------
 
 This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them)::
@@ -186,7 +186,7 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
-Using PostageApp:
+Using PostageApp
 --------------------------
 
 To use the PostageApp (http://postageapp.com) send method, you will need to install python-postageapp::
@@ -203,7 +203,7 @@ And add the following to your settings.py::
 
     EMAIL_POSTAGEAPP_API_KEY = POSTAGEAPP_API_KEY
 
-Using MAILCHIMP STS:
+Using MAILCHIMP STS
 --------------------------
 
 To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
