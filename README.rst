@@ -1,6 +1,6 @@
-==========
+==============================
 Django-Templated-Email
-==========
+==============================
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
 :Tests: .. image:: https://api.travis-ci.org/bradwhittington/django-templated-email.png
@@ -18,7 +18,7 @@ The send_templated_email method can be thought of as the render_to_response
 shortcut for email.
 
 Getting going - installation
-=============
+==============================
 
 Installing::
 
@@ -37,7 +37,7 @@ You can add the following to your settings.py (but it works out the box)::
 
 
 Sending templated emails
-=============
+==============================
 
 Example usage using vanilla_django TemplateBackend backend
 
@@ -124,7 +124,7 @@ You can globally override the template dir, and file extension using the followi
 For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_prefix** and **template_suffix** (or use the less backend-portable **template_dir** / **file_extension**) for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
 Please note / Warning about template inheritence
--------------
+------------------------------------------------
 There is very basic support for template inheritence (using **{% extends ... %}** in templates). You will run into issues if you use **{{block.super}}**, and will result in blank parts of emails.
 
 Legacy Behaviour
@@ -150,7 +150,7 @@ Future Plans
 See https://github.com/bradwhittington/django-templated-email/issues?state=open
 
 Using django_templated_email in 3rd party applications:
-=============
+=======================================================
 
 If you would like to use django_templated_email to handle mail in a reusable application, you should note that:
 
@@ -159,10 +159,10 @@ If you would like to use django_templated_email to handle mail in a reusable app
 * The deployed app may use a different backend which doesn't use the django templating backend, and as such make a note in your README warning developers that if they are using django_templated_email already, with a different backend, they will need to ensure their email provider can send all your templates (ideally enumerate those somewhere convenient)
 
 Notes on specific backends:
-=============
+==============================
 
 Using vanilla_django:
--------------
+--------------------------
 
 This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them)::
 
@@ -187,7 +187,7 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
 Using PostageApp:
--------------
+--------------------------
 
 To use the PostageApp (http://postageapp.com) send method, you will need to install python-postageapp::
 
@@ -204,7 +204,7 @@ And add the following to your settings.py::
     EMAIL_POSTAGEAPP_API_KEY = POSTAGEAPP_API_KEY
 
 Using MAILCHIMP STS:
--------------
+--------------------------
 
 To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
 
