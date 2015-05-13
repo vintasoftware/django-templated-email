@@ -122,6 +122,7 @@ class TemplateBackend(object):
             subject_template = subject_dict.get(template_name,
                                                 _('%s email subject' % template_name))
             subject = subject_template % context
+        subject = subject.strip('\n\r')  # strip newlines from subject
 
         if plain_part and not html_part:
             e = EmailMessage(
