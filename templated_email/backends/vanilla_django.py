@@ -63,7 +63,9 @@ class TemplateBackend(object):
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
-        full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
+        full_template_name = prefixed_template_name
+        if not prefixed_template_name.endswith('.%s' % file_extension):
+            full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
 
         try:
             multi_part = get_template(full_template_name)
