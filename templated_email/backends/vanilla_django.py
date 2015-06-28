@@ -6,6 +6,11 @@ from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
 
+try:
+    import html2text
+except ImportError:
+    html2text = None
+
 
 class EmailRenderException(Exception):
     pass
@@ -120,6 +125,11 @@ class TemplateBackend(object):
             subject_template = subject_dict.get(template_name,
                                                 _('%s email subject' % template_name))
             subject = subject_template % context
+
+        if html_part and not plain_part and html2text and \
+                getattr(settings, 'TEMPLATED_EMAIL_AUTO_PLAIN', True):
+            parts['plain'] = html2text.html2text(parts['html'])
+            plain_part = True
 
         if plain_part and not html_part:
             e = EmailMessage(
