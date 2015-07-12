@@ -3,7 +3,6 @@ from django.core.exceptions import ImproperlyConfigured
 from templated_email.backends.vanilla_django import TemplateBackend
 
 import warnings
-from distutils import basestring
 warnings.filterwarnings('error', 'django.utils.importlib')
 
 try:
