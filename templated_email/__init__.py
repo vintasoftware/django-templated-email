@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from templated_email.backends.vanilla_django import TemplateBackend
 
+import six
 import warnings
 warnings.filterwarnings('error', 'django.utils.importlib')
 
@@ -11,8 +12,6 @@ try:
 except:
     # Django >= 1.8
     from importlib import import_module
-
-import six
 
 
 def get_connection(backend=None, template_prefix=None, template_suffix=None,
