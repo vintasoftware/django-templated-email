@@ -1,17 +1,21 @@
 language: python
+
 python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
+  - "3.5"
+
 env:
-  - DJANGO=1.7
-  - DJANGO=1.8
+    - TOX_ENV=py27-pep8
+    - TOX_ENV=py27-pyflakes
+    - TOX_ENV=py35-django19
+    - TOX_ENV=py34-django19
+    - TOX_ENV=py27-django19
+    - TOX_ENV=py35-django18
+    - TOX_ENV=py34-django18
+    - TOX_ENV=py33-django18
+    - TOX_ENV=py27-django18
+
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
-  - pip install pep8 --use-mirrors
-  - pip install pyflakes
-before_script:
-  - "pep8 --ignore=E128,E501 templated_email"
-  - "pyflakes templated_email"
+  - pip install tox
+
 script:
-  - python manage.py test
+    - tox -e $TOX_ENV
