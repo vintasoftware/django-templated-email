@@ -12,10 +12,7 @@ except:
     # Django >= 1.8
     from importlib import import_module
 
-try:
-    basestring
-except NameError:
-    basestring = str
+import six
 
 
 def get_connection(backend=None, template_prefix=None, template_suffix=None,
@@ -31,9 +28,9 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
     # django.core.mail.get_connection
     klass_path = backend or getattr(settings, 'TEMPLATED_EMAIL_BACKEND',
                                     TemplateBackend)
-    if isinstance(klass_path, basestring):
+    if isinstance(klass_path, six.string_types):
         try:
-            # First check if class name isomited and we have module in settings
+            # First check if class name is omitted and we have module in settings
             mod = import_module(klass_path)
             klass_name = 'TemplateBackend'
         except ImportError as e:
