@@ -116,6 +116,10 @@ If you want to include an HTML part to your emails, simply use the 'html' block 
       <p>Thanks, you rock!</p>
     {% endblock %}
 
+The plain part can also be calculated from the HTML using `html2text <https://pypi.python.org/pypi/html2text>`_. If you don't specify the plain block and `html2text <https://pypi.python.org/pypi/html2text>`_ package is installed, the plain part will be calculated from the HTML part. You can disable this behaviour in settings.py ::
+
+    TEMPLATED_EMAIL_AUTO_PLAIN = False
+
 You can globally override the template dir, and file extension using the following variables in settings.py ::
 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
