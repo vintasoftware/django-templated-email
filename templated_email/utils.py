@@ -1,4 +1,3 @@
-
 # From http://stackoverflow.com/questions/2687173/django-how-can-i-get-a-block-from-a-template
 from django.template import Context
 from django.template.loader_tags import BlockNode, ExtendsNode

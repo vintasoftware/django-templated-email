@@ -1,10 +1,44 @@
+from email.header import Header
+import mimetypes
+import sys
+
 from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import EmailMessage, EmailMultiAlternatives, \
+    DEFAULT_ATTACHMENT_MIME_TYPE, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
-
 from templated_email.utils import _get_node, BlockNotFound
+
+
+class EmailMessageDTE(EmailMessage):
+
+    def _create_attachment(self, filename, content, mimetype=None):
+        """
+        Converts the filename, content, mimetype triple into a MIME attachment
+        object.
+
+        Based on code of django 1.6.5 and http://stackoverflow.com/q/15496689
+        """
+        if mimetype is None:
+            mimetype, _ = mimetypes.guess_type(filename)
+            if mimetype is None:
+                mimetype = DEFAULT_ATTACHMENT_MIME_TYPE
+        attachment = self._create_mime_attachment(content, mimetype)
+        if filename:
+            try:
+                filename.encode('ascii')
+            except UnicodeEncodeError:
+                if sys.version_info[0] == 2:
+                    filename = filename.encode('utf-8')
+                filename = Header(filename, 'utf-8').encode()
+            attachment.add_header('Content-Disposition', 'attachment',
+                                  filename=filename)
+        return attachment
+
+
+class EmailMultiAlternativesDTE(EmailMultiAlternatives, EmailMessageDTE):
+    pass
 
 
 class EmailRenderException(Exception):
@@ -48,6 +82,8 @@ class TemplateBackend(object):
     the context passed in to the send() method contains 'username' as one
     of it's keys
     """
+
+    ATTACH_SUPPORT = True
 
     def __init__(self, fail_silently=False,
                  template_prefix=None, template_suffix=None, **kwargs):
@@ -105,7 +141,7 @@ class TemplateBackend(object):
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
-                          template_dir=None, file_extension=None):
+                          template_dir=None, file_extension=None, attach=None):
 
         parts = self._render_email(template_name, context,
                                    template_prefix or template_dir,
@@ -122,7 +158,7 @@ class TemplateBackend(object):
             subject = subject_template % context
 
         if plain_part and not html_part:
-            e = EmailMessage(
+            e = EmailMessageDTE(
                 subject,
                 parts['plain'],
                 from_email,
@@ -133,7 +169,7 @@ class TemplateBackend(object):
             )
 
         if html_part and not plain_part:
-            e = EmailMessage(
+            e = EmailMessageDTE(
                 subject,
                 parts['html'],
                 from_email,
@@ -145,7 +181,7 @@ class TemplateBackend(object):
             e.content_subtype = 'html'
 
         if plain_part and html_part:
-            e = EmailMultiAlternatives(
+            e = EmailMultiAlternativesDTE(
                 subject,
                 parts['plain'],
                 from_email,
@@ -156,6 +192,10 @@ class TemplateBackend(object):
             )
             e.attach_alternative(parts['html'], 'text/html')
 
+        if attach is not None:
+            for f in attach:
+                e.attach(f.get('filename'), f.get('content'), f.get('mimetype'))
+
         return e
 
     def send(self, template_name, from_email, recipient_list, context,
@@ -165,7 +205,7 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, **kwargs):
+             connection=None, attach=None, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -176,7 +216,7 @@ class TemplateBackend(object):
                                    template_prefix=template_prefix,
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
-                                   file_extension=file_extension)
+                                   file_extension=file_extension, attach=attach)
 
         e.connection = connection
 
