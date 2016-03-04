@@ -1,10 +1,17 @@
 language: python
-sudo: false
 python:
   - "2.7"
+  - "3.3"
+  - "3.4"
 env:
-  - TOXENV="py27-django17"
-  - TOXENV="py27-django18"
-  - TOXENV="py27-django19"
-install: pip install tox
-script: tox -e $TOXENV
+  - DJANGO=1.7
+  - DJANGO=1.8
+install:
+  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install pep8 --use-mirrors
+  - pip install pyflakes
+before_script:
+  - "pep8 --ignore=E128,E501 templated_email"
+  - "pyflakes templated_email"
+script:
+  - python manage.py test
