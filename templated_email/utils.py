@@ -20,6 +20,14 @@ def _iter_nodes(template, context, name, block_lookups):
         elif isinstance(node, ExtendsNode):
             lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
+            # Hack to extends works at django 1.9, preventing
+            # skip, for issue #54
+            if hasattr(context, 'render_context'):
+                render_ctx = context.render_context
+                if hasattr(ExtendsNode, 'context_key'):
+                    key = ExtendsNode.context_key
+                    if key in render_ctx:
+                        del render_ctx[key]
             return _get_node(node.get_parent(context), context, name, lookups)
 
     raise BlockNotFound("Node '%s' could not be found in template." % name)
