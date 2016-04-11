@@ -20,7 +20,7 @@ def _iter_nodes(template, context, name, block_lookups):
         elif isinstance(node, ExtendsNode):
             lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
-            # Hack to extends works at django 1.9, preventing
+            # Hack for extends to work at django 1.9, preventing
             # skip, for issue #54
             if hasattr(context, 'render_context'):
                 render_ctx = context.render_context
