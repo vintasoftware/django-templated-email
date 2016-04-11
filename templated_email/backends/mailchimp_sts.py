@@ -9,10 +9,9 @@ class TemplateBackend(vanilla_django.TemplateBackend):
         vanilla_django.TemplateBackend.__init__(self, *args, **kwargs)
         self.connection = MailChimpSTS(settings.MAILCHIMP_API_KEY, debug=True)
 
-    def send(self, template_name, from_email, recipient_list, context, cc=None,
-            bcc=None, fail_silently=False, headers=None, template_prefix=None,
-            template_suffix=None, template_dir=None, file_extension=None,
-            **kwargs):
+    def send(self, template_name, from_email, recipient_list, context, cc=None, bcc=None,
+             fail_silently=False, headers=None, template_prefix=None, template_suffix=None,
+             template_dir=None, file_extension=None, **kwargs):
 
         config = getattr(settings, 'TEMPLATED_EMAIL_MAILCHIMP', {}).get(template_name, {})
         parts = self._render_email(template_name, context,
