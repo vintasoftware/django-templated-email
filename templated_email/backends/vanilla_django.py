@@ -68,7 +68,9 @@ class TemplateBackend(object):
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
-        full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
+        full_template_name = prefixed_template_name
+        if not prefixed_template_name.endswith('.%s' % file_extension):
+            full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
 
         try:
             multi_part = get_template(full_template_name)
@@ -125,6 +127,7 @@ class TemplateBackend(object):
             subject_template = subject_dict.get(template_name,
                                                 _('%s email subject' % template_name))
             subject = subject_template % context
+        subject = subject.strip('\n\r')  # strip newlines from subject
 
         if html_part and not plain_part and html2text and \
                 getattr(settings, 'TEMPLATED_EMAIL_AUTO_PLAIN', True):
