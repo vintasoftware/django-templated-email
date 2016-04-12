@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
+from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 
 from templated_email.utils import _get_node, BlockNotFound
@@ -106,6 +108,28 @@ class TemplateBackend(object):
         if response == {}:
             raise EmailRenderException("Couldn't render email parts. Errors: %s"
                                        % errors)
+
+        if 'html' in response and not 'plain' in response:
+            toplain = getattr(settings, 'TEMPLATED_EMAIL_PLAIN_FILTER', None)
+            if toplain:
+                if isinstance(toplain, basestring):
+                    mod_name, klass_name = toplain.rsplit('.', 1)
+                    try:
+                        mod = import_module(mod_name)
+                    except ImportError:
+                        raise ImproperlyConfigured(
+                            'Error importing templated '
+                            'email plain text filter "%s"' % toplain)
+
+                    try:
+                        toplain = getattr(mod, klass_name)
+                    except AttributeError:
+                        raise ImproperlyConfigured(
+                            'Module "%s" does not define a '
+                            '"%s" function' % (mod_name, klass_name)
+                        )
+
+                response['plain'] = toplain(response['html'])
 
         return response
 
