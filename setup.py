@@ -31,6 +31,7 @@ setup(
     platforms=['any'],
     classifiers=CLASSIFIERS,
     install_requires=[
+        'django-render-block',
         'six',
     ],
 )
