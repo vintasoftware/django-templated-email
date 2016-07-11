@@ -20,11 +20,11 @@ CLASSIFIERS = [
 
 setup(
     name='django-templated-email',
-    version='0.4.9',
+    version='0.5',
     packages=['templated_email', 'templated_email.backends'],
     author='Bradley Whittington',
     author_email='radbrad182@gmail.com',
-    url='http://github.com/bradwhittington/django-templated-email/',
+    url='http://github.com/vintasoftware/django-templated-email/',
     license='MIT',
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,

@@ -1,3 +1,9 @@
+v0.5
+-----
+
+Bug fixes, cleanup, Django 1.9 and Python3 support.
+
+
 v0.4.9
 ------
 
@@ -30,61 +36,61 @@ Better error handling for the PostageApp backend
 
 v0.4.4
 ------
-Allow overriding of file_extension on a call to send_mail for issue #12 
+Allow overriding of file_extension on a call to send_mail for issue #12
 https://github.com/bradwhittington/django-templated-email/issues/12
 
-v0.4.3 
+v0.4.3
 ------
 Allow overriding connection, auth_user and auth_password ala
 django.core.mail.send_mail for issue #10
 https://github.com/bradwhittington/django-templated-email/issues/10
 
-v0.4.2 
+v0.4.2
 ------
 Allow overriding of template_dir on a call to send_mail for issue #12
 https://github.com/bradwhittington/django-templated-email/issues/12
 
-v0.4.1 
+v0.4.1
 ------
 Basic fix for issue #3
 https://github.com/bradwhittington/django-templated-email/issues/3 to support
 better template inheritence
 
-v0.4 
+v0.4
 ----
 Adds support for cc'ing and bcc'in recipients, switches mailchimp backend
 to use greatape, via @nitinhayaran
 
-v0.3.3 
+v0.3.3
 ------
 Fixes template prefix dir not being used correctly
 
-v0.3.2 
+v0.3.2
 ------
-Bubble up errors on templates when there is an issue with finding blocks 
+Bubble up errors on templates when there is an issue with finding blocks
 
-v0.3.1 
+v0.3.1
 ------
 Adds configuration variables for settings.py to change template dir, and
 template extension
 
-v0.3 
+v0.3
 ----
 Plain part, subject, and HTML part now supported as blocks in a single
 .email template
 
-v0.2.1 
+v0.2.1
 ------
 Adds support for adding custom headers where supported
 
-v0.2 
+v0.2
 ----
 Adds support for postageapp
 
-v0.1.3 
+v0.1.3
 ------
 Disables autoescaping when rendering templates.
 
-v0.1.2 
+v0.1.2
 ------
 Adds initial support for Mailchimp STS backend
