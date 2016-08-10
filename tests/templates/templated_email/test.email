@@ -1,0 +1,5 @@
+{% block subject %}The Subject!{% endblock %}
+
+{% block plain %}
+The plaintext body.
+{% endblock %}
