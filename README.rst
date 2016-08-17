@@ -220,4 +220,34 @@ The Mailchimp STS sender uses the same template processor as the VanillaDjango b
 
 You can also override the *template_dir* variable when calling *send_templated_mail*
 
+Using Mandrill:
+-------------
+
+To use the Mandrill send method, you will need to install their Python API client::
+
+    pip install mandrill
+
+And add the following to your settings.py::
+
+    TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.mandrill_backend'
+
+    MANDRILL_API_KEY = 'yourapikey'
+
+    # For the django back-end specifically
+    TEMPLATED_EMAIL_MANDRILL = {
+        'welcome':{
+          'subject':'Welcome to my website',
+          'track_opens':True,
+          'track_clicks':False,
+          'tags':['my','little','pony'],
+        }
+    }
+
+The Mandrill sender uses the same template processor as the VanillaDjango backend, so you can override the following settings globally::
+
+    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
+    TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
+
+You can also override the *template_dir* variable when calling *send_templated_mail*
+
 .. _Django: http://djangoproject.com
