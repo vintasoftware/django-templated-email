@@ -7,11 +7,9 @@ Django-Templated-Email
 
 Overview
 =================
-django-templated-email is oriented towards sending templated emails
-intended for use with transactional mailers (with support for MailchimpSTS), but as a default with a backend class which uses django's
-templating system, and django's core.mail functions. The library supports
-template inheritence, adding cc'd and bcc'd recipients, configurable
-template naming and location, with easy switching between backends/providers.
+django-templated-email is oriented towards sending templated emails.
+The library supports template inheritance, adding cc'd and bcc'd recipients,
+configurable template naming and location.
 
 The send_templated_email method can be thought of as the render_to_response
 shortcut for email.
@@ -80,7 +78,7 @@ If you would like finer control on sending the email, you can use **get_template
             # template_suffix="email",
     )
 
-You can also **cc** and **bcc** recipients using **cc=['example@example.com']**. Some backends have other parameters you can override, see below.
+You can also **cc** and **bcc** recipients using **cc=['example@example.com']**.
 
 Your template
 -------------
@@ -124,33 +122,14 @@ You can globally override the template dir, and file extension using the followi
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
-For the **vanilla_django** and **mailchimp_sts** backends you can set a value for **template_prefix** and **template_suffix** (or use the less backend-portable **template_dir** / **file_extension**) for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
-
 Please note / Warning about template inheritence
 ------------------------------------------------
 There is very basic support for template inheritence (using **{% extends ... %}** in templates). You will run into issues if you use **{{block.super}}**, and will result in blank parts of emails.
 
-Legacy Behaviour
-----------------
-
-The 0.2.x version of the library looked in django template directories/loaders
-for **templated_email/welcome.txt** ::
-
-    Hey {{full_name}},
-
-    You just signed up for my website, using:
-        username: {{username}}
-        join date: {{signup_date}}
-
-    Thanks, you rock!
-
-It will use **templated_email/welcome.html** for the html part
-of the email allowing you to make it so much pretty.
-
 Future Plans
 ------------
 
-See https://github.com/bradwhittington/django-templated-email/issues?state=open
+See https://github.com/vintasoftware/django-templated-email/issues?state=open
 
 Using django_templated_email in 3rd party applications
 =======================================================
@@ -188,36 +167,5 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     connection=your_connection            # Takes a django mail backend connection, created using **django.core.mail.get_connection**
     auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
-
-
-Using MAILCHIMP STS
---------------------------
-
-To use the MailChimp STS send method, you will need to install mailsnake (please note, until the main mailsnake has STS support, you need to use my fork)::
-
-    pip install -e git://github.com/nitinhayaran/greatape.git#egg=greatape
-
-And add the following to your settings.py::
-
-    TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.mailchimp_sts.TemplateBackend'
-
-    MAILCHIMP_API_KEY = 'yourapikey'
-
-    # For the django back-end specifically
-    TEMPLATED_EMAIL_MAILCHIMP = {
-        'welcome':{
-          'subject':'Welcome to my website',
-          'track_opens':True,
-          'track_clicks':False,
-          'tags':['my','little','pony'],
-        }
-    }
-
-The Mailchimp STS sender uses the same template processor as the VanillaDjango backend, so you can override the following settings globally::
-
-    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir
-    TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
-
-You can also override the *template_dir* variable when calling *send_templated_mail*
 
 .. _Django: http://djangoproject.com
