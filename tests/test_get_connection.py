@@ -19,6 +19,14 @@ class GetConnectionTestCase(TestCase):
         self.assertIsInstance(connection,
                               backends.vanilla_django.TemplateBackend)
 
+    def test_class_name_omitted(self):
+        klass = 'templated_email.backends.vanilla_django'
+
+        connection = get_connection(klass)
+
+        self.assertIsInstance(connection,
+                              backends.vanilla_django.TemplateBackend)
+
     def test_class_instance(self):
         klass = backends.vanilla_django.TemplateBackend
 
