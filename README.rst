@@ -125,10 +125,6 @@ You can globally override the template dir, and file extension using the followi
 
 You can also set a value for **template_prefix** and **template_suffix** for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
-Please note / Warning about template inheritence
-------------------------------------------------
-There is very basic support for template inheritence (using **{% extends ... %}** in templates). You will run into issues if you use **{{block.super}}**, and will result in blank parts of emails.
-
 Future Plans
 ------------
 

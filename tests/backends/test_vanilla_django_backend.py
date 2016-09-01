@@ -2,6 +2,7 @@ from datetime import date
 
 from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template import TemplateDoesNotExist
 from django.core import mail
 
 from mock import patch
@@ -15,14 +16,19 @@ PLAIN_RESULT = (u'\n  Hi,\n\n  You just signed up for my website, using:\n    '
                 u'\n  Thanks, you rock!\n')
 
 
-HTML_RESULT = (u'\n  <p>Hi ,</p>\n\n  <p>You just signed up for my website, '
-               u'using:\n      <dl>\n        <dt>username</dt><dd>vintasoftwar'
-               u'e</dd>\n        <dt>join date</dt><dd></dd>\n      </dl>\n  '
-               u'</p>\n\n  <p>Thanks, you rock!</p>\n')
+HTML_RESULT = (u'<p>Hi Foo Bar,</p><p>You just signed up for my website, '
+               u'using:<dl><dt>username</dt><dd>vintasoftwar'
+               u'e</dd><dt>join date</dt><dd>Aug. 22, 2016</dd></dl>'
+               u'</p><p>Thanks, you rock!</p>')
 
-GENERATED_PLAIN_RESULT = (u'Hi ,\n\nYou just signed up for my website, using:'
+INHERITANCE_RESULT = (u'<h1>Hello Foo Bar,</h1><p>You just signed up for my website, '
+                      u'using:<dl><dt>username</dt><dd>Mr. vintasoftwar'
+                      u'e</dd><dt>join date</dt><dd>Aug. 22, 2016</dd></dl>'
+                      u'</p>')
+
+GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, using:'
                           u'\n\nusername\n\n    vintasoftware\njoin date\n'
-                          u'\n    \n\nThanks, you rock!\n\n')
+                          u'\n    Aug. 22, 2016\n\nThanks, you rock!\n\n')
 
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
@@ -32,31 +38,51 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
 
     def setUp(self):
         self.backend = self.template_backend_klass()
+        self.context = {'username': 'vintasoftware',
+                        'joindate': date(2016, 8, 22),
+                        'full_name': 'Foo Bar'}
+
+    def test_inexistent_base_email(self):
+        try:
+            self.backend._render_email('inexistent_base.email', {})
+        except TemplateDoesNotExist as e:
+            self.assertEquals(e.args[0], 'foo')
+
+    def test_inexistent_template_email(self):
+        try:
+            self.backend._render_email('foo', {})
+        except TemplateDoesNotExist as e:
+            self.assertEquals(e.args[0], 'templated_email/foo.email')
 
     def test_render_plain_email(self):
         response = self.backend._render_email(
-            'plain_template.email', {'username': 'vintasoftware',
-                                     'joindate': date(2016, 8, 22)})
+            'plain_template.email', self.context)
         self.assertEquals(len(response.keys()), 2)
         self.assertEquals(PLAIN_RESULT, response['plain'])
         self.assertEquals(SUBJECT_RESULT, response['subject'])
 
     def test_render_html_email(self):
         response = self.backend._render_email(
-            'html_template.email', {'username': 'vintasoftware',
-                                    'joindate': date(2016, 8, 22)})
+            'html_template.email', self.context)
         self.assertEquals(len(response.keys()), 2)
-        self.assertEquals(HTML_RESULT, response['html'])
+        self.assertHTMLEqual(HTML_RESULT, response['html'])
         self.assertEquals(SUBJECT_RESULT, response['subject'])
 
     def test_render_mixed_email(self):
         response = self.backend._render_email(
-            'mixed_template.email', {'username': 'vintasoftware',
-                                     'joindate': date(2016, 8, 22)})
+            'mixed_template.email', self.context)
         self.assertEquals(len(response.keys()), 3)
-        self.assertEquals(HTML_RESULT, response['html'])
+        self.assertHTMLEqual(HTML_RESULT, response['html'])
         self.assertEquals(PLAIN_RESULT, response['plain'])
         self.assertEquals(SUBJECT_RESULT, response['subject'])
+
+    def test_render_inheritance_email(self):
+        response = self.backend._render_email(
+            'inheritance_template.email', self.context)
+        self.assertEquals(len(response.keys()), 3)
+        self.assertHTMLEqual(INHERITANCE_RESULT, response['html'])
+        self.assertEquals(PLAIN_RESULT, response['plain'])
+        self.assertEquals('Another subject for vintasoftware', response['subject'])
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -104,7 +130,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
-        self.assertEquals(message.alternatives[0][0], HTML_RESULT)
+        self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
         self.assertEquals(message.alternatives[0][1], 'text/html')
         self.assertEquals(message.body, GENERATED_PLAIN_RESULT)
         self.assertEquals(message.subject, SUBJECT_RESULT)
@@ -124,7 +150,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
-        self.assertEquals(message.alternatives[0][0], HTML_RESULT)
+        self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
         self.assertEquals(message.alternatives[0][1], 'text/html')
         self.assertEquals(message.body, PLAIN_RESULT)
         self.assertEquals(message.subject, SUBJECT_RESULT)
@@ -145,7 +171,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
-        self.assertEquals(message.body, HTML_RESULT)
+        self.assertHTMLEqual(message.body, HTML_RESULT)
         self.assertEquals(message.content_subtype, 'html')
         self.assertEquals(message.subject, SUBJECT_RESULT)
         self.assertEquals(message.to, ['to@example.com'])
@@ -170,7 +196,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         message = mail.outbox[0]
         self.assertEquals(ret, message.extra_headers['Message-Id'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
-        self.assertEquals(message.alternatives[0][0], HTML_RESULT)
+        self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
         self.assertEquals(message.alternatives[0][1], 'text/html')
         self.assertEquals(message.body, PLAIN_RESULT)
         self.assertEquals(message.subject, SUBJECT_RESULT)
