@@ -1,0 +1,11 @@
+{% extends 'templated_email/mixed_template.email' %}
+{% block subject %}Another subject for {{ username }}{% endblock %}
+
+{% block hello %}
+  <h1>Hello {{full_name}},</h1>
+{% endblock %}
+
+{% block actual_username %}Mr. {{ block.super }}{% endblock %}
+
+{% block thankyou %}
+{% endblock %}

@@ -78,7 +78,9 @@ class TemplateBackend(object):
                 response[part] = render_block_to_string(full_template_name, part, render_context)
             except BlockNotFound as error:
                 errors[part] = error
-            except TemplateDoesNotExist:
+            except TemplateDoesNotExist as not_found_template:
+                if not_found_template.args[0] != full_template_name:
+                    raise not_found_template
                 # The template didn't exist, just skip multi-part rendering.
                 multi_part = False
                 break

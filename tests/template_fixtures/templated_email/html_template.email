@@ -5,7 +5,7 @@
   <p>You just signed up for my website, using:
       <dl>
         <dt>username</dt><dd>{{username}}</dd>
-        <dt>join date</dt><dd>{{signup_date}}</dd>
+        <dt>join date</dt><dd>{{joindate}}</dd>
       </dl>
   </p>
 
