@@ -1,17 +1,13 @@
+from importlib import import_module
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.module_loading import import_string
 from templated_email.backends.vanilla_django import TemplateBackend
 
 import six
 import warnings
 warnings.filterwarnings('error', 'django.utils.importlib')
-
-try:
-    # Django <= 1.7
-    from django.utils.importlib import import_module
-except:
-    # Django >= 1.8
-    from importlib import import_module
 
 
 def get_connection(backend=None, template_prefix=None, template_suffix=None,
@@ -30,22 +26,10 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
     if isinstance(klass_path, six.string_types):
         try:
             # First check if class name is omitted and we have module in settings
-            mod = import_module(klass_path)
-            klass_name = 'TemplateBackend'
+            klass = import_string(klass_path + '.' + 'TemplateBackend')
         except ImportError as e:
             # Fallback to class name
-            try:
-                mod_name, klass_name = klass_path.rsplit('.', 1)
-                mod = import_module(mod_name)
-            except ImportError as e:
-                raise ImproperlyConfigured(
-                    ('Error importing templated email backend module %s: "%s"'
-                     % (mod_name, e)))
-        try:
-            klass = getattr(mod, klass_name)
-        except AttributeError:
-            raise ImproperlyConfigured(('Module "%s" does not define a '
-                                        '"%s" class' % (mod_name, klass_name)))
+            klass = import_string(klass_path)
     else:
         klass = klass_path
 
