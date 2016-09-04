@@ -37,9 +37,9 @@ class GetConnectionTestCase(TestCase):
     def test_non_existing_module(self):
         klass = 'templated_email.backends.non_existing.NoBackend'
 
-        self.assertRaises(ImproperlyConfigured, get_connection, klass)
+        self.assertRaises(ImportError, get_connection, klass)
 
     def test_non_existing_class(self):
         klass = 'templated_email.backends.vanilla_django.NoBackend'
 
-        self.assertRaises(ImproperlyConfigured, get_connection, klass)
+        self.assertRaises(ImportError, get_connection, klass)

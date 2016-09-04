@@ -1,7 +1,4 @@
-from importlib import import_module
-
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.module_loading import import_string
 from templated_email.backends.vanilla_django import TemplateBackend
 
@@ -27,7 +24,7 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
         try:
             # First check if class name is omitted and we have module in settings
             klass = import_string(klass_path + '.' + 'TemplateBackend')
-        except ImportError as e:
+        except ImportError:
             # Fallback to class name
             klass = import_string(klass_path)
     else:
