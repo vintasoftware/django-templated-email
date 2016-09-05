@@ -1,6 +1,10 @@
 ==============================
 Django-Templated-Email
 ==============================
+
+.. image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
+   :alt: Join the chat at https://gitter.im/vintasoftware/django-templated-email
+   :target: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
 :Tests: |TravisBadge|_
