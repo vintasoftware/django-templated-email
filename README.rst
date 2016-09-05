@@ -2,9 +2,8 @@
 Django-Templated-Email
 ==============================
 
-.. image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
-   :alt: Join the chat at https://gitter.im/vintasoftware/django-templated-email
-   :target: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+|GitterBadge|_ |PypiversionBadge|_ |PythonVersionsBadge|_ |LicenseBadge|_
+
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
 :Tests: |TravisBadge|_ |CoverageBadge|_
@@ -172,7 +171,15 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
 .. _Django: http://djangoproject.com
+.. |GitterBadge| image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
+.. _GitterBadge: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 .. |TravisBadge| image:: https://travis-ci.org/vintasoftware/django-templated-email.svg?branch=develop
 .. _TravisBadge: https://travis-ci.org/vintasoftware/django-templated-email
 .. |CoverageBadge| image:: https://coveralls.io/repos/github/vintasoftware/django-templated-email/badge.svg?branch=develop
 .. _CoverageBadge: https://coveralls.io/github/vintasoftware/django-templated-email?branch=develop
+.. |PypiversionBadge| image:: https://img.shields.io/pypi/v/django-templated-email.svg
+.. _PypiversionBadge: https://pypi.python.org/pypi/django-templated-email
+.. |PythonVersionsBadge| image:: https://img.shields.io/pypi/pyversions/django-templated-email.svg
+.. _PythonVersionsBadge: https://pypi.python.org/pypi/django-templated-email
+.. |LicenseBadge| image:: https://img.shields.io/pypi/l/django-templated-email.svg
+.. _LicenseBadge: https://github.com/vintasoftware/django-templated-email/blob/develop/LICENSE
