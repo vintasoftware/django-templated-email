@@ -7,7 +7,7 @@ Django-Templated-Email
    :target: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
-:Tests: |TravisBadge|_
+:Tests: |TravisBadge|_ |CoverageBadge|_
 
 
 Overview
@@ -174,3 +174,5 @@ Additionally you can call **send_templated_mail** and optionally override the fo
 .. _Django: http://djangoproject.com
 .. |TravisBadge| image:: https://travis-ci.org/vintasoftware/django-templated-email.svg?branch=develop
 .. _TravisBadge: https://travis-ci.org/vintasoftware/django-templated-email
+.. |CoverageBadge| image:: https://coveralls.io/repos/github/vintasoftware/django-templated-email/badge.svg?branch=develop
+.. _CoverageBadge: https://coveralls.io/github/vintasoftware/django-templated-email?branch=develop
