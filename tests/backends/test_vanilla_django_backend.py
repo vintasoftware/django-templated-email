@@ -108,7 +108,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
     )
-    def test_custom_emailmessage_class(self, mock):
+    def test_custom_emailmessage_klass(self, mock):
         message = self.backend.get_email_message(
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],
@@ -181,7 +181,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
                       'subject': SUBJECT_RESULT}
     )
-    def test_custom_emailmessage_class_multipart(self, mock):
+    def test_custom_emailmessage_klass_multipart(self, mock):
         message = self.backend.get_email_message(
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],

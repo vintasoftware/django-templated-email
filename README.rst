@@ -133,11 +133,11 @@ Anymail integrates several transactional email service providers (ESPs) into Dja
 You can use it with django-templated-email, just follow their instructions in their `quick start <https://anymail.readthedocs.io/en/latest/quickstart/>`_ to configure it.
 
 Optionally you can use their custom `EmailMessage <https://anymail.readthedocs.io/en/latest/sending/anymail_additions/#anymail.message.AnymailMessage>`_ class with django-templated-email by using the following settings:
-    
+
     # This replaces django.core.mail.EmailMessage
     TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage'
 
-    # This relaces django.core.mail.EmailMultiAlternatives
+    # This replaces django.core.mail.EmailMultiAlternatives
     TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS='anymail.message.AnymailMessage'
 
 
