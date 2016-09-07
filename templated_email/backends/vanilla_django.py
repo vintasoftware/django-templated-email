@@ -1,10 +1,13 @@
 from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import get_connection
 from django.template import Context, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.utils.translation import ugettext as _
 
+from templated_email.utils import (
+    get_emailmessage_klass, get_emailmultialternatives_klass)
 from render_block import render_block_to_string, BlockNotFound
+
 
 try:
     import html2text
@@ -116,7 +119,8 @@ class TemplateBackend(object):
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None):
-
+        EmailMessage = get_emailmessage_klass()
+        EmailMultiAlternatives = get_emailmultialternatives_klass()
         parts = self._render_email(template_name, context,
                                    template_prefix or template_dir,
                                    template_suffix or file_extension)

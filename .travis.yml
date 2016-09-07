@@ -18,6 +18,13 @@ env:
 
 install:
   - pip install tox
+  - pip install -r requirements.txt
+  - pip install pytest-cov
+  - pip install coveralls
 
 script:
     - tox -e $TOX_ENV
+    - py.test --cov=templated_email tests/
+
+after_success:
+  coveralls

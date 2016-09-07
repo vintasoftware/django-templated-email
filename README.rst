@@ -128,8 +128,24 @@ You can globally override the template dir, and file extension using the followi
 
 You can also set a value for **template_prefix** and **template_suffix** for every time you call **send_templated_mail**, if you wish to store a set of templates in a different directory. Remember to include a trailing slash.
 
+Using with `Django Anymail <https://github.com/anymail/django-anymail>`_
+=========================================================================
+
+Anymail integrates several transactional email service providers (ESPs) into Django, with a consistent API that lets you use ESP-added features without locking your code to a particular ESP. It supports Mailgun, Postmark, SendGrid, SparkPost and more.
+
+You can use it with django-templated-email, just follow their instructions in their `quick start <https://anymail.readthedocs.io/en/latest/quickstart/>`_ to configure it.
+
+Optionally you can use their custom `EmailMessage <https://anymail.readthedocs.io/en/latest/sending/anymail_additions/#anymail.message.AnymailMessage>`_ class with django-templated-email by using the following settings:
+
+    # This replaces django.core.mail.EmailMessage
+    TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage'
+
+    # This replaces django.core.mail.EmailMultiAlternatives
+    TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS='anymail.message.AnymailMessage'
+
+
 Future Plans
-------------
+=============
 
 See https://github.com/vintasoftware/django-templated-email/issues?state=open
 

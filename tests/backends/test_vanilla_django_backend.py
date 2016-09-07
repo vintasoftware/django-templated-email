@@ -6,6 +6,7 @@ from django.template import TemplateDoesNotExist
 from django.core import mail
 
 from mock import patch
+from anymail.message import AnymailMessage
 
 from .utils import TempalteBackendBaseMixin
 from templated_email.backends.vanilla_django import TemplateBackend
@@ -101,6 +102,19 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
+    @override_settings(TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS=
+                       'anymail.message.AnymailMessage')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_custom_emailmessage_klass(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'])
+        self.assertTrue(isinstance(message, AnymailMessage))
+
     @override_settings(TEMPLATED_EMAIL_DJANGO_SUBJECTS={'foo.email':
                                                         'foo\r\n'})
     @patch.object(
@@ -158,6 +172,21 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
+
+
+    @override_settings(TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS=
+                       'anymail.message.AnymailMessage')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_custom_emailmessage_klass_multipart(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'])
+        self.assertTrue(isinstance(message, AnymailMessage))
 
     @override_settings(TEMPLATED_EMAIL_AUTO_PLAIN=False)
     @patch.object(
