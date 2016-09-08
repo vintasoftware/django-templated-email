@@ -56,7 +56,7 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
 def get_templated_mail(template_name, context, from_email=None, to=None,
                        cc=None, bcc=None, headers=None,
                        template_prefix=None, template_suffix=None,
-                       template_dir=None, file_extension=None):
+                       template_dir=None, attach=[], file_extension=None):
     """Returns a templated EmailMessage instance without a connection using
     the django templating backend."""
     template_prefix = template_prefix or template_dir
@@ -67,13 +67,14 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
                                        from_email=from_email, to=to,
                                        cc=cc, bcc=bcc, headers=headers,
                                        template_prefix=template_prefix,
-                                       template_suffix=template_suffix)
+                                       template_suffix=template_suffix,
+                                       attachments=attach)
 
 
 def send_templated_mail(template_name, from_email, recipient_list, context,
                         cc=None, bcc=None, fail_silently=False, connection=None,
                         headers=None, template_prefix=None,
-                        template_suffix=None, **kwargs):
+                        template_suffix=None, attach=[], **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.
 
     Final behaviour of sending depends on the currently selected engine.
@@ -83,4 +84,4 @@ def send_templated_mail(template_name, from_email, recipient_list, context,
                                               template_suffix=template_suffix)
     return connection.send(template_name, from_email, recipient_list, context,
                            cc=cc, bcc=bcc, fail_silently=fail_silently,
-                           headers=headers, **kwargs)
+                           headers=headers, attach=attach, **kwargs)
