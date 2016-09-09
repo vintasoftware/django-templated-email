@@ -307,7 +307,6 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(attachment.get_payload().replace('\n', ''),
                           base64.b64encode(PNG_FILE))
 
-
     # this can be too slow, mock it for speed.
     # See: https://code.djangoproject.com/ticket/24380
     @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
@@ -321,5 +320,33 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[('black_pixel.png', PNG_FILE, 'image/png')])
         attachment = mail.outbox[0].attachments[0]
+        self.assertEquals(('black_pixel.png', PNG_FILE, 'image/png'),
+                          attachment)
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_attachment_mime_base(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            attachments=[MIMEImage(PNG_FILE, 'image/png')])
+        attachment = message.attachments[0]
+        self.assertEquals(attachment.get_payload().replace('\n', ''),
+                          base64.b64encode(PNG_FILE))
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_attachment_tripple(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            attachments=[('black_pixel.png', PNG_FILE, 'image/png')])
+        attachment = message.attachments[0]
         self.assertEquals(('black_pixel.png', PNG_FILE, 'image/png'),
                           attachment)
