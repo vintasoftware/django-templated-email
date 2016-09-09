@@ -36,7 +36,7 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
 
-TXT_FILE = 'test'
+TXT_FILE = b'test'
 
 
 class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
