@@ -36,12 +36,8 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
 
-PNG_FILE = (b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00'
-            b'\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x01sRGB\x00\xae'
-            b'\xce\x1c\xe9\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00'
-            b'\x00\x00\tpHYs\x00\x00\x0e\xc3\x00\x00\x0e\xc3\x01\xc7o\xa8d\x00'
-            b'\x00\x00\x0cIDAT\x18Wc```\x00\x00\x00\x04\x00\x01\\\xcd\xffi\x00'
-            b'\x00\x00\x00IEND\xaeB`\x82')
+TXT_FILE = 'test'
+
 
 class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
     template_backend_klass = TemplateBackend
@@ -302,10 +298,10 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
     def test_send_attachment_mime_base(self, render_mock, getfqdn_mock):
         self.backend.send('plain_template', 'from@example.com',
                           ['to@example.com', 'to2@example.com'], {},
-                          attachments=[MIMEImage(PNG_FILE, 'image/png')])
+                          attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
-        self.assertEquals(attachment.get_payload().replace('\n', ''),
-                          base64.b64encode(PNG_FILE))
+        self.assertEquals(attachment.get_payload(),
+                          base64.b64encode(TXT_FILE))
 
     # this can be too slow, mock it for speed.
     # See: https://code.djangoproject.com/ticket/24380
@@ -318,9 +314,9 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
     def test_send_attachment_tripple(self, render_mock, getfqdn_mock):
         self.backend.send('plain_template', 'from@example.com',
                           ['to@example.com', 'to2@example.com'], {},
-                          attachments=[('black_pixel.png', PNG_FILE, 'image/png')])
+                          attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
-        self.assertEquals(('black_pixel.png', PNG_FILE, 'image/png'),
+        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
                           attachment)
 
     @patch.object(
@@ -332,10 +328,10 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
-            attachments=[MIMEImage(PNG_FILE, 'image/png')])
+            attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
-        self.assertEquals(attachment.get_payload().replace('\n', ''),
-                          base64.b64encode(PNG_FILE))
+        self.assertEquals(attachment.get_payload(),
+                          base64.b64encode(TXT_FILE))
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -346,7 +342,7 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
-            attachments=[('black_pixel.png', PNG_FILE, 'image/png')])
+            attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
-        self.assertEquals(('black_pixel.png', PNG_FILE, 'image/png'),
+        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
                           attachment)
