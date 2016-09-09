@@ -1,4 +1,6 @@
+import base64
 from datetime import date
+from email.mime.image import MIMEImage
 
 from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
@@ -33,6 +35,13 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
 
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
+
+PNG_FILE = (b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00'
+            b'\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x01sRGB\x00\xae'
+            b'\xce\x1c\xe9\x00\x00\x00\x04gAMA\x00\x00\xb1\x8f\x0b\xfca\x05\x00'
+            b'\x00\x00\tpHYs\x00\x00\x0e\xc3\x00\x00\x0e\xc3\x01\xc7o\xa8d\x00'
+            b'\x00\x00\x0cIDAT\x18Wc```\x00\x00\x00\x04\x00\x01\\\xcd\xffi\x00'
+            b'\x00\x00\x00IEND\xaeB`\x82')
 
 class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
     template_backend_klass = TemplateBackend
@@ -275,8 +284,42 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             template_prefix=kwargs['template_prefix'],
             template_suffix=kwargs['template_suffix'],
             template_dir=kwargs['template_dir'],
-            file_extension=kwargs['file_extension']
+            file_extension=kwargs['file_extension'],
+            attachments=None,
         )
         send_mock.assert_called_with(
             kwargs['fail_silently']
         )
+
+    # this can be too slow, mock it for speed.
+    # See: https://code.djangoproject.com/ticket/24380
+    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_send_attachment_mime_base(self, render_mock, getfqdn_mock):
+        self.backend.send('plain_template', 'from@example.com',
+                          ['to@example.com', 'to2@example.com'], {},
+                          attachments=[MIMEImage(PNG_FILE, 'image/png')])
+        attachment = mail.outbox[0].attachments[0]
+        self.assertEquals(attachment.get_payload().replace('\n', ''),
+                          base64.b64encode(PNG_FILE))
+
+
+    # this can be too slow, mock it for speed.
+    # See: https://code.djangoproject.com/ticket/24380
+    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_send_attachment_tripple(self, render_mock, getfqdn_mock):
+        self.backend.send('plain_template', 'from@example.com',
+                          ['to@example.com', 'to2@example.com'], {},
+                          attachments=[('black_pixel.png', PNG_FILE, 'image/png')])
+        attachment = mail.outbox[0].attachments[0]
+        self.assertEquals(('black_pixel.png', PNG_FILE, 'image/png'),
+                          attachment)
