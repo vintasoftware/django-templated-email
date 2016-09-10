@@ -3,7 +3,7 @@ import sys
 from setuptools import setup
 
 DESCRIPTION = "A Django oriented templated / transaction email abstraction"
-VERSION = '0.5'
+VERSION = '1.0'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()
@@ -41,7 +41,7 @@ CLASSIFIERS = [
 
 setup(
     name='django-templated-email',
-    version='0.5',
+    version=VERSION,
     packages=['templated_email', 'templated_email.backends'],
     author='Bradley Whittington',
     author_email='radbrad182@gmail.com',

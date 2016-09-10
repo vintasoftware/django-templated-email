@@ -1,3 +1,13 @@
+v1.0
+-----
+Remove broken postageapp backend.
+Adding django 1.10 support.
+Use django-render-block.
+Adding django-anymail.
+Adding attachment.
+Remove support for legacy behaviour of having a .html and a .txt file.
+
+
 v0.5
 -----
 
