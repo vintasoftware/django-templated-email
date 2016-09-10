@@ -1,4 +1,6 @@
+import base64
 from datetime import date
+from email.mime.image import MIMEImage
 
 from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
@@ -32,6 +34,13 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
                           u'\n    Aug. 22, 2016\n\nThanks, you rock!\n\n')
 
 SUBJECT_RESULT = 'My subject for vintasoftware'
+
+
+TXT_FILE = 'test'
+
+
+def decode_b64_msg(msg):
+    return base64.b64decode(msg).decode("utf-8")
 
 
 class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
@@ -275,8 +284,69 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             template_prefix=kwargs['template_prefix'],
             template_suffix=kwargs['template_suffix'],
             template_dir=kwargs['template_dir'],
-            file_extension=kwargs['file_extension']
+            file_extension=kwargs['file_extension'],
+            attachments=None,
         )
         send_mock.assert_called_with(
             kwargs['fail_silently']
         )
+
+    # this can be too slow, mock it for speed.
+    # See: https://code.djangoproject.com/ticket/24380
+    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_send_attachment_mime_base(self, render_mock, getfqdn_mock):
+        self.backend.send('plain_template', 'from@example.com',
+                          ['to@example.com', 'to2@example.com'], {},
+                          attachments=[MIMEImage(TXT_FILE, 'text/plain')])
+        attachment = mail.outbox[0].attachments[0]
+        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+                          TXT_FILE)
+
+    # this can be too slow, mock it for speed.
+    # See: https://code.djangoproject.com/ticket/24380
+    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_send_attachment_tripple(self, render_mock, getfqdn_mock):
+        self.backend.send('plain_template', 'from@example.com',
+                          ['to@example.com', 'to2@example.com'], {},
+                          attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
+        attachment = mail.outbox[0].attachments[0]
+        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
+                          attachment)
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_attachment_mime_base(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            attachments=[MIMEImage(TXT_FILE, 'text/plain')])
+        attachment = message.attachments[0]
+        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+                          TXT_FILE)
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_attachment_tripple(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
+        attachment = message.attachments[0]
+        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
+                          attachment)
