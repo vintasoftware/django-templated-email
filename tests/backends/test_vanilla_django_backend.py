@@ -280,3 +280,9 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         send_mock.assert_called_with(
             kwargs['fail_silently']
         )
+
+    def test_removal_of_legacy(self):
+        try:
+            self.backend._render_email('legacy', {})
+        except TemplateDoesNotExist as e:
+            self.assertEquals(e.args[0], 'templated_email/legacy.email')

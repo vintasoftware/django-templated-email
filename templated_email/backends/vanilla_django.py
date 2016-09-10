@@ -75,39 +75,11 @@ class TemplateBackend(object):
         if not prefixed_template_name.endswith('.%s' % file_extension):
             full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
 
-        multi_part = True
         for part in ['subject', 'html', 'plain']:
             try:
                 response[part] = render_block_to_string(full_template_name, part, render_context)
             except BlockNotFound as error:
                 errors[part] = error
-            except TemplateDoesNotExist as not_found_template:
-                if not_found_template.args[0] != full_template_name:
-                    raise not_found_template
-                # The template didn't exist, just skip multi-part rendering.
-                multi_part = False
-                break
-
-        # Multi-part processing failed.
-        if not multi_part:
-            try:
-                html_part = get_template('%s.html' % prefixed_template_name)
-            except TemplateDoesNotExist:
-                html_part = None
-
-            try:
-                plain_part = get_template('%s.txt' % prefixed_template_name)
-            except TemplateDoesNotExist:
-                if not html_part:
-                    raise TemplateDoesNotExist(full_template_name)
-                else:
-                    plain_part = None
-
-            if plain_part:
-                response['plain'] = plain_part.render(render_context)
-
-            if html_part:
-                response['html'] = html_part.render(render_context)
 
         if response == {}:
             raise EmailRenderException("Couldn't render email parts. Errors: %s"
