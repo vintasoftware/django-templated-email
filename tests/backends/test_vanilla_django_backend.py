@@ -36,7 +36,11 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
 
-TXT_FILE = b'test'
+TXT_FILE = 'test'
+
+
+def decode_b64_msg(msg):
+    return base64.b64decode(msg).decode("utf-8")
 
 
 class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
@@ -300,8 +304,8 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
-        self.assertEquals(attachment.get_payload(),
-                          base64.b64encode(TXT_FILE))
+        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+                          TXT_FILE)
 
     # this can be too slow, mock it for speed.
     # See: https://code.djangoproject.com/ticket/24380
@@ -330,8 +334,8 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             bcc=['bcc@example.com'], to=['to@example.com'],
             attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
-        self.assertEquals(attachment.get_payload(),
-                          base64.b64encode(TXT_FILE))
+        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+                          TXT_FILE)
 
     @patch.object(
         template_backend_klass, '_render_email',
