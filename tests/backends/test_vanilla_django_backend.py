@@ -350,3 +350,9 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         attachment = message.attachments[0]
         self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
                           attachment)
+
+    def test_removal_of_legacy(self):
+        try:
+            self.backend._render_email('legacy', {})
+        except TemplateDoesNotExist as e:
+            self.assertEquals(e.args[0], 'templated_email/legacy.email')
