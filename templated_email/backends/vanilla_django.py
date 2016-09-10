@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.mail import get_connection
-from django.template import Context, TemplateDoesNotExist
-from django.template.loader import get_template
+from django.template import Context
 from django.utils.translation import ugettext as _
 
 from templated_email.utils import (
