@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 
 from templated_email.utils import (
     get_emailmessage_klass, get_emailmultialternatives_klass)
+from templated_email.utils import InlineImage
 from render_block import render_block_to_string, BlockNotFound
 
 
@@ -60,6 +61,12 @@ class TemplateBackend(object):
                  template_prefix=None, template_suffix=None, **kwargs):
         self.template_prefix = template_prefix or getattr(settings, 'TEMPLATED_EMAIL_TEMPLATE_DIR', 'templated_email/')
         self.template_suffix = template_suffix or getattr(settings, 'TEMPLATED_EMAIL_FILE_EXTENSION', 'email')
+
+
+    def attach_inline_images(self, message, context):
+        for value in context.values():
+            if isinstance(value, InlineImage):
+                value.attach_to_message(message)
 
     def _render_email(self, template_name, context,
                       template_dir=None, file_extension=None):
@@ -151,6 +158,7 @@ class TemplateBackend(object):
             )
             e.attach_alternative(parts['html'], 'text/html')
 
+        self.attach_inline_images(e, context)
         return e
 
     def send(self, template_name, from_email, recipient_list, context,

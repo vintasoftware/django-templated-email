@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.utils.module_loading import import_string
+
 from templated_email.backends.vanilla_django import TemplateBackend
+from templated_email.utils import InlineImage
 
 import six
-import warnings
-warnings.filterwarnings('error', 'django.utils.importlib')
 
 
 def get_connection(backend=None, template_prefix=None, template_suffix=None,

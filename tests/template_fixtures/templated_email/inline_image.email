@@ -1,0 +1,4 @@
+{% block subject %}With inline image{% endblock %}
+{% block html %}
+  <img src="{{ image_file }}">
+{% endblock %}

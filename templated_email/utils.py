@@ -1,5 +1,8 @@
 from functools import partial
+from email.utils import unquote
+from email.mime.image import MIMEImage
 
+from django.core.mail import make_msgid
 from django.utils.module_loading import import_string
 from django.conf import settings
 
@@ -25,3 +28,37 @@ get_emailmultialternatives_klass = partial(
     'TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS',
     'django.core.mail.EmailMultiAlternatives',
 )
+
+class InlineImage(object):
+
+    def __init__(self, filename, content, subtype=None, domain=None):
+        self.filename = filename
+        self._content = content
+        self.subtype = subtype
+        self.domain = domain
+        self._content_id = None
+
+    @property
+    def content(self):
+        return self._content
+
+    @content.setter
+    def content(self, value):
+        self._content_id = None
+        self._content = value
+
+    def attach_to_message(self, message):
+        if not self._content_id:
+            self.generate_cid()
+        image = MIMEImage(self.content, self.subtype)
+        image.add_header('Content-Disposition', 'inline', filename=self.filename)
+        image.add_header('Content-ID', self._content_id)
+        message.attach(image)
+
+    def generate_cid(self):
+        self._content_id = make_msgid('img', self.domain)
+
+    def __str__(self):
+        if not self._content_id:
+            self.generate_cid()
+        return 'cid:' + unquote(self._content_id)
