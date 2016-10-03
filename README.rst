@@ -25,7 +25,9 @@ Installing::
 
     pip install django-templated-email
 
-You can add the following to your settings.py (but it works out the box)::
+You can add the following to your settings.py (but it works out the box):
+
+.. code-block:: python
 
     TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'
 
@@ -42,7 +44,9 @@ Sending templated emails
 
 Example usage using vanilla_django TemplateBackend backend
 
-Python to send mail::
+Python to send mail:
+
+.. code-block:: python
 
     from templated_email import send_templated_mail
     send_templated_mail(
@@ -62,7 +66,9 @@ Python to send mail::
             # template_suffix="email",
     )
 
-If you would like finer control on sending the email, you can use **get_templated_email**, which will return a django **EmailMessage** object, prepared using the **vanilla_django** backend::
+If you would like finer control on sending the email, you can use **get_templated_email**, which will return a django **EmailMessage** object, prepared using the **vanilla_django** backend:
+
+.. code-block:: python
 
     from templated_email import get_templated_mail
     get_templated_mail(
@@ -89,7 +95,9 @@ Your template
 
 The templated_email/ directory needs to be the templates directory.
 
-The backend will look in *my_app/templates/templated_email/welcome.email* ::
+The backend will look in *my_app/templates/templated_email/welcome.email* :
+
+.. code-block:: python
 
     {% block subject %}My subject for {{username}}{% endblock %}
     {% block plain %}
@@ -102,7 +110,9 @@ The backend will look in *my_app/templates/templated_email/welcome.email* ::
       Thanks, you rock!
     {% endblock %}
 
-If you want to include an HTML part to your emails, simply use the 'html' block ::
+If you want to include an HTML part to your emails, simply use the 'html' block :
+
+.. code-block:: python
 
     {% block html %}
       <p>Hi {{full_name}},</p>
@@ -117,11 +127,15 @@ If you want to include an HTML part to your emails, simply use the 'html' block 
       <p>Thanks, you rock!</p>
     {% endblock %}
 
-The plain part can also be calculated from the HTML using `html2text <https://pypi.python.org/pypi/html2text>`_. If you don't specify the plain block and `html2text <https://pypi.python.org/pypi/html2text>`_ package is installed, the plain part will be calculated from the HTML part. You can disable this behaviour in settings.py ::
+The plain part can also be calculated from the HTML using `html2text <https://pypi.python.org/pypi/html2text>`_. If you don't specify the plain block and `html2text <https://pypi.python.org/pypi/html2text>`_ package is installed, the plain part will be calculated from the HTML part. You can disable this behaviour in settings.py :
+
+.. code-block:: python
 
     TEMPLATED_EMAIL_AUTO_PLAIN = False
 
-You can globally override the template dir, and file extension using the following variables in settings.py ::
+You can globally override the template dir, and file extension using the following variables in settings.py :
+
+.. code-block:: python
 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #use '' for top level template dir, ensure there is a trailing slash
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
@@ -137,6 +151,8 @@ You can use it with django-templated-email, just follow their instructions in th
 
 Optionally you can use their custom `EmailMessage <https://anymail.readthedocs.io/en/latest/sending/anymail_additions/#anymail.message.AnymailMessage>`_ class with django-templated-email by using the following settings:
 
+.. code-block:: python
+
     # This replaces django.core.mail.EmailMessage
     TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage'
 
@@ -151,6 +167,8 @@ You can add inline images to your email using the `InlineImage` class.
 
 First get the image content from a file or a `ImageField`:
 
+.. code-block:: python
+
     # From a file
     with open('lena.png', 'rb') as lena:
       image = lena.read()
@@ -160,11 +178,15 @@ First get the image content from a file or a `ImageField`:
 
 Then create an instance of `InlineImage`:
 
+.. code-block:: python
+
     from templated_email import InlineImage
 
     inline_image = InlineImage(filename="lena.png", content=image)
 
 Now pass the object on the context to the template when you send the email.
+
+.. code-block:: python
 
     send_templated_mail(templated_name='welcome',
                         from_email='from@example.com',
@@ -172,6 +194,8 @@ Now pass the object on the context to the template when you send the email.
                         context={'lena_image': inline_image})
 
 Finally in your template add the image on the html template block:
+
+.. code-block:: html
 
     <img src="{{ lena_image }}">
 
@@ -196,12 +220,16 @@ Notes on specific backends
 Using vanilla_django
 --------------------------
 
-This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them)::
+This is the default backend, and as such requires no special configuration, and will work out of the box. By default it assumes the following settings (should you wish to override them):
+
+.. code-block:: python
 
     TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' #Use '' for top level template dir
     TEMPLATED_EMAIL_FILE_EXTENSION = 'email'
 
-For legacy purposes you can specify email subjects in your settings file (but, the preferred method is to use a **{% block subject %}** in your template)::
+For legacy purposes you can specify email subjects in your settings file (but, the preferred method is to use a **{% block subject %}** in your template):
+
+.. code-block:: python
 
     TEMPLATED_EMAIL_DJANGO_SUBJECTS = {
         'welcome':'Welcome to my website',
