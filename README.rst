@@ -163,9 +163,9 @@ Optionally you can use their custom `EmailMessage <https://anymail.readthedocs.i
 Inline images
 ==============
 
-You can add inline images to your email using the `InlineImage` class.
+You can add inline images to your email using the *InlineImage* class.
 
-First get the image content from a file or a `ImageField`:
+First get the image content from a file or a *ImageField*:
 
 .. code-block:: python
 
@@ -176,7 +176,7 @@ First get the image content from a file or a `ImageField`:
     # From a ImageField ('logo' is a ImageField of Company)
     image = company.logo.read()
 
-Then create an instance of `InlineImage`:
+Then create an instance of *InlineImage*:
 
 .. code-block:: python
 
