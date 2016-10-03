@@ -188,7 +188,7 @@ Now pass the object on the context to the template when you send the email.
 
 .. code-block:: python
 
-    send_templated_mail(templated_name='welcome',
+    send_templated_mail(template_name='welcome',
                         from_email='from@example.com',
                         recipient_list=['to@example.com'],
                         context={'lena_image': inline_image})
@@ -198,6 +198,8 @@ Finally in your template add the image on the html template block:
 .. code-block:: html
 
     <img src="{{ lena_image }}">
+    
+Note: All *InlineImage* objects you add to the context will be attached to the e-mail, even if they are not used in the template.
 
 
 Future Plans
