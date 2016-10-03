@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.utils.module_loading import import_string
 
+import six
+
 from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email.utils import InlineImage  # noqa
-
-import six
 
 
 def get_connection(backend=None, template_prefix=None, template_suffix=None,

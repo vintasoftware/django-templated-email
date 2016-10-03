@@ -28,4 +28,4 @@ class GetMessageWithInlineMessageTestCase(TestCase):
     def test_image_in_attachments(self):
         mimage = self.message.attachments[0]
         attachment_content = base64.b64encode(mimage.get_payload(decode=True))
-        self.assertEquals(attachment_content, imageb64)
+        self.assertEquals(attachment_content.decode(), imageb64)
