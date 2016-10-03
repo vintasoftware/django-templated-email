@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils.module_loading import import_string
 
 from templated_email.backends.vanilla_django import TemplateBackend
-from templated_email.utils import InlineImage
+from templated_email.utils import InlineImage  # noqa
 
 import six
 

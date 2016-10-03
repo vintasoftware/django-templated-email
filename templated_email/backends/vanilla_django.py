@@ -62,7 +62,6 @@ class TemplateBackend(object):
         self.template_prefix = template_prefix or getattr(settings, 'TEMPLATED_EMAIL_TEMPLATE_DIR', 'templated_email/')
         self.template_suffix = template_suffix or getattr(settings, 'TEMPLATED_EMAIL_FILE_EXTENSION', 'email')
 
-
     def attach_inline_images(self, message, context):
         for value in context.values():
             if isinstance(value, InlineImage):

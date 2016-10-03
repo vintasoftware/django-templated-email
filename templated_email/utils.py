@@ -29,6 +29,7 @@ get_emailmultialternatives_klass = partial(
     'django.core.mail.EmailMultiAlternatives',
 )
 
+
 class InlineImage(object):
 
     def __init__(self, filename, content, subtype=None, domain=None):
