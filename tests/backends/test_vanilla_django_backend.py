@@ -11,6 +11,7 @@ from mock import patch
 from anymail.message import AnymailMessage
 
 from .utils import TempalteBackendBaseMixin
+from tests.utils import MockedNetworkTestCaseMixin
 from templated_email.backends.vanilla_django import TemplateBackend
 
 
@@ -43,7 +44,8 @@ def decode_b64_msg(msg):
     return base64.b64decode(msg).decode("utf-8")
 
 
-class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
+class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
+                              TempalteBackendBaseMixin, TestCase):
     template_backend_klass = TemplateBackend
 
     def setUp(self):
@@ -217,15 +219,12 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
-    # this can be too slow, mock it for speed.
-    # See: https://code.djangoproject.com/ticket/24380
-    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
                       'subject': SUBJECT_RESULT}
     )
-    def test_send(self, render_mock, getfqdn_mock):
+    def test_send(self, render_mock):
         ret = self.backend.send('mixed_template', 'from@example.com',
                                 ['to@example.com', 'to2@example.com'], {},
                                 headers={'Message-Id': 'a_message_id'})
@@ -291,15 +290,12 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
             kwargs['fail_silently']
         )
 
-    # this can be too slow, mock it for speed.
-    # See: https://code.djangoproject.com/ticket/24380
-    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT,
                       'subject': SUBJECT_RESULT}
     )
-    def test_send_attachment_mime_base(self, render_mock, getfqdn_mock):
+    def test_send_attachment_mime_base(self, render_mock):
         self.backend.send('plain_template', 'from@example.com',
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[MIMEImage(TXT_FILE, 'text/plain')])
@@ -307,15 +303,12 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(decode_b64_msg(attachment.get_payload()),
                           TXT_FILE)
 
-    # this can be too slow, mock it for speed.
-    # See: https://code.djangoproject.com/ticket/24380
-    @patch('django.core.mail.utils.socket.getfqdn', return_value='vinta.local')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT,
                       'subject': SUBJECT_RESULT}
     )
-    def test_send_attachment_tripple(self, render_mock, getfqdn_mock):
+    def test_send_attachment_tripple(self, render_mock):
         self.backend.send('plain_template', 'from@example.com',
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])

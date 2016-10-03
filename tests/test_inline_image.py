@@ -6,12 +6,14 @@ from django.test import TestCase
 from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email import InlineImage
 
+from tests.utils import MockedNetworkTestCaseMixin
+
 imageb64 = ('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1B'
             'MVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvD'
             'MAAAAASUVORK5CYII=')
 
 
-class GetMessageWithInlineMessageTestCase(TestCase):
+class GetMessageWithInlineMessageTestCase(MockedNetworkTestCaseMixin, TestCase):
     def setUp(self):
         self.backend = TemplateBackend()
         self.inline_image = InlineImage('foo.png', base64.b64decode(imageb64))

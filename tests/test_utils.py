@@ -5,9 +5,10 @@ from django.test import TestCase
 
 from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email import InlineImage
+from tests.utils import MockedNetworkTestCaseMixin
 
 
-class InlineMessageTestCase(TestCase):
+class InlineMessageTestCase(MockedNetworkTestCaseMixin, TestCase):
     def setUp(self):
         self.inline_image = InlineImage('foo.png', 'content', 'png')
 
