@@ -144,6 +144,38 @@ Optionally you can use their custom `EmailMessage <https://anymail.readthedocs.i
     TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS='anymail.message.AnymailMessage'
 
 
+Inline images
+==============
+
+You can add inline images to your email using the `InlineImage` class.
+
+First get the image content from a file or a `ImageField`:
+
+    # From a file
+    with open('lena.png', 'rb') as lena:
+      image = lena.read()
+
+    # From a ImageField ('logo' is a ImageField of Company)
+    image = company.logo.read()
+
+Then create an instance of `InlineImage`:
+
+    from templated_email import InlineImage
+
+    inline_image = InlineImage(filename="lena.png", content=image)
+
+Now pass the object on the context to the template when you send the email.
+
+    send_templated_mail(templated_name='welcome',
+                        from_email='from@example.com',
+                        recipient_list=['to@example.com'],
+                        context={'lena_image': inline_image})
+
+Finally in your template add the image on the html template block:
+
+    <img src="{{ lena_image }}">
+
+
 Future Plans
 =============
 
