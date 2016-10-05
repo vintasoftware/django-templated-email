@@ -1,7 +1,12 @@
+import uuid
+import md5
+
 from django.conf import settings
 from django.core.mail import get_connection
 from django.template import Context
 from django.utils.translation import ugettext as _
+from django.core.files.storage import get_storage_class
+from django.core.files.storage import default_storage
 
 from templated_email.utils import (
     get_emailmessage_klass, get_emailmultialternatives_klass)
@@ -67,6 +72,13 @@ class TemplateBackend(object):
             if isinstance(value, InlineImage):
                 value.attach_to_message(message)
 
+    def host_inline_image(self, inline_image):
+        md5sum = md5.md5(inline_image.content).hexdigest()
+        filename = inline_image.filename
+        if not default_storage.exists():
+            filename = default_storage.save('templated_email/' + md5sum + filename)
+        return default_storage.url(filename)
+
     def _render_email(self, template_name, context,
                       template_dir=None, file_extension=None):
         response = {}
@@ -106,7 +118,16 @@ class TemplateBackend(object):
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None,
-                          attachments=None):
+                          attachments=None, create_link=False):
+
+        if create_link:
+            email_uuid = uuid.uuid4()
+            link_context = dict(context)
+            context['email_uuid'] = email_uuid.hex
+            for key, value in context:
+                if isinstance(value, InlineImage):
+                    link_context[key] = self.host_inline_image(value)
+
         EmailMessage = get_emailmessage_klass()
         EmailMultiAlternatives = get_emailmultialternatives_klass()
         parts = self._render_email(template_name, context,
@@ -114,6 +135,14 @@ class TemplateBackend(object):
                                    template_suffix or file_extension)
         plain_part = 'plain' in parts
         html_part = 'html' in parts
+
+        if create_link and html_part:
+            static_html_part = self._render_email(
+                template_name, link_context,
+                template_prefix or template_dir,
+                template_suffix or file_extension)['html']
+            from templated_email.models import SavedEmail
+            SavedEmail.objects.create(content=static_html_part, uuid=email_uuid)
 
         if 'subject' in parts:
             subject = parts['subject']
