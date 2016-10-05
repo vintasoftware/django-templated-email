@@ -1,5 +1,6 @@
 import uuid
 import md5
+from StringIO import StringIO
 
 from django.conf import settings
 from django.core.mail import get_connection
@@ -40,11 +41,6 @@ class TemplateBackend(object):
         {% block html %} declares text/html
 
     Legacy behaviour loads from:
-        text/plain part:
-            templated_email/<template_name>.txt
-        text/html part:
-            templated_email/<template_name>.html
-
         Subjects for email templates can be configured in one of two ways:
 
         * If you are using internationalisation, you can simply create entries for
@@ -75,8 +71,10 @@ class TemplateBackend(object):
     def host_inline_image(self, inline_image):
         md5sum = md5.md5(inline_image.content).hexdigest()
         filename = inline_image.filename
-        if not default_storage.exists():
-            filename = default_storage.save('templated_email/' + md5sum + filename)
+        filename = 'templated_email/' + md5sum + filename
+        if not default_storage.exists(filename):
+            filename = default_storage.save(filename,
+                                            StringIO(inline_image.content))
         return default_storage.url(filename)
 
     def _render_email(self, template_name, context,
