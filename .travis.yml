@@ -25,6 +25,5 @@ install:
 script:
   - tox -e $TOX_ENV
 
-after_success:
-  py.test --cov=templated_email tests/
+after_script:
   coveralls
