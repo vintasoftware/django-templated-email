@@ -1,6 +1,6 @@
 import uuid
 import hashlib
-from six import StringIO
+from io import BytesIO
 
 from django.conf import settings
 from django.core.mail import get_connection
@@ -68,12 +68,13 @@ class TemplateBackend(object):
                 value.attach_to_message(message)
 
     def host_inline_image(self, inline_image):
-        md5sum = hashlib.md5(inline_image.content.encode()).hexdigest()
+        md5sum = hashlib.md5(inline_image.content).hexdigest()
+
         filename = inline_image.filename
         filename = 'templated_email/' + md5sum + filename
         if not default_storage.exists(filename):
             filename = default_storage.save(filename,
-                                            StringIO(inline_image.content))
+                                            BytesIO(inline_image.content))
         return default_storage.url(filename)
 
     def _render_email(self, template_name, context,

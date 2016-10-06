@@ -1,5 +1,5 @@
 import base64
-from six import StringIO
+from io import BytesIO
 from datetime import date
 from email.mime.image import MIMEImage
 
@@ -144,7 +144,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         second_call_context = mocked.call_args_list[1][0][1]
         self.assertEqual(len(second_call_context), 0)
         saved_email = SavedEmail.objects.get(
-            uuid=first_call_context['email_uuid'])
+            uuid=uuid)
         self.assertEquals(saved_email.content, HTML_RESULT)
 
     @patch.object(
@@ -156,7 +156,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.storage_mock.save = Mock(return_value='saved_url')
         with self.patch_storage():
             message = self.backend.get_email_message(
-                'foo.email', {'an_image': InlineImage('file.png', 'foo',
+                'foo.email', {'an_image': InlineImage('file.png', b'foo',
                                                       subtype='png')},
                 from_email='from@example.com', cc=['cc@example.com'],
                 bcc=['bcc@example.com'], to=['to@example.com'],
@@ -437,7 +437,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             self.assertEquals(e.args[0], 'templated_email/legacy.email')
 
     def test_host_inline_image_if_not_exist(self):
-        inline_image = InlineImage('foo.jpg', 'bar')
+        inline_image = InlineImage('foo.jpg', b'bar')
         self.storage_mock.save = Mock(return_value='saved_url')
 
         with self.patch_storage():
@@ -448,10 +448,10 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(
             name,
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
-        self.assertTrue(isinstance(content, StringIO))
+        self.assertTrue(isinstance(content, BytesIO))
 
     def test_host_inline_image_if_exist(self):
-        inline_image = InlineImage('foo.jpg', 'bar')
+        inline_image = InlineImage('foo.jpg', b'bar')
         self.storage_mock.exists = Mock(return_value=True)
 
         with self.patch_storage():

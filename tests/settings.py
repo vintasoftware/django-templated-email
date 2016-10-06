@@ -8,6 +8,8 @@ DATABASES = {
 }
 
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'templated_email',
 )
 
@@ -34,6 +36,7 @@ TEMPLATES = [
     },
 ]
 
+ROOT_URLCONF = 'tests.test_urls'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MEDIA_ROOT = os.path.join(BASE_DIR, "tmp")
 MEDIA_URL = '/media/'
