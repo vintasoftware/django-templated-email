@@ -19,7 +19,6 @@ env:
 install:
   - pip install tox
   - pip install -r requirements.txt
-  - pip install pytest-cov
   - pip install coveralls
 
 script:
