@@ -231,6 +231,7 @@ Add link to view the email on the web
         context={}, create_link=True)
 
 And, finally add the link to your template.
+
 .. code-block:: html
 
     <!-- With the 'if' the link will only appear on the email. -->
