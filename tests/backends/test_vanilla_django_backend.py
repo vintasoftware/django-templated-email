@@ -10,11 +10,12 @@ from django.template import TemplateDoesNotExist
 from django.core.files.storage import Storage
 from django.core import mail
 
-from mock import patch, Mock
+from mock import patch, Mock, call
 from anymail.message import AnymailMessage
 
 from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email import InlineImage
+from templated_email.models import SavedEmail
 from .utils import TempalteBackendBaseMixin
 from tests.utils import MockedNetworkTestCaseMixin
 
@@ -125,6 +126,43 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_with_create_link(self, mocked):
+        message = self.backend.get_email_message(
+            'foo.email', {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            create_link=True)
+        first_call_context = mocked.call_args_list[0][0][1]
+        uuid = first_call_context['email_uuid']
+        self.assertTrue(uuid)
+        second_call_context = mocked.call_args_list[1][0][1]
+        self.assertEqual(len(second_call_context), 0)
+        saved_email = SavedEmail.objects.get(
+            uuid=first_call_context['email_uuid'])
+        self.assertEquals(saved_email.content, HTML_RESULT)
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
+                      'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_with_inline_image(self, mocked):
+        self.storage_mock.save = Mock(return_value='saved_url')
+        with self.patch_storage():
+            message = self.backend.get_email_message(
+                'foo.email', {'an_image': InlineImage('file.png', 'foo',
+                                                      subtype='png')},
+                from_email='from@example.com', cc=['cc@example.com'],
+                bcc=['bcc@example.com'], to=['to@example.com'],
+                create_link=True)
+        second_call_context = mocked.call_args_list[1][0][1]
+        self.assertEqual(second_call_context['an_image'], '/media/saved_url')
 
     @override_settings(TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage')
     @patch.object(

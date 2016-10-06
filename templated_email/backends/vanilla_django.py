@@ -121,7 +121,7 @@ class TemplateBackend(object):
             email_uuid = uuid.uuid4()
             link_context = dict(context)
             context['email_uuid'] = email_uuid.hex
-            for key, value in context:
+            for key, value in context.items():
                 if isinstance(value, InlineImage):
                     link_context[key] = self.host_inline_image(value)
 
