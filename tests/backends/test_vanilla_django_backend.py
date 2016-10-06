@@ -56,10 +56,16 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     template_backend_klass = TemplateBackend
 
     def setUp(self):
+        self.storage_mock = Mock(wraps=get_storage_class())()
+        self.storage_mock.save = Mock()
         self.backend = self.template_backend_klass()
         self.context = {'username': 'vintasoftware',
                         'joindate': date(2016, 8, 22),
                         'full_name': 'Foo Bar'}
+
+    def patch_storage(self):
+        return patch('django.core.files.storage.default_storage._wrapped',
+                     self.storage_mock)
 
     def test_inexistent_base_email(self):
         try:
@@ -394,14 +400,13 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
 
     def test_host_inline_image_if_not_exist(self):
         inline_image = InlineImage('foo.jpg', 'bar')
-        storage_mock = Mock(wraps=get_storage_class()())
-        storage_mock.save = Mock(return_value='saved_url')
-        with patch('django.core.files.storage.default_storage._wrapped',
-                   storage_mock):
+        self.storage_mock.save = Mock(return_value='saved_url')
+
+        with self.patch_storage():
             filename = self.backend.host_inline_image(inline_image)
         self.assertEqual(filename, '/media/saved_url')
-        storage_mock.save.assert_called_once()
-        name, content = storage_mock.save.call_args[0]
+        self.storage_mock.save.assert_called_once()
+        name, content = self.storage_mock.save.call_args[0]
         self.assertEquals(
             name,
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
@@ -409,17 +414,14 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
 
     def test_host_inline_image_if_exist(self):
         inline_image = InlineImage('foo.jpg', 'bar')
-        storage_mock = Mock(wraps=get_storage_class()())
-        storage_mock.exists = Mock(return_value=True)
-        storage_mock.save = Mock()
+        self.storage_mock.exists = Mock(return_value=True)
 
-        with patch('django.core.files.storage.default_storage._wrapped',
-                   storage_mock):
+        with self.patch_storage():
             filename = self.backend.host_inline_image(inline_image)
         self.assertEqual(
             filename,
             '/media/templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
 
-        storage_mock.save.assert_not_called()
-        storage_mock.exists.assert_called_once_with(
+        self.storage_mock.save.assert_not_called()
+        self.storage_mock.exists.assert_called_once_with(
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
