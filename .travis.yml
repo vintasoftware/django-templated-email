@@ -4,17 +4,17 @@ python:
   - "3.5"
 
 env:
-    - TOX_ENV=py27-flake8
-    - TOX_ENV=py35-django110
-    - TOX_ENV=py34-django110
-    - TOX_ENV=py27-django110
-    - TOX_ENV=py35-django19
-    - TOX_ENV=py34-django19
-    - TOX_ENV=py27-django19
-    - TOX_ENV=py35-django18
-    - TOX_ENV=py34-django18
-    - TOX_ENV=py33-django18
-    - TOX_ENV=py27-django18
+  - TOX_ENV=py27-flake8
+  - TOX_ENV=py35-django110
+  - TOX_ENV=py34-django110
+  - TOX_ENV=py27-django110
+  - TOX_ENV=py35-django19
+  - TOX_ENV=py34-django19
+  - TOX_ENV=py27-django19
+  - TOX_ENV=py35-django18
+  - TOX_ENV=py34-django18
+  - TOX_ENV=py33-django18
+  - TOX_ENV=py27-django18
 
 install:
   - pip install tox
@@ -23,8 +23,8 @@ install:
   - pip install coveralls
 
 script:
-    - tox -e $TOX_ENV
-    - py.test --cov=templated_email tests/
+  - tox -e $TOX_ENV
 
 after_success:
+  py.test --cov=templated_email tests/
   coveralls
