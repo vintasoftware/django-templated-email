@@ -1,5 +1,5 @@
 import uuid
-import md5
+import hashlib
 from StringIO import StringIO
 
 from django.conf import settings
@@ -69,7 +69,7 @@ class TemplateBackend(object):
                 value.attach_to_message(message)
 
     def host_inline_image(self, inline_image):
-        md5sum = md5.md5(inline_image.content).hexdigest()
+        md5sum = hashlib.md5(inline_image.content).hexdigest()
         filename = inline_image.filename
         filename = 'templated_email/' + md5sum + filename
         if not default_storage.exists(filename):
@@ -204,7 +204,8 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, attachments=None, **kwargs):
+             connection=None, attachments=None,
+             create_link=False, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -216,7 +217,8 @@ class TemplateBackend(object):
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
                                    file_extension=file_extension,
-                                   attachments=attachments)
+                                   attachments=attachments,
+                                   create_link=create_link)
 
         e.connection = connection
 
