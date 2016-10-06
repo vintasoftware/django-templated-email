@@ -1,5 +1,5 @@
 import base64
-import StringIO
+from six import StringIO
 from datetime import date
 from email.mime.image import MIMEImage
 
@@ -405,7 +405,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(
             name,
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
-        self.assertTrue(isinstance(content, StringIO.StringIO))
+        self.assertTrue(isinstance(content, StringIO))
 
     def test_host_inline_image_if_exist(self):
         inline_image = InlineImage('foo.jpg', 'bar')

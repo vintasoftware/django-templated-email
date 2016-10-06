@@ -1,6 +1,6 @@
 import uuid
 import hashlib
-from StringIO import StringIO
+from six import StringIO
 
 from django.conf import settings
 from django.core.mail import get_connection
