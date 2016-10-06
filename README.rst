@@ -206,6 +206,50 @@ Finally in your template add the image on the html template block:
 Note: All *InlineImage* objects you add to the context will be attached to the e-mail, even if they are not used in the template.
 
 
+Add link to view the email on the web
+=====================================
+
+.. code-block:: python
+
+    # Add templated email to INSTALLED_APPS
+    INSTALLED_APPS = [
+      ...
+      'templated_email'
+    ]
+
+.. code-block:: python
+
+    # and this to your url patterns
+    url(r'^', include('templated_email.urls', namespace='templated_email')),
+
+.. code-block:: python
+
+    # when sending the email use the *create_link* parameter.
+    send_templated_mail(
+        template_name='welcome', from_email='from@example.com',
+        recipient_list=['to@example.com'],
+        context={}, create_link=True)
+
+And, finally add the link to your template.
+.. code-block:: html
+
+    <!-- With the 'if' the link will only appear on the email. -->
+    {% if email_uuid %}
+      <!-- Note: you will need to add your site since you will need to access
+                 it from the email -->
+      You can view this e-mail on the web here:
+      <a href="http://www.yoursite.com{% url 'templated_email:show_email' uuid=email_uuid %}">
+        here
+      </a>
+    {% endif %}
+
+Notes:
+  - A copy of the rendered e-mail will be stored on the database. This can grow
+    if you send too many e-mails. You are responsible for managing it.
+  - If you use *InlineImage* all images will be uploaded to your media storage,
+    keep that in mind too.
+
+
 Future Plans
 =============
 
