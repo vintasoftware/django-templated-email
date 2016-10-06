@@ -6,7 +6,6 @@ from django.conf import settings
 from django.core.mail import get_connection
 from django.template import Context
 from django.utils.translation import ugettext as _
-from django.core.files.storage import get_storage_class
 from django.core.files.storage import default_storage
 
 from templated_email.utils import (
