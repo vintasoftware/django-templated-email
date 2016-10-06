@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from django.contrib.auth import views
 
 from templated_email.views import ShowEmailView
 
