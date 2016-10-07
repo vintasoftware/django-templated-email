@@ -173,7 +173,11 @@ First get the image content from a file or a *ImageField*:
     with open('lena.png', 'rb') as lena:
       image = lena.read()
 
-    # From a ImageField ('logo' is a ImageField of Company)
+    # From an ImageField
+    # Suppose we have this model
+    class Company(models.Model):
+      logo = models.ImageField()
+
     image = company.logo.read()
 
 Then create an instance of *InlineImage*:
@@ -198,7 +202,7 @@ Finally in your template add the image on the html template block:
 .. code-block:: html
 
     <img src="{{ lena_image }}">
-    
+
 Note: All *InlineImage* objects you add to the context will be attached to the e-mail, even if they are not used in the template.
 
 
