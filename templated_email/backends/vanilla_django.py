@@ -65,18 +65,29 @@ class TemplateBackend(object):
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        prefixed_template_name = ''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
+        
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
-        full_template_name = prefixed_template_name
-        if not prefixed_template_name.endswith('.%s' % file_extension):
-            full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
 
+        # bastbnl allow for template selection (see #78). Requires django-render-block v0.3 or higher
+        if isinstance(template_name, (tuple, list, )):
+            prefixed_templates = template_name
+        else:
+            prefixed_templates = [template_name, ]
+
+        full_template_names = []
+        for one_prefixed_template in prefixed_templates:
+            prefixed_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
+            if not prefixed_template_name.endswith('.%s' % file_extension):
+                full_template_names.append(
+                   '%s.%s' % (prefixed_template_name, file_extension)
+                )
+        
         for part in ['subject', 'html', 'plain']:
             try:
-                response[part] = render_block_to_string(full_template_name, part, render_context)
+                response[part] = render_block_to_string(full_template_names, part, render_context)
             except BlockNotFound as error:
                 errors[part] = error
 
@@ -85,7 +96,7 @@ class TemplateBackend(object):
                                        % errors)
 
         return response
-
+    
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
