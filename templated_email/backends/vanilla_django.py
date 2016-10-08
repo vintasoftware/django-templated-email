@@ -66,7 +66,7 @@ class TemplateBackend(object):
         response = {}
         errors = {}
         render_context = Context(context, autoescape=False)
-        
+
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
@@ -84,7 +84,7 @@ class TemplateBackend(object):
                 full_template_names.append(
                    '%s.%s' % (prefixed_template_name, file_extension)
                 )
-        
+
         for part in ['subject', 'html', 'plain']:
             try:
                 response[part] = render_block_to_string(full_template_names, part, render_context)
@@ -96,7 +96,7 @@ class TemplateBackend(object):
                                        % errors)
 
         return response
-    
+
     def get_email_message(self, template_name, context, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
