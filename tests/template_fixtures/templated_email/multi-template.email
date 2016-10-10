@@ -1,0 +1,4 @@
+{% block subject %}A subject{% endblock %}
+{% block plain %}
+Just to make sure the content is read
+{% endblock %}
