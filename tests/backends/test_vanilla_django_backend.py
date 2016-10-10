@@ -166,12 +166,12 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
     )
-    def test_get_multi_match_last_email_message_genrated_plain_text(self, mock):
+    def test_get_multi_match_last_email_message_generated_plain_text(self, mock):
         message = self.backend.get_email_message(
             ['multi-template.email', 'foo.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, GENERATED_PLAIN_RESULT)
+        self.assertEquals(message.body, PLAIN_RESULT)
         self.assertEquals(message.subject, SUBJECT_RESULT)
         self.assertEquals(message.to, ['to@example.com'])
         self.assertEquals(message.cc, ['cc@example.com'])
@@ -182,12 +182,12 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
     )
-    def test_get_multi_first_match_email_message_genrated_plain_text(self, mock):
+    def test_get_multi_first_match_email_message_generated_plain_text(self, mock):
         message = self.backend.get_email_message(
             ['foo.email', 'multi-template.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, GENERATED_PLAIN_RESULT)
+        self.assertEquals(message.body, PLAIN_RESULT)
         self.assertEquals(message.subject, SUBJECT_RESULT)
         self.assertEquals(message.to, ['to@example.com'])
         self.assertEquals(message.cc, ['cc@example.com'])
