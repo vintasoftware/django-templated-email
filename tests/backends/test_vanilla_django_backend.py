@@ -33,8 +33,11 @@ GENERATED_PLAIN_RESULT = (u'Hi Foo Bar,\n\nYou just signed up for my website, us
                           u'\n\nusername\n\n    vintasoftware\njoin date\n'
                           u'\n    Aug. 22, 2016\n\nThanks, you rock!\n\n')
 
+MULTI_TEMPLATE_PLAIN_RESULT = (u'\nJust to make sure the content is read\n')
+
 SUBJECT_RESULT = 'My subject for vintasoftware'
 
+MULTI_TEMPLATE_SUBJECT_RESULT = 'A subject'
 
 TXT_FILE = 'test'
 
@@ -162,33 +165,37 @@ class TemplateBackendTestCase(TempalteBackendBaseMixin, TestCase):
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
-    @patch.object(
-        template_backend_klass, '_render_email',
-        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
-    )
-    def test_get_multi_match_last_email_message_generated_plain_text(self, mock):
+    def test_get_multi_match_last_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
             ['multi-template.email', 'foo.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
+        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
         self.assertEquals(message.to, ['to@example.com'])
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
-    @patch.object(
-        template_backend_klass, '_render_email',
-        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
-    )
-    def test_get_multi_first_match_email_message_generated_plain_text(self, mock):
+    def test_get_multi_first_match_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
             ['foo.email', 'multi-template.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
+        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
+        self.assertEquals(message.to, ['to@example.com'])
+        self.assertEquals(message.cc, ['cc@example.com'])
+        self.assertEquals(message.bcc, ['bcc@example.com'])
+        self.assertEquals(message.from_email, 'from@example.com')
+
+    def test_get_multi_options_select_last_plain_only(self):
+        message = self.backend.get_email_message(
+            ['non-existing.email', 'also-non-existing.email', 'non-existing-without-suffix', 'foo.email', 'multi-template.email', ], {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'])
+        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
         self.assertEquals(message.to, ['to@example.com'])
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])

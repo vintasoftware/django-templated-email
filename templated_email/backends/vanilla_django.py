@@ -70,18 +70,18 @@ class TemplateBackend(object):
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
+        template_extension = '.%s' % file_extension
 
-        # bastbnl allow for template selection (see #78). Requires django-render-block v0.3 or higher
         if isinstance(template_name, (tuple, list, )):
             prefixed_templates = template_name
         else:
-            prefixed_templates = [template_name, ]
+            prefixed_templates = [template_name]
 
         full_template_names = []
         for one_prefixed_template in prefixed_templates:
-            one_full_template_name = prefixed_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
-            if not prefixed_template_name.endswith('.%s' % file_extension):
-                one_full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
+            one_full_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
+            if not one_full_template_name.endswith(template_extension):
+                one_full_template_name += template_extension
             full_template_names.append(one_full_template_name)
 
         for part in ['subject', 'html', 'plain']:
