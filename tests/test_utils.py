@@ -1,9 +1,7 @@
 import mock
-from email.utils import unquote
 
 from django.test import TestCase
 
-from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email import InlineImage
 from tests.utils import MockedNetworkTestCaseMixin
 

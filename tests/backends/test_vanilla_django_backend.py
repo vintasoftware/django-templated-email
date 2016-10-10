@@ -116,8 +116,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
-    @override_settings(TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS=
-                       'anymail.message.AnymailMessage')
+    @override_settings(TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
@@ -223,9 +222,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
-
-    @override_settings(TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS=
-                       'anymail.message.AnymailMessage')
+    @override_settings(TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS='anymail.message.AnymailMessage')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,

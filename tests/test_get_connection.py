@@ -1,4 +1,3 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from templated_email import get_connection, backends
