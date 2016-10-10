@@ -7,10 +7,9 @@ from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.core.files.storage import get_storage_class
 from django.template import TemplateDoesNotExist
-from django.core.files.storage import Storage
 from django.core import mail
 
-from mock import patch, Mock, call
+from mock import patch, Mock
 from anymail.message import AnymailMessage
 
 from templated_email.backends.vanilla_django import TemplateBackend
@@ -133,7 +132,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
                       'subject': SUBJECT_RESULT}
     )
     def test_get_email_message_with_create_link(self, mocked):
-        message = self.backend.get_email_message(
+        self.backend.get_email_message(
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
@@ -155,7 +154,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     def test_get_email_message_with_inline_image(self, mocked):
         self.storage_mock.save = Mock(return_value='saved_url')
         with self.patch_storage():
-            message = self.backend.get_email_message(
+            self.backend.get_email_message(
                 'foo.email', {'an_image': InlineImage('file.png', b'foo',
                                                       subtype='png')},
                 from_email='from@example.com', cc=['cc@example.com'],
