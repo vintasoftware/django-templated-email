@@ -79,11 +79,10 @@ class TemplateBackend(object):
 
         full_template_names = []
         for one_prefixed_template in prefixed_templates:
-            prefixed_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
+            one_full_template_name = prefixed_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
             if not prefixed_template_name.endswith('.%s' % file_extension):
-                full_template_names.append(
-                   '%s.%s' % (prefixed_template_name, file_extension)
-                )
+                one_full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
+            full_template_names.append(one_full_template_name)
 
         for part in ['subject', 'html', 'plain']:
             try:
