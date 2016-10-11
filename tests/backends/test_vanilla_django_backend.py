@@ -194,6 +194,25 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
 
+    @override_settings(TEMPLATED_EMAIL_DJANGO_SUBJECTS={'foo.email':
+                                                        'foo\r\n'})
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT}
+    )
+    def test_get_email_message_without_subject_multiple_templates(self, mock):
+        message = self.backend.get_email_message(
+            ['woo.email', 'foo.email'], {},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'])
+        self.assertTrue(isinstance(message, EmailMessage))
+        self.assertEquals(message.body, PLAIN_RESULT)
+        self.assertEquals(message.subject, 'foo')
+        self.assertEquals(message.to, ['to@example.com'])
+        self.assertEquals(message.cc, ['cc@example.com'])
+        self.assertEquals(message.bcc, ['bcc@example.com'])
+        self.assertEquals(message.from_email, 'from@example.com')
+
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'html': HTML_RESULT, 'subject': SUBJECT_RESULT}

@@ -1,0 +1,8 @@
+{% block subject %}welcome{% endblock %}
+{% block html %}
+  {% if errors %}
+    {{ errors.email.as_text }}
+  {% else %}
+    {{ form_data.name }} - {{ form_data.email }}
+  {% endif %}
+{% endblock %}

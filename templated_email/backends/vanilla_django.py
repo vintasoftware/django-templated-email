@@ -146,8 +146,16 @@ class TemplateBackend(object):
             subject = parts['subject']
         else:
             subject_dict = getattr(settings, 'TEMPLATED_EMAIL_DJANGO_SUBJECTS', {})
-            subject_template = subject_dict.get(template_name,
-                                                _('%s email subject' % template_name))
+            if isinstance(template_name, (list, tuple)):
+                for template in template_name:
+                    if template in subject_dict:
+                        subject_template = subject_dict[template]
+                        break
+                else:
+                    subject_template = _('%s email subject' % template_name[0])
+            else:
+                subject_template = subject_dict.get(template_name,
+                                                    _('%s email subject' % template_name))
             subject = subject_template % context
         subject = subject.strip('\n\r')  # strip newlines from subject
 
