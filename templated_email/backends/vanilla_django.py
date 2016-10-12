@@ -68,10 +68,11 @@ class TemplateBackend(object):
                 value.attach_to_message(message)
 
     def host_inline_image(self, inline_image):
+        from templated_email.urls import app_name
         md5sum = hashlib.md5(inline_image.content).hexdigest()
 
         filename = inline_image.filename
-        filename = 'templated_email/' + md5sum + filename
+        filename = app_name + '/' + md5sum + filename
         if not default_storage.exists(filename):
             filename = default_storage.save(filename,
                                             BytesIO(inline_image.content))
