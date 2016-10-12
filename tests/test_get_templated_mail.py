@@ -17,6 +17,7 @@ class GetTemplatedMailTestCase(TestCase):
         'template_suffix': 'suffix',
         'template_dir': 'dirp',
         'file_extension': 'ext',
+        'create_link': False,
     }
 
     @patch('templated_email.TemplateBackend')

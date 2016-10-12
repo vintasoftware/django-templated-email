@@ -1,7 +1,12 @@
+import uuid
+import hashlib
+from io import BytesIO
+
 from django.conf import settings
 from django.core.mail import get_connection
 from django.template import Context
 from django.utils.translation import ugettext as _
+from django.core.files.storage import default_storage
 
 from templated_email.utils import (
     get_emailmessage_klass, get_emailmultialternatives_klass)
@@ -35,11 +40,6 @@ class TemplateBackend(object):
         {% block html %} declares text/html
 
     Legacy behaviour loads from:
-        text/plain part:
-            templated_email/<template_name>.txt
-        text/html part:
-            templated_email/<template_name>.html
-
         Subjects for email templates can be configured in one of two ways:
 
         * If you are using internationalisation, you can simply create entries for
@@ -66,6 +66,17 @@ class TemplateBackend(object):
         for value in context.values():
             if isinstance(value, InlineImage):
                 value.attach_to_message(message)
+
+    def host_inline_image(self, inline_image):
+        from templated_email.urls import app_name
+        md5sum = hashlib.md5(inline_image.content).hexdigest()
+
+        filename = inline_image.filename
+        filename = app_name + '/' + md5sum + filename
+        if not default_storage.exists(filename):
+            filename = default_storage.save(filename,
+                                            BytesIO(inline_image.content))
+        return default_storage.url(filename)
 
     def _render_email(self, template_name, context,
                       template_dir=None, file_extension=None):
@@ -106,7 +117,16 @@ class TemplateBackend(object):
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None,
-                          attachments=None):
+                          attachments=None, create_link=False):
+
+        if create_link:
+            email_uuid = uuid.uuid4()
+            link_context = dict(context)
+            context['email_uuid'] = email_uuid.hex
+            for key, value in context.items():
+                if isinstance(value, InlineImage):
+                    link_context[key] = self.host_inline_image(value)
+
         EmailMessage = get_emailmessage_klass()
         EmailMultiAlternatives = get_emailmultialternatives_klass()
         parts = self._render_email(template_name, context,
@@ -114,6 +134,14 @@ class TemplateBackend(object):
                                    template_suffix or file_extension)
         plain_part = 'plain' in parts
         html_part = 'html' in parts
+
+        if create_link and html_part:
+            static_html_part = self._render_email(
+                template_name, link_context,
+                template_prefix or template_dir,
+                template_suffix or file_extension)['html']
+            from templated_email.models import SavedEmail
+            SavedEmail.objects.create(content=static_html_part, uuid=email_uuid)
 
         if 'subject' in parts:
             subject = parts['subject']
@@ -177,7 +205,8 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, attachments=None, **kwargs):
+             connection=None, attachments=None,
+             create_link=False, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -189,7 +218,8 @@ class TemplateBackend(object):
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
                                    file_extension=file_extension,
-                                   attachments=attachments)
+                                   attachments=attachments,
+                                   create_link=create_link)
 
         e.connection = connection
 
