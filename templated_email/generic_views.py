@@ -10,7 +10,6 @@ class TemplatedEmailFormViewMixin(object):
     templated_email_send_on_success = True
     templated_email_send_on_failure = False
     templated_email_from_email = partial(getattr, settings, 'TEMPLATED_EMAIL_FROM_EMAIL', None)
-    # We could add features like "templated_email_async = True" to use a celery task
 
     def templated_email_get_template_names(self, valid):
         if self.templated_email_template_name is None:
@@ -29,7 +28,7 @@ class TemplatedEmailFormViewMixin(object):
         if valid:
             context = self.templated_email_get_context_data(form_data=form.data)
         else:
-            context = self.templated_email_get_context_data(errors=form.errors)
+            context = self.templated_email_get_context_data(form_errors=form.errors)
         try:
             from_email = self.templated_email_from_email()
         except TypeError:

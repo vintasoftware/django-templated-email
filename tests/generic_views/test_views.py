@@ -84,7 +84,7 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
         self.assertEquals(kwargs['template_name'], ['template'])
         self.assertEquals(kwargs['from_email'], None)
         self.assertEquals(kwargs['recipient_list'], ['foo@example.com'])
-        self.assertEquals(kwargs['context'], {'errors': 'errors foo'})
+        self.assertEquals(kwargs['context'], {'form_errors': 'errors foo'})
 
 
 class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
