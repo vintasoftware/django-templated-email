@@ -291,6 +291,8 @@ Attributes:
 **templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**):
     String containing the email to send the email from.
 
+Methods:
+
 **templated_email_get_template_names(self, valid)** (mandatory if you don't set **templated_email_template_name**):
     If the method returns a string it will use it as the template to render the email. If it returns a list it will send
     the email *only* with the first existing template.

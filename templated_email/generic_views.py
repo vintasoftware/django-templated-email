@@ -1,6 +1,7 @@
+from functools import partial
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from functools import partial
 
 from templated_email import send_templated_mail
 
@@ -55,5 +56,4 @@ class TemplatedEmailFormViewMixin(object):
         if self.templated_email_send_on_failure:
             self.templated_email_send_templated_mail(
                 **self.templated_email_get_send_email_kwargs(valid=False, form=form))
-
         return response
