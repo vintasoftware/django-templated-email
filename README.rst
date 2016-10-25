@@ -251,6 +251,86 @@ Notes:
     keep that in mind too.
 
 
+Class Based Views
+==================
+
+It's pretty common for emails to be sent after a form is submitted. We include a mixin
+to be used with any view that inherit from Django's FormMixin.
+
+In your view add the mixin and the usual Django's attributes:
+
+.. code-block:: python
+
+    from templated_email.generic_views import TemplatedEmailFormViewMixin
+
+    class AuthorCreateView(TemplatedEmailFormViewMixin, CreateView):
+        model = Author
+        fields = ['name', 'email']
+        success_url = '/create_author/'
+        template_name = 'authors/create_author.html'
+
+By default the template will have the *form_data* if the form is valid or *from_errors* if the
+form is not valid in it's context.
+
+You can view an example `here <tests/generic_views/>`_
+
+Now you can use the following attributes/methods to customize it's behavior:
+
+Attributes:
+
+**templated_email_template_name** (mandatory if you don't implement **templated_email_get_template_names()**):
+    String naming the template you want to use for the email.
+    ie: templated_email_template_name = 'welcome'.
+
+**templated_email_send_on_success** (default: True):
+    This attribute tells django-templated-email to send an email if the form is valid.
+
+**templated_email_send_on_failure** (default: False):
+    This attribute tells django-templated-email to send an email if the form is invalid.
+
+**templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**):
+    String containing the email to send the email from.
+
+Methods:
+
+**templated_email_get_template_names(self, valid)** (mandatory if you don't set **templated_email_template_name**):
+    If the method returns a string it will use it as the template to render the email. If it returns a list it will send
+    the email *only* with the first existing template.
+
+**templated_email_get_recipients(self, form)** (mandatory):
+    Return the recipient list to whom the email will be sent to.
+    ie:
+.. code-block:: python
+
+      def templated_email_get_recipients(self, form):
+          return [form.data['email']]
+
+**templated_email_get_context_data(**kwargs)** (optional):
+    Use this method to add extra data to the context used for rendering the template. You should get the parent class's context from
+    calling super.
+    ie:
+.. code-block:: python
+
+      def templated_email_get_context_data(self, **kwargs):
+          context = super(ThisClassView, self).templated_email_get_context_data(**kwargs)
+          # add things to context
+          return context
+
+**templated_email_get_send_email_kwargs(self, valid, form)** (optional):
+    Add or change the kwargs that will be used to send the e-mail. You should call super to get the default kwargs.
+    ie:
+.. code-block:: python
+
+    def templated_email_get_send_email_kwargs(valid, form):
+      kwargs = super(ThisClassView, self).templated_email_get_send_email_kwargs(valid, form)
+      kwargs['bcc'] = ['admin@example.com']
+      return kwargs
+
+**templated_email_send_templated_mail(*args, **kwargs)** (optional):
+    This method calls django-templated-email's *send_templated_mail* method. You could change this method to use
+    a celery's task for example or to handle errors.
+
+
 Future Plans
 =============
 

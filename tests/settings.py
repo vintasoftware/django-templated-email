@@ -11,6 +11,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'templated_email',
+    'tests.generic_views',
 )
 
 SECRET_KEY = "notimportant"
