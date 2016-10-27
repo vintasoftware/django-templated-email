@@ -18,6 +18,12 @@ configurable template naming and location.
 The send_templated_email method can be thought of as the render_to_response
 shortcut for email.
 
+Make sure you are reading the correct documentation:
+
+develop branch: https://github.com/vintasoftware/django-templated-email/blob/develop/README.rst
+
+stable pypi/master: https://github.com/vintasoftware/django-templated-email/blob/master/README.rst
+
 Getting going - installation
 ==============================
 
