@@ -1,3 +1,5 @@
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -6,7 +8,10 @@ DATABASES = {
 }
 
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'templated_email',
+    'tests.generic_views',
 )
 
 SECRET_KEY = "notimportant"
@@ -31,3 +36,8 @@ TEMPLATES = [
         },
     },
 ]
+
+ROOT_URLCONF = 'tests.test_urls'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MEDIA_ROOT = os.path.join(BASE_DIR, "tmp")
+MEDIA_URL = '/media/'

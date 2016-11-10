@@ -1,4 +1,3 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from mock import patch, Mock
@@ -17,6 +16,7 @@ class SendTemplatedMailTestCase(TestCase):
         'template_prefix': 'prefix',
         'template_suffix': 'suffix',
         'something': 'else',
+        'create_link': False,
     }
 
     def test_send_templated_mail_returns_send_response(self):

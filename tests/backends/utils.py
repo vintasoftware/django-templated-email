@@ -1,6 +1,5 @@
 from django.test import override_settings
 
-from templated_email.backends.vanilla_django import TemplateBackend
 
 class TempalteBackendBaseMixin(object):
 

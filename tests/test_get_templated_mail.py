@@ -1,4 +1,3 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
 from mock import patch
@@ -18,7 +17,8 @@ class GetTemplatedMailTestCase(TestCase):
         'template_suffix': 'suffix',
         'template_dir': 'dirp',
         'file_extension': 'ext',
-    } 
+        'create_link': False,
+    }
 
     @patch('templated_email.TemplateBackend')
     def test_get_templated_mail_returns_response_of_get_email_message(
@@ -46,7 +46,6 @@ class GetTemplatedMailTestCase(TestCase):
         del kwargs['file_extension']
         get_email_message.assert_called_with(*self.TEST_ARGS, **kwargs)
 
-
     @patch('templated_email.TemplateBackend')
     def test_arguments_get_email_message_fallback(self, mocked_backend):
         kwargs = dict(self.TEST_KWARGS)
@@ -63,4 +62,3 @@ class GetTemplatedMailTestCase(TestCase):
         kwargs['template_prefix'] = kwargs.pop('template_dir')
         kwargs['template_suffix'] = kwargs.pop('file_extension')
         get_email_message.assert_called_with(*self.TEST_ARGS, **kwargs)
-

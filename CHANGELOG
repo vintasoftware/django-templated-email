@@ -1,3 +1,11 @@
+v2.0
+-----
+Adding Inline Image
+template_name can now accept a list
+Optionally save a copy of the email in the database and create a URL to see it in the browser
+Created a TemplatedEmailFormViewMixin to use with classes based views' FormView
+
+
 v1.0
 -----
 Remove broken postageapp backend.

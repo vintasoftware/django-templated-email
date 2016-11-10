@@ -1,10 +1,16 @@
+import uuid
+import hashlib
+from io import BytesIO
+
 from django.conf import settings
 from django.core.mail import get_connection
 from django.template import Context
 from django.utils.translation import ugettext as _
+from django.core.files.storage import default_storage
 
 from templated_email.utils import (
     get_emailmessage_klass, get_emailmultialternatives_klass)
+from templated_email.utils import InlineImage
 from render_block import render_block_to_string, BlockNotFound
 
 
@@ -34,11 +40,6 @@ class TemplateBackend(object):
         {% block html %} declares text/html
 
     Legacy behaviour loads from:
-        text/plain part:
-            templated_email/<template_name>.txt
-        text/html part:
-            templated_email/<template_name>.html
-
         Subjects for email templates can be configured in one of two ways:
 
         * If you are using internationalisation, you can simply create entries for
@@ -61,22 +62,48 @@ class TemplateBackend(object):
         self.template_prefix = template_prefix or getattr(settings, 'TEMPLATED_EMAIL_TEMPLATE_DIR', 'templated_email/')
         self.template_suffix = template_suffix or getattr(settings, 'TEMPLATED_EMAIL_FILE_EXTENSION', 'email')
 
+    def attach_inline_images(self, message, context):
+        for value in context.values():
+            if isinstance(value, InlineImage):
+                value.attach_to_message(message)
+
+    def host_inline_image(self, inline_image):
+        from templated_email.urls import app_name
+        md5sum = hashlib.md5(inline_image.content).hexdigest()
+
+        filename = inline_image.filename
+        filename = app_name + '/' + md5sum + filename
+        if not default_storage.exists(filename):
+            filename = default_storage.save(filename,
+                                            BytesIO(inline_image.content))
+        return default_storage.url(filename)
+
     def _render_email(self, template_name, context,
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        prefixed_template_name = ''.join((template_dir or self.template_prefix, template_name))
         render_context = Context(context, autoescape=False)
+
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
             file_extension = file_extension[1:]
-        full_template_name = prefixed_template_name
-        if not prefixed_template_name.endswith('.%s' % file_extension):
-            full_template_name = '%s.%s' % (prefixed_template_name, file_extension)
+        template_extension = '.%s' % file_extension
+
+        if isinstance(template_name, (tuple, list, )):
+            prefixed_templates = template_name
+        else:
+            prefixed_templates = [template_name]
+
+        full_template_names = []
+        for one_prefixed_template in prefixed_templates:
+            one_full_template_name = ''.join((template_dir or self.template_prefix, one_prefixed_template))
+            if not one_full_template_name.endswith(template_extension):
+                one_full_template_name += template_extension
+            full_template_names.append(one_full_template_name)
 
         for part in ['subject', 'html', 'plain']:
             try:
-                response[part] = render_block_to_string(full_template_name, part, render_context)
+                response[part] = render_block_to_string(full_template_names, part, render_context)
             except BlockNotFound as error:
                 errors[part] = error
 
@@ -90,7 +117,16 @@ class TemplateBackend(object):
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None,
-                          attachments=None):
+                          attachments=None, create_link=False):
+
+        if create_link:
+            email_uuid = uuid.uuid4()
+            link_context = dict(context)
+            context['email_uuid'] = email_uuid.hex
+            for key, value in context.items():
+                if isinstance(value, InlineImage):
+                    link_context[key] = self.host_inline_image(value)
+
         EmailMessage = get_emailmessage_klass()
         EmailMultiAlternatives = get_emailmultialternatives_klass()
         parts = self._render_email(template_name, context,
@@ -99,12 +135,28 @@ class TemplateBackend(object):
         plain_part = 'plain' in parts
         html_part = 'html' in parts
 
+        if create_link and html_part:
+            static_html_part = self._render_email(
+                template_name, link_context,
+                template_prefix or template_dir,
+                template_suffix or file_extension)['html']
+            from templated_email.models import SavedEmail
+            SavedEmail.objects.create(content=static_html_part, uuid=email_uuid)
+
         if 'subject' in parts:
             subject = parts['subject']
         else:
             subject_dict = getattr(settings, 'TEMPLATED_EMAIL_DJANGO_SUBJECTS', {})
-            subject_template = subject_dict.get(template_name,
-                                                _('%s email subject' % template_name))
+            if isinstance(template_name, (list, tuple)):
+                for template in template_name:
+                    if template in subject_dict:
+                        subject_template = subject_dict[template]
+                        break
+                else:
+                    subject_template = _('%s email subject' % template_name[0])
+            else:
+                subject_template = subject_dict.get(template_name,
+                                                    _('%s email subject' % template_name))
             subject = subject_template % context
         subject = subject.strip('\n\r')  # strip newlines from subject
 
@@ -151,6 +203,7 @@ class TemplateBackend(object):
             )
             e.attach_alternative(parts['html'], 'text/html')
 
+        self.attach_inline_images(e, context)
         return e
 
     def send(self, template_name, from_email, recipient_list, context,
@@ -160,7 +213,8 @@ class TemplateBackend(object):
              template_prefix=None, template_suffix=None,
              template_dir=None, file_extension=None,
              auth_user=None, auth_password=None,
-             connection=None, attachments=None, **kwargs):
+             connection=None, attachments=None,
+             create_link=False, **kwargs):
 
         connection = connection or get_connection(username=auth_user,
                                                   password=auth_password,
@@ -172,7 +226,8 @@ class TemplateBackend(object):
                                    template_suffix=template_suffix,
                                    template_dir=template_dir,
                                    file_extension=file_extension,
-                                   attachments=attachments)
+                                   attachments=attachments,
+                                   create_link=create_link)
 
         e.connection = connection
 
