@@ -9,10 +9,11 @@ from django.core.files.storage import get_storage_class
 from django.template import TemplateDoesNotExist
 from django.core import mail
 
+import pytest
 from mock import patch, Mock
 from anymail.message import AnymailMessage
 
-from templated_email.backends.vanilla_django import TemplateBackend
+from templated_email.backends.vanilla_django import TemplateBackend, EmailRenderException
 from templated_email import InlineImage
 from templated_email.models import SavedEmail
 from .utils import TempalteBackendBaseMixin
@@ -287,6 +288,17 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_with_no_body_parts(self, mock):
+        with pytest.raises(EmailRenderException):
+            self.backend.get_email_message(
+                'foo.email', {},
+                from_email='from@example.com', cc=['cc@example.com'],
+                bcc=['bcc@example.com'], to=['to@example.com'])
 
     @override_settings(TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS='anymail.message.AnymailMessage')
     @patch.object(
