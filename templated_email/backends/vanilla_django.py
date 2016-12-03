@@ -177,7 +177,7 @@ class TemplateBackend(object):
                 attachments=attachments,
             )
 
-        if html_part and not plain_part:
+        elif html_part and not plain_part:
             e = EmailMessage(
                 subject,
                 parts['html'],
@@ -190,7 +190,7 @@ class TemplateBackend(object):
             )
             e.content_subtype = 'html'
 
-        if plain_part and html_part:
+        elif plain_part and html_part:
             e = EmailMultiAlternatives(
                 subject,
                 parts['plain'],
@@ -202,6 +202,9 @@ class TemplateBackend(object):
                 attachments=attachments,
             )
             e.attach_alternative(parts['html'], 'text/html')
+
+        else:
+            raise EmailRenderException("Please specify at a plain and/or html block.")
 
         self.attach_inline_images(e, context)
         return e
