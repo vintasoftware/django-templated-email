@@ -1,6 +1,6 @@
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 DESCRIPTION = "A Django oriented templated / transaction email abstraction"
 VERSION = '2.0'
@@ -42,7 +42,7 @@ CLASSIFIERS = [
 setup(
     name='django-templated-email',
     version=VERSION,
-    packages=['templated_email', 'templated_email.backends'],
+    packages=find_packages(exclude=("tests", "tests.*")),
     author='Bradley Whittington',
     author_email='radbrad182@gmail.com',
     url='http://github.com/vintasoftware/django-templated-email/',
