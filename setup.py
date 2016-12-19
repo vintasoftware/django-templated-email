@@ -43,6 +43,7 @@ setup(
     name='django-templated-email',
     version=VERSION,
     packages=find_packages(exclude=("tests", "tests.*")),
+    include_package_data=True,
     author='Bradley Whittington',
     author_email='radbrad182@gmail.com',
     url='http://github.com/vintasoftware/django-templated-email/',
