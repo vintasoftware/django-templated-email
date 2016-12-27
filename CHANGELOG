@@ -1,3 +1,8 @@
+v2.1
+-----
+Bug fixes (issues https://github.com/vintasoftware/django-templated-email/issues/94 and https://github.com/vintasoftware/django-templated-email/issues/99)
+
+
 v2.0
 -----
 Adding Inline Image
