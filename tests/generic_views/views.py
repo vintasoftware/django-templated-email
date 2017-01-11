@@ -9,7 +9,6 @@ class AuthorCreateView(TemplatedEmailFormViewMixin, CreateView):
     model = Author
     fields = ['name', 'email']
     templated_email_template_name = 'welcome'
-    templated_email_recipient_form_field = 'email'
     template_name = 'authors/create_author.html'
     success_url = '/create_author/'
 
