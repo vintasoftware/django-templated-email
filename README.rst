@@ -386,7 +386,7 @@ Additionally you can call **send_templated_mail** and optionally override the fo
 Commercial Support
 ==================
 
-This library, as others, is used in projects of Vinta clients. We are always looking for exciting work, so if you need any commercial support, feel free to get in touch: contact@vinta.com
+This library, as others, is used in projects of Vinta clients. We are always looking for exciting work, so if you need any commercial support, feel free to get in touch: contact@vinta.com.br
 
 
 
