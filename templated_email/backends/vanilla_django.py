@@ -232,6 +232,11 @@ class TemplateBackend(object):
                                    attachments=attachments,
                                    create_link=create_link)
 
+        # attach the attachments if they are provided
+        if hasattr(kwargs.get('attachments'), '__iter__') is True:
+            for path in kwargs.get('attachments', []):
+                e.attach_file(path)
+
         e.connection = connection
 
         try:
