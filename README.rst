@@ -139,6 +139,15 @@ The plain part can also be calculated from the HTML using `html2text <https://py
 
     TEMPLATED_EMAIL_AUTO_PLAIN = False
 
+You can also specify a custom function that converts from HTML to the plain part :
+
+.. code-block:: python
+
+    def convert_html_to_text(html):
+        ...
+
+    TEMPLATED_EMAIL_PLAIN_FUNCTION = convert_html_to_text
+
 You can globally override the template dir, and file extension using the following variables in settings.py :
 
 .. code-block:: python

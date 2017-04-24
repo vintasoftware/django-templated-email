@@ -218,7 +218,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         template_backend_klass, '_render_email',
         return_value={'html': HTML_RESULT, 'subject': SUBJECT_RESULT}
     )
-    def test_get_email_message_genrated_plain_text(self, mock):
+    def test_get_email_message_generated_plain_text(self, mock):
         message = self.backend.get_email_message(
             'foo.email', {},
             from_email='from@example.com', cc=['cc@example.com'],
@@ -232,6 +232,15 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEquals(message.cc, ['cc@example.com'])
         self.assertEquals(message.bcc, ['bcc@example.com'])
         self.assertEquals(message.from_email, 'from@example.com')
+
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'html': HTML_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    @override_settings(TEMPLATED_EMAIL_PLAIN_FUNCTION=lambda x: 'hi')
+    def test_get_email_message_custom_func_generated_plain_text(self, mock):
+        message = self.backend.get_email_message('foo.email', {})
+        self.assertEquals(message.body, 'hi')
 
     def test_get_multi_match_last_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
