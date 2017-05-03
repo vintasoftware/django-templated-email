@@ -392,6 +392,19 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
+
+Releasing a new version of this package:
+========================================
+
+Update CHANGELOG file.
+
+Execute the following commands::
+
+    bumpversion [major,minor,patch]
+    python setup.py publish
+    git push origin master --tags
+
+
 Commercial Support
 ==================
 

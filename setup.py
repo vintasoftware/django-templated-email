@@ -15,13 +15,9 @@ requirements = [
     'six>=1',
 ]
 
-# python setup.py register
+# python setup.py publish
 if sys.argv[-1] == 'publish':
     os.system("python setup.py sdist upload")
-    args = {'version': VERSION}
-    print("You probably want to also tag the version now:")
-    print("  git tag -a %(version)s -m 'version %(version)s'" % args)
-    print("  git push --tags")
     sys.exit()
 
 CLASSIFIERS = [
