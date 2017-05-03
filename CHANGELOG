@@ -1,3 +1,8 @@
+v2.2
+-----
+Bug fixes and improvements (issues https://github.com/vintasoftware/django-templated-email/issues/102 and https://github.com/vintasoftware/django-templated-email/issues/104)
+
+
 v2.1
 -----
 Bug fixes (issues https://github.com/vintasoftware/django-templated-email/issues/94 and https://github.com/vintasoftware/django-templated-email/issues/99)
