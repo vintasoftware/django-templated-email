@@ -160,10 +160,8 @@ class TemplateBackend(object):
             subject = subject_template % context
         subject = subject.strip('\n\r')  # strip newlines from subject
 
-        if html_part and not plain_part and html2text and \
-                getattr(settings, 'TEMPLATED_EMAIL_AUTO_PLAIN', True):
-            parts['plain'] = html2text.html2text(parts['html'])
-            plain_part = True
+        if not plain_part:
+            plain_part = self._generate_plain_part(parts)
 
         if plain_part and not html_part:
             e = EmailMessage(
@@ -208,6 +206,33 @@ class TemplateBackend(object):
 
         self.attach_inline_images(e, context)
         return e
+
+    def _generate_plain_part(self, parts):
+        """
+        Depending on some settings, generate a plain part from the HTML part.
+
+        The user can choose a custom "plain function" that takes an argument
+        of the HTML part and returns the plain text. By default this is
+        "html2text.html2text".
+        """
+        html_part = 'html' in parts
+        auto_plain = getattr(settings, 'TEMPLATED_EMAIL_AUTO_PLAIN', True)
+        plain_func = getattr(settings, 'TEMPLATED_EMAIL_PLAIN_FUNCTION', None)
+
+        if not auto_plain:
+            return
+
+        if not html_part:
+            return
+
+        if not plain_func and html2text:
+            plain_func = html2text.html2text
+
+        if not plain_func:
+            return
+
+        parts['plain'] = plain_func(parts['html'])
+        return True
 
     def send(self, template_name, from_email, recipient_list, context,
              cc=None, bcc=None,

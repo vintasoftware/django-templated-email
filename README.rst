@@ -139,6 +139,15 @@ The plain part can also be calculated from the HTML using `html2text <https://py
 
     TEMPLATED_EMAIL_AUTO_PLAIN = False
 
+You can also specify a custom function that converts from HTML to the plain part :
+
+.. code-block:: python
+
+    def convert_html_to_text(html):
+        ...
+
+    TEMPLATED_EMAIL_PLAIN_FUNCTION = convert_html_to_text
+
 You can globally override the template dir, and file extension using the following variables in settings.py :
 
 .. code-block:: python
@@ -382,6 +391,13 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     connection=your_connection            # Takes a django mail backend connection, created using **django.core.mail.get_connection**
     auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
+
+Commercial Support
+==================
+
+This library, as others, is used in projects of Vinta clients. We are always looking for exciting work, so if you need any commercial support, feel free to get in touch: contact@vinta.com.br
+
+
 
 .. _Django: http://djangoproject.com
 .. |GitterBadge| image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
