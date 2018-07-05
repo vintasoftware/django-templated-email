@@ -82,7 +82,7 @@ class TemplateBackend(object):
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        render_context = Context(context, autoescape=False)
+        render_context = Context(context, autoescape=True)
 
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
