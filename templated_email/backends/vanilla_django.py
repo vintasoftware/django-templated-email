@@ -4,6 +4,7 @@ from io import BytesIO
 
 try:
     from html.parser import HTMLParser
+    unicode = str
 except ImportError:
     from HTMLParser import HTMLParser
 
