@@ -1,7 +1,11 @@
 import uuid
 import hashlib
 from io import BytesIO
-from HTMLParser import HTMLParser
+
+try:
+    from html.parser import HTMLParser
+except ImportError:
+    from HTMLParser import HTMLParser
 
 from django.conf import settings
 from django.core.mail import get_connection
@@ -107,7 +111,7 @@ class TemplateBackend(object):
         for preprocessor, part in [
                 (unescape, 'subject'),
                 (unicode, 'html'),
-                (unescape, 'plain') ]:
+                (unescape, 'plain')]:
             try:
                 response[part] = preprocessor(render_block_to_string(full_template_names, part, render_context))
             except BlockNotFound as error:
