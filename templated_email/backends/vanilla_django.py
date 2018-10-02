@@ -103,7 +103,7 @@ class TemplateBackend(object):
 
         for part in ['subject', 'html', 'plain']:
             try:
-                response[part] = render_block_to_string(full_template_names, part, render_context)
+                response[part] = render_block_to_string(full_template_names, part, render_context).strip()
             except BlockNotFound as error:
                 errors[part] = error
 
