@@ -1,3 +1,9 @@
+v2.3
+-----
+Remove Django as explicit dependency
+Upgrade django-anymail to v3
+Drop Python 3.3 support
+
 v2.2
 -----
 Bug fixes and improvements (issues https://github.com/vintasoftware/django-templated-email/issues/102 and https://github.com/vintasoftware/django-templated-email/issues/104)
