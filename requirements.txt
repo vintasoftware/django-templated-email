@@ -1,2 +1,1 @@
 -r tox-requirements.txt
-Django==1.11
