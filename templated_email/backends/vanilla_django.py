@@ -4,6 +4,7 @@ from io import BytesIO
 
 try:
     from html.parser import HTMLParser
+    unicode = str
 except ImportError:
     from HTMLParser import HTMLParser
 
@@ -110,7 +111,7 @@ class TemplateBackend(object):
 
         for preprocessor, part in [
                 (unescape, 'subject'),
-                (lambda u_str: u_str.encode(settings.DEFAULT_CHARSET), 'html'),
+                (unicode, 'html'),
                 (unescape, 'plain')]:
             try:
                 response[part] = preprocessor(render_block_to_string(full_template_names, part, render_context))
