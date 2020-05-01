@@ -1,24 +1,52 @@
 language: python
 
-python:
-  - "3.6"
-
-env:
-  - TOX_ENV=py36-flake8
-  - TOX_ENV=py34-django20
-  - TOX_ENV=py35-django20
-  - TOX_ENV=py36-django20
-  - TOX_ENV=py37-django20
-  - TOX_ENV=py35-django21
-  - TOX_ENV=py36-django21
-  - TOX_ENV=py37-django21
-  - TOX_ENV=py35-django22
-  - TOX_ENV=py36-django22
-  - TOX_ENV=py37-django22
-  - TOX_ENV=py38-django22
-  - TOX_ENV=py36-django30
-  - TOX_ENV=py37-django30
-  - TOX_ENV=py38-django30
+matix:
+  include:
+  - python: 3.6
+    env:
+      - TOX_ENV=py36-flake8
+  - python: 3.4
+    env:
+      - TOX_ENV=py34-django20
+  - python: 3.5
+    env:
+      - TOX_ENV=py35-django20
+  - python: 3.6
+    env:
+      - TOX_ENV=py36-django20
+  - python: 3.7
+    env:
+      - TOX_ENV=py37-django20
+  - python: 3.5
+    env:
+      - TOX_ENV=py35-django21
+  - python: 3.6
+    env:
+      - TOX_ENV=py36-django21
+  - python: 3.7
+    env:
+      - TOX_ENV=py37-django21
+  - python: 3.5
+    env:
+      - TOX_ENV=py35-django22
+  - python: 3.6
+    env:
+      - TOX_ENV=py36-django22
+  - python: 3.7
+    env:
+      - TOX_ENV=py37-django22
+  - python: 3.8
+    env:
+      - TOX_ENV=py38-django22
+  - python: 3.6
+    env:
+      - TOX_ENV=py36-django30
+  - python: 3.7
+    env:
+      - TOX_ENV=py37-django30
+  - python: 3.8
+    env:
+      - TOX_ENV=py38-django30
 
 install:
   - pip install tox
