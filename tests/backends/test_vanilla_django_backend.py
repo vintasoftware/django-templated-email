@@ -72,43 +72,43 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         try:
             self.backend._render_email('inexistent_base.email', {})
         except TemplateDoesNotExist as e:
-            self.assertEquals(e.args[0], 'foo')
+            self.assertEqual(e.args[0], 'foo')
 
     def test_inexistent_template_email(self):
         try:
             self.backend._render_email('foo', {})
         except TemplateDoesNotExist as e:
-            self.assertEquals(e.args[0], 'templated_email/foo.email')
+            self.assertEqual(e.args[0], 'templated_email/foo.email')
 
     def test_render_plain_email(self):
         response = self.backend._render_email(
             'plain_template.email', self.context)
-        self.assertEquals(len(response.keys()), 2)
-        self.assertEquals(PLAIN_RESULT, response['plain'])
-        self.assertEquals(SUBJECT_RESULT, response['subject'])
+        self.assertEqual(len(response.keys()), 2)
+        self.assertEqual(PLAIN_RESULT, response['plain'])
+        self.assertEqual(SUBJECT_RESULT, response['subject'])
 
     def test_render_html_email(self):
         response = self.backend._render_email(
             'html_template.email', self.context)
-        self.assertEquals(len(response.keys()), 2)
+        self.assertEqual(len(response.keys()), 2)
         self.assertHTMLEqual(HTML_RESULT, response['html'])
-        self.assertEquals(SUBJECT_RESULT, response['subject'])
+        self.assertEqual(SUBJECT_RESULT, response['subject'])
 
     def test_render_mixed_email(self):
         response = self.backend._render_email(
             'mixed_template.email', self.context)
-        self.assertEquals(len(response.keys()), 3)
+        self.assertEqual(len(response.keys()), 3)
         self.assertHTMLEqual(HTML_RESULT, response['html'])
-        self.assertEquals(PLAIN_RESULT, response['plain'])
-        self.assertEquals(SUBJECT_RESULT, response['subject'])
+        self.assertEqual(PLAIN_RESULT, response['plain'])
+        self.assertEqual(SUBJECT_RESULT, response['subject'])
 
     def test_render_inheritance_email(self):
         response = self.backend._render_email(
             'inheritance_template.email', self.context)
-        self.assertEquals(len(response.keys()), 3)
+        self.assertEqual(len(response.keys()), 3)
         self.assertHTMLEqual(INHERITANCE_RESULT, response['html'])
-        self.assertEquals(PLAIN_RESULT, response['plain'])
-        self.assertEquals('Another subject for vintasoftware', response['subject'])
+        self.assertEqual(PLAIN_RESULT, response['plain'])
+        self.assertEqual('Another subject for vintasoftware', response['subject'])
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -120,12 +120,12 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -145,7 +145,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEqual(len(second_call_context), 0)
         saved_email = SavedEmail.objects.get(
             uuid=uuid)
-        self.assertEquals(saved_email.content, HTML_RESULT)
+        self.assertEqual(saved_email.content, HTML_RESULT)
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -188,12 +188,12 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, 'foo')
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, 'foo')
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @override_settings(TEMPLATED_EMAIL_DJANGO_SUBJECTS={'foo.email':
                                                         'foo\r\n'})
@@ -207,12 +207,12 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, 'foo')
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, 'foo')
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -225,13 +225,13 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
         self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
-        self.assertEquals(message.alternatives[0][1], 'text/html')
-        self.assertEquals(message.body, GENERATED_PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.alternatives[0][1], 'text/html')
+        self.assertEqual(message.body, GENERATED_PLAIN_RESULT)
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -240,43 +240,43 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     @override_settings(TEMPLATED_EMAIL_PLAIN_FUNCTION=lambda x: 'hi')
     def test_get_email_message_custom_func_generated_plain_text(self, mock):
         message = self.backend.get_email_message('foo.email', {})
-        self.assertEquals(message.body, 'hi')
+        self.assertEqual(message.body, 'hi')
 
     def test_get_multi_match_last_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
             ['multi-template.email', 'foo.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
-        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEqual(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     def test_get_multi_first_match_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
             ['foo.email', 'multi-template.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
-        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEqual(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     def test_get_multi_options_select_last_plain_only(self):
         message = self.backend.get_email_message(
             ['non-existing.email', 'also-non-existing.email', 'non-existing-without-suffix', 'foo.email', 'multi-template.email', ], {},
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
-        self.assertEquals(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
-        self.assertEquals(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
+        self.assertEqual(message.subject, MULTI_TEMPLATE_SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -290,13 +290,13 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
         self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
-        self.assertEquals(message.alternatives[0][1], 'text/html')
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.alternatives[0][1], 'text/html')
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -335,12 +335,12 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
         self.assertHTMLEqual(message.body, HTML_RESULT)
-        self.assertEquals(message.content_subtype, 'html')
-        self.assertEquals(message.subject, SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com'])
-        self.assertEquals(message.cc, ['cc@example.com'])
-        self.assertEquals(message.bcc, ['bcc@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.content_subtype, 'html')
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -351,17 +351,17 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         ret = self.backend.send('mixed_template', 'from@example.com',
                                 ['to@example.com', 'to2@example.com'], {},
                                 headers={'Message-Id': 'a_message_id'})
-        self.assertEquals(ret, 'a_message_id')
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(ret, 'a_message_id')
+        self.assertEqual(len(mail.outbox), 1)
         message = mail.outbox[0]
-        self.assertEquals(ret, message.extra_headers['Message-Id'])
+        self.assertEqual(ret, message.extra_headers['Message-Id'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
         self.assertHTMLEqual(message.alternatives[0][0], HTML_RESULT)
-        self.assertEquals(message.alternatives[0][1], 'text/html')
-        self.assertEquals(message.body, PLAIN_RESULT)
-        self.assertEquals(message.subject, SUBJECT_RESULT)
-        self.assertEquals(message.to, ['to@example.com', 'to2@example.com'])
-        self.assertEquals(message.from_email, 'from@example.com')
+        self.assertEqual(message.alternatives[0][1], 'text/html')
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com', 'to2@example.com'])
+        self.assertEqual(message.from_email, 'from@example.com')
 
     @patch.object(
         template_backend_klass, 'get_email_message'
@@ -425,7 +425,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
-        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+        self.assertEqual(decode_b64_msg(attachment.get_payload()),
                           TXT_FILE)
 
     @patch.object(
@@ -438,7 +438,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
                           ['to@example.com', 'to2@example.com'], {},
                           attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
-        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
+        self.assertEqual(('black_pixel.png', TXT_FILE, 'text/plain'),
                           attachment)
 
     @patch.object(
@@ -452,7 +452,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             bcc=['bcc@example.com'], to=['to@example.com'],
             attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
-        self.assertEquals(decode_b64_msg(attachment.get_payload()),
+        self.assertEqual(decode_b64_msg(attachment.get_payload()),
                           TXT_FILE)
 
     @patch.object(
@@ -466,14 +466,14 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             bcc=['bcc@example.com'], to=['to@example.com'],
             attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
-        self.assertEquals(('black_pixel.png', TXT_FILE, 'text/plain'),
+        self.assertEqual(('black_pixel.png', TXT_FILE, 'text/plain'),
                           attachment)
 
     def test_removal_of_legacy(self):
         try:
             self.backend._render_email('legacy', {})
         except TemplateDoesNotExist as e:
-            self.assertEquals(e.args[0], 'templated_email/legacy.email')
+            self.assertEqual(e.args[0], 'templated_email/legacy.email')
 
     def test_host_inline_image_if_not_exist(self):
         inline_image = InlineImage('foo.jpg', b'bar')
@@ -484,7 +484,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEqual(filename, '/media/saved_url')
         self.storage_mock.save.assert_called_once()
         name, content = self.storage_mock.save.call_args[0]
-        self.assertEquals(
+        self.assertEqual(
             name,
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
         self.assertTrue(isinstance(content, BytesIO))
