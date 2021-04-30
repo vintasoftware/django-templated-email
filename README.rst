@@ -356,7 +356,7 @@ Using django_templated_email in 3rd party applications
 
 If you would like to use django_templated_email to handle mail in a reusable application, you should note that:
 
-* Your calls to **send_templated_mail** should set a value for **template_dir**, so you can keep copies of your app-specific templates local to your app (although the loader will find your email templates if you store them in *<your app>/templates/templated_email*, if **TEMPLATED_EMAIL_TEMPLATE_DIR** has not been overidden)
+* Your calls to **send_templated_mail** should set a value for **template_dir**, so you can keep copies of your app-specific templates local to your app (although the loader will find your email templates if you store them in *<your app>/templates/templated_email*, if **TEMPLATED_EMAIL_TEMPLATE_DIR** has not been overridden)
 * If you do (and you should) set a value for **template_dir**, remember to include a trailing slash, i.e. *'my_app_email/'*
 * The deployed app may use a different backend which doesn't use the django templating backend, and as such make a note in your README warning developers that if they are using django_templated_email already, with a different backend, they will need to ensure their email provider can send all your templates (ideally enumerate those somewhere convenient)
 
