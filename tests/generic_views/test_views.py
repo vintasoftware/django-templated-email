@@ -24,11 +24,11 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
 
     def test_templated_email_get_template_names_with_template_name(self):
         self.mixin_object.templated_email_template_name = 'template_name'
-        self.assertEquals(
+        self.assertEqual(
             self.mixin_object.templated_email_get_template_names(valid=True),
             ['template_name']
         )
-        self.assertEquals(
+        self.assertEqual(
             self.mixin_object.templated_email_get_template_names(valid=False),
             ['template_name']
         )
@@ -59,11 +59,11 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
         form = FakeForm()
         kwargs = self.mixin_object.templated_email_get_send_email_kwargs(
             valid=True, form=form)
-        self.assertEquals(len(kwargs), 4)
-        self.assertEquals(kwargs['template_name'], ['template'])
-        self.assertEquals(kwargs['from_email'], None)
-        self.assertEquals(kwargs['recipient_list'], ['foo@example.com'])
-        self.assertEquals(kwargs['context'], {'form_data': 'foo'})
+        self.assertEqual(len(kwargs), 4)
+        self.assertEqual(kwargs['template_name'], ['template'])
+        self.assertEqual(kwargs['from_email'], None)
+        self.assertEqual(kwargs['recipient_list'], ['foo@example.com'])
+        self.assertEqual(kwargs['context'], {'form_data': 'foo'})
 
     @mock.patch.object(TemplatedEmailFormViewMixin,
                        'templated_email_get_template_names',
@@ -80,11 +80,11 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
         form = FakeForm()
         kwargs = self.mixin_object.templated_email_get_send_email_kwargs(
             valid=False, form=form)
-        self.assertEquals(len(kwargs), 4)
-        self.assertEquals(kwargs['template_name'], ['template'])
-        self.assertEquals(kwargs['from_email'], None)
-        self.assertEquals(kwargs['recipient_list'], ['foo@example.com'])
-        self.assertEquals(kwargs['context'], {'form_errors': 'errors foo'})
+        self.assertEqual(len(kwargs), 4)
+        self.assertEqual(kwargs['template_name'], ['template'])
+        self.assertEqual(kwargs['from_email'], None)
+        self.assertEqual(kwargs['recipient_list'], ['foo@example.com'])
+        self.assertEqual(kwargs['context'], {'form_errors': 'errors foo'})
 
 
 class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
@@ -101,48 +101,48 @@ class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
 
     def test_form_valid_with_send_on_success(self):
         response = AuthorCreateView.as_view()(self.good_request)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(Author.objects.count(), 1)
-        self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].alternatives[0][0].strip(),
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Author.objects.count(), 1)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].alternatives[0][0].strip(),
                           'Andre - author@vinta.com.br')
 
     def test_form_valid_with_send_on_success_false(self):
         default_value = AuthorCreateView.templated_email_send_on_success
         AuthorCreateView.templated_email_send_on_success = False
         response = AuthorCreateView.as_view()(self.good_request)
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(Author.objects.count(), 1)
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Author.objects.count(), 1)
+        self.assertEqual(len(mail.outbox), 0)
         AuthorCreateView.templated_email_send_on_success = default_value
 
     def test_form_invalid_with_not_send_on_failure(self):
         response = AuthorCreateView.as_view()(self.bad_request)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(Author.objects.count(), 0)
-        self.assertEquals(len(mail.outbox), 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Author.objects.count(), 0)
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_form_invalid_with_send_on_failure(self):
         default_value = AuthorCreateView.templated_email_send_on_failure
         AuthorCreateView.templated_email_send_on_failure = True
         response = AuthorCreateView.as_view()(self.bad_request)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(Author.objects.count(), 0)
-        self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].alternatives[0][0].strip(),
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Author.objects.count(), 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].alternatives[0][0].strip(),
                           '* Enter a valid email address.')
         AuthorCreateView.templated_email_send_on_failure = default_value
 
     @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='from@vinta.com.br')
     def test_from_email(self):
         AuthorCreateView.as_view()(self.good_request)
-        self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].from_email, 'from@vinta.com.br')
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, 'from@vinta.com.br')
 
     def test_from_email_with_templated_email_from_email(self):
         default_value = AuthorCreateView.templated_email_from_email
         AuthorCreateView.templated_email_from_email = 'from2@vinta.com.br'
         AuthorCreateView.as_view()(self.good_request)
-        self.assertEquals(len(mail.outbox), 1)
-        self.assertEquals(mail.outbox[0].from_email, 'from2@vinta.com.br')
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, 'from2@vinta.com.br')
         AuthorCreateView.templated_email_from_email = default_value
