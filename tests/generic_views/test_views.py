@@ -105,7 +105,7 @@ class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
         self.assertEqual(Author.objects.count(), 1)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].alternatives[0][0].strip(),
-                          'Andre - author@vinta.com.br')
+                         'Andre - author@vinta.com.br')
 
     def test_form_valid_with_send_on_success_false(self):
         default_value = AuthorCreateView.templated_email_send_on_success
@@ -130,7 +130,7 @@ class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
         self.assertEqual(Author.objects.count(), 0)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].alternatives[0][0].strip(),
-                          '* Enter a valid email address.')
+                         '* Enter a valid email address.')
         AuthorCreateView.templated_email_send_on_failure = default_value
 
     @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='from@vinta.com.br')

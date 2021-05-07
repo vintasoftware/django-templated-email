@@ -49,6 +49,6 @@ class InlineMessageTestCase(MockedNetworkTestCaseMixin, TestCase):
         self.inline_image.attach_to_message(message)
         mimeimage = message.attach.call_args[0][0]
         self.assertEqual(mimeimage.get('Content-ID'),
-                          self.inline_image._content_id)
+                         self.inline_image._content_id)
         self.assertEqual(mimeimage.get('Content-Disposition'),
-                          'inline; filename="foo.png"')
+                         'inline; filename="foo.png"')
