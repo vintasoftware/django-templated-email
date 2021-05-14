@@ -11,8 +11,7 @@ except:
     pass
 
 requirements = [
-    'django-render-block>=0.5',
-    'six>=1',
+    'django-render-block>=0.5'
 ]
 
 # python setup.py publish
