@@ -24,6 +24,16 @@ develop branch: https://github.com/vintasoftware/django-templated-email/blob/dev
 
 stable pypi/master: https://github.com/vintasoftware/django-templated-email/blob/master/README.rst
 
+
+Requirements
+=================
+* Python (3.6, 3.7, 3.8, 3.9)
+* Django (2.2, 3.1, 3.2)
+
+We **highly recommend** and only officially support the latest patch release of
+each Python and Django series.
+
+
 Getting going - installation
 ==============================
 
