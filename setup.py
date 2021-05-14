@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 
 DESCRIPTION = "A Django oriented templated / transaction email abstraction"
-VERSION = '2.3.0'
+VERSION = '2.4.0'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()
@@ -25,12 +25,10 @@ CLASSIFIERS = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Framework :: Django',
 ]
