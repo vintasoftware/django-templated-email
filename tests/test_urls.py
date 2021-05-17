@@ -1,5 +1,6 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import re_path
 
 urlpatterns = [
-    url(r'^', include('templated_email.urls', namespace='templated_email')),
+    re_path(r'^', include('templated_email.urls', namespace='templated_email')),
 ]

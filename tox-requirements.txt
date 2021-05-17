@@ -6,5 +6,4 @@ mock
 pytest
 pytest-django
 pytest-pythonpath
-six
 tox

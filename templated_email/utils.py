@@ -6,12 +6,10 @@ from django.core.mail import make_msgid
 from django.utils.module_loading import import_string
 from django.conf import settings
 
-import six
-
 
 def _get_klass_from_config(config_variable, default):
     klass_path = getattr(settings, config_variable, default)
-    if isinstance(klass_path, six.string_types):
+    if isinstance(klass_path, str):
         klass_path = import_string(klass_path)
 
     return klass_path

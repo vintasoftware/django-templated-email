@@ -24,6 +24,16 @@ develop branch: https://github.com/vintasoftware/django-templated-email/blob/dev
 
 stable pypi/master: https://github.com/vintasoftware/django-templated-email/blob/master/README.rst
 
+
+Requirements
+=================
+* Python (3.6, 3.7, 3.8, 3.9)
+* Django (2.2, 3.1, 3.2)
+
+We **highly recommend** and only officially support the latest patch release of
+each Python and Django series.
+
+
 Getting going - installation
 ==============================
 
@@ -315,6 +325,7 @@ Methods:
 **templated_email_get_recipients(self, form)** (mandatory):
     Return the recipient list to whom the email will be sent to.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_recipients(self, form):
@@ -324,6 +335,7 @@ Methods:
     Use this method to add extra data to the context used for rendering the template. You should get the parent class's context from
     calling super.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_context_data(self, **kwargs):
@@ -334,6 +346,7 @@ Methods:
 **templated_email_get_send_email_kwargs(self, valid, form)** (optional):
     Add or change the kwargs that will be used to send the e-mail. You should call super to get the default kwargs.
     ie:
+
 .. code-block:: python
 
     def templated_email_get_send_email_kwargs(valid, form):

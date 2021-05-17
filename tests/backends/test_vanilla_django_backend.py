@@ -426,7 +426,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
                           attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
         self.assertEqual(decode_b64_msg(attachment.get_payload()),
-                          TXT_FILE)
+                         TXT_FILE)
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -439,7 +439,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
                           attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
         self.assertEqual(('black_pixel.png', TXT_FILE, 'text/plain'),
-                          attachment)
+                         attachment)
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -453,7 +453,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
         self.assertEqual(decode_b64_msg(attachment.get_payload()),
-                          TXT_FILE)
+                         TXT_FILE)
 
     @patch.object(
         template_backend_klass, '_render_email',
@@ -467,7 +467,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = message.attachments[0]
         self.assertEqual(('black_pixel.png', TXT_FILE, 'text/plain'),
-                          attachment)
+                         attachment)
 
     def test_removal_of_legacy(self):
         try:
