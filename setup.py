@@ -43,6 +43,7 @@ setup(
     license='MIT',
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/x-rst',
     platforms=['any'],
     classifiers=CLASSIFIERS,
     install_requires=requirements,

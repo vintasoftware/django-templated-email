@@ -325,6 +325,7 @@ Methods:
 **templated_email_get_recipients(self, form)** (mandatory):
     Return the recipient list to whom the email will be sent to.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_recipients(self, form):
@@ -334,6 +335,7 @@ Methods:
     Use this method to add extra data to the context used for rendering the template. You should get the parent class's context from
     calling super.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_context_data(self, **kwargs):
@@ -344,6 +346,7 @@ Methods:
 **templated_email_get_send_email_kwargs(self, valid, form)** (optional):
     Add or change the kwargs that will be used to send the e-mail. You should call super to get the default kwargs.
     ie:
+
 .. code-block:: python
 
     def templated_email_get_send_email_kwargs(valid, form):
