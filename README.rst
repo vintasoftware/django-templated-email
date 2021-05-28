@@ -195,8 +195,8 @@ First get the image content from a file or a *ImageField*:
 .. code-block:: python
 
     # From a file
-    with open('lena.png', 'rb') as lena:
-      image = lena.read()
+    with open('pikachu.png', 'rb') as pikachu:
+      image = pikachu.read()
 
     # From an ImageField
     # Suppose we have this model
@@ -211,7 +211,7 @@ Then create an instance of *InlineImage*:
 
     from templated_email import InlineImage
 
-    inline_image = InlineImage(filename="lena.png", content=image)
+    inline_image = InlineImage(filename="pikachu.png", content=image)
 
 Now pass the object on the context to the template when you send the email.
 
@@ -220,13 +220,13 @@ Now pass the object on the context to the template when you send the email.
     send_templated_mail(template_name='welcome',
                         from_email='from@example.com',
                         recipient_list=['to@example.com'],
-                        context={'lena_image': inline_image})
+                        context={'pikachu_image': inline_image})
 
 Finally in your template add the image on the html template block:
 
 .. code-block:: html
 
-    <img src="{{ lena_image }}">
+    <img src="{{ pikachu_image }}">
 
 Note: All *InlineImage* objects you add to the context will be attached to the e-mail, even if they are not used in the template.
 
