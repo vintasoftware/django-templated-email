@@ -24,6 +24,16 @@ develop branch: https://github.com/vintasoftware/django-templated-email/blob/dev
 
 stable pypi/master: https://github.com/vintasoftware/django-templated-email/blob/master/README.rst
 
+
+Requirements
+=================
+* Python (3.6, 3.7, 3.8, 3.9)
+* Django (2.2, 3.1, 3.2)
+
+We **highly recommend** and only officially support the latest patch release of
+each Python and Django series.
+
+
 Getting going - installation
 ==============================
 
@@ -185,8 +195,8 @@ First get the image content from a file or a *ImageField*:
 .. code-block:: python
 
     # From a file
-    with open('lena.png', 'rb') as lena:
-      image = lena.read()
+    with open('pikachu.png', 'rb') as pikachu:
+      image = pikachu.read()
 
     # From an ImageField
     # Suppose we have this model
@@ -201,7 +211,7 @@ Then create an instance of *InlineImage*:
 
     from templated_email import InlineImage
 
-    inline_image = InlineImage(filename="lena.png", content=image)
+    inline_image = InlineImage(filename="pikachu.png", content=image)
 
 Now pass the object on the context to the template when you send the email.
 
@@ -210,13 +220,13 @@ Now pass the object on the context to the template when you send the email.
     send_templated_mail(template_name='welcome',
                         from_email='from@example.com',
                         recipient_list=['to@example.com'],
-                        context={'lena_image': inline_image})
+                        context={'pikachu_image': inline_image})
 
 Finally in your template add the image on the html template block:
 
 .. code-block:: html
 
-    <img src="{{ lena_image }}">
+    <img src="{{ pikachu_image }}">
 
 Note: All *InlineImage* objects you add to the context will be attached to the e-mail, even if they are not used in the template.
 
@@ -315,6 +325,7 @@ Methods:
 **templated_email_get_recipients(self, form)** (mandatory):
     Return the recipient list to whom the email will be sent to.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_recipients(self, form):
@@ -324,6 +335,7 @@ Methods:
     Use this method to add extra data to the context used for rendering the template. You should get the parent class's context from
     calling super.
     ie:
+
 .. code-block:: python
 
       def templated_email_get_context_data(self, **kwargs):
@@ -334,6 +346,7 @@ Methods:
 **templated_email_get_send_email_kwargs(self, valid, form)** (optional):
     Add or change the kwargs that will be used to send the e-mail. You should call super to get the default kwargs.
     ie:
+
 .. code-block:: python
 
     def templated_email_get_send_email_kwargs(valid, form):
@@ -356,7 +369,7 @@ Using django_templated_email in 3rd party applications
 
 If you would like to use django_templated_email to handle mail in a reusable application, you should note that:
 
-* Your calls to **send_templated_mail** should set a value for **template_dir**, so you can keep copies of your app-specific templates local to your app (although the loader will find your email templates if you store them in *<your app>/templates/templated_email*, if **TEMPLATED_EMAIL_TEMPLATE_DIR** has not been overidden)
+* Your calls to **send_templated_mail** should set a value for **template_dir**, so you can keep copies of your app-specific templates local to your app (although the loader will find your email templates if you store them in *<your app>/templates/templated_email*, if **TEMPLATED_EMAIL_TEMPLATE_DIR** has not been overridden)
 * If you do (and you should) set a value for **template_dir**, remember to include a trailing slash, i.e. *'my_app_email/'*
 * The deployed app may use a different backend which doesn't use the django templating backend, and as such make a note in your README warning developers that if they are using django_templated_email already, with a different backend, they will need to ensure their email provider can send all your templates (ideally enumerate those somewhere convenient)
 

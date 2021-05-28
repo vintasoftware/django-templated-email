@@ -1,27 +1,18 @@
 language: python
 
 python:
-  - "3.5"
-
-env:
-  - TOX_ENV=py27-flake8
-  - TOX_ENV=py35-django110
-  - TOX_ENV=py34-django110
-  - TOX_ENV=py27-django110
-  - TOX_ENV=py35-django19
-  - TOX_ENV=py34-django19
-  - TOX_ENV=py27-django19
-  - TOX_ENV=py35-django18
-  - TOX_ENV=py34-django18
-  - TOX_ENV=py27-django18
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
 
 install:
-  - pip install tox
+  - pip install tox-travis
   - pip install -r requirements.txt
   - pip install coveralls
 
 script:
-  - tox -e $TOX_ENV
+  - tox
 
 after_script:
   coveralls

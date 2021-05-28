@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.utils.module_loading import import_string
 
-import six
-
 from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email.utils import InlineImage  # noqa
 
@@ -20,7 +18,7 @@ def get_connection(backend=None, template_prefix=None, template_suffix=None,
     # django.core.mail.get_connection
     klass_path = backend or getattr(settings, 'TEMPLATED_EMAIL_BACKEND',
                                     TemplateBackend)
-    if isinstance(klass_path, six.string_types):
+    if isinstance(klass_path, str):
         try:
             # First check if class name is omitted and we have module in settings
             klass = import_string(klass_path + '.' + 'TemplateBackend')
