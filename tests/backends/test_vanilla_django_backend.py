@@ -45,6 +45,18 @@ SUBJECT_RESULT = 'My subject for vintasoftware'
 
 MULTI_TEMPLATE_SUBJECT_RESULT = 'A subject'
 
+NON_ESCAPED_PLAIN_RESULT = (u'\n  Hi,\n\n  You just signed up for my website, using:\n    '
+                u'  username: <p>vintasoftware</p>\n      join date: Aug. 22, 2016\n'
+                u'\n  Thanks, you rock!\n')
+
+
+ESCAPED_HTML_RESULT = (u'<p>Hi Foo Bar,</p><p>You just signed up for my website, '
+               u'using:<dl><dt>username</dt><dd>&lt;p&gt;vintasoftwar'
+               u'e&lt;/p&gt;</dd><dt>join date</dt><dd>Aug. 22, 2016</dd></dl>'
+               u'</p><p>Thanks, you rock!</p>')
+
+NON_ESCAPED_SUBJECT_RESULT = 'My subject for <p>vintasoftware</p>'
+
 TXT_FILE = 'test'
 
 
@@ -109,6 +121,16 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertHTMLEqual(INHERITANCE_RESULT, response['html'])
         self.assertEqual(PLAIN_RESULT, response['plain'])
         self.assertEqual('Another subject for vintasoftware', response['subject'])
+
+    def test_email_text_escaping(self):
+        self.context['username'] = '<p>vintasoftware</p>'
+        self.context['subject'] = 'Subject with tag <p>'
+
+        response = self.backend._render_email(
+            'mixed_template.email', self.context)
+        self.assertHTMLEqual(ESCAPED_HTML_RESULT, response['html'])
+        self.assertEqual(NON_ESCAPED_PLAIN_RESULT, response['plain'])
+        self.assertEqual(NON_ESCAPED_SUBJECT_RESULT, response['subject'])
 
     @patch.object(
         template_backend_klass, '_render_email',
