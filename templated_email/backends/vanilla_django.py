@@ -82,7 +82,6 @@ class TemplateBackend(object):
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        render_context = Context(context, autoescape=False)
 
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
@@ -102,6 +101,7 @@ class TemplateBackend(object):
             full_template_names.append(one_full_template_name)
 
         for part in ['subject', 'html', 'plain']:
+            render_context = Context(context, autoescape=(part == 'html'))
             try:
                 response[part] = render_block_to_string(full_template_names, part, render_context)
             except BlockNotFound as error:
