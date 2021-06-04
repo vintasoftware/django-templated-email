@@ -124,7 +124,6 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
 
     def test_email_text_escaping(self):
         self.context['username'] = '<p>vintasoftware</p>'
-        self.context['subject'] = 'Subject with tag <p>'
 
         response = self.backend._render_email(
             'mixed_template.email', self.context)
