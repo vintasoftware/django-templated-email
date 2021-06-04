@@ -46,14 +46,14 @@ SUBJECT_RESULT = 'My subject for vintasoftware'
 MULTI_TEMPLATE_SUBJECT_RESULT = 'A subject'
 
 NON_ESCAPED_PLAIN_RESULT = (u'\n  Hi,\n\n  You just signed up for my website, using:\n    '
-                u'  username: <p>vintasoftware</p>\n      join date: Aug. 22, 2016\n'
-                u'\n  Thanks, you rock!\n')
+                            u'  username: <p>vintasoftware</p>\n      join date: Aug. 22, 2016\n'
+                            u'\n  Thanks, you rock!\n')
 
 
 ESCAPED_HTML_RESULT = (u'<p>Hi Foo Bar,</p><p>You just signed up for my website, '
-               u'using:<dl><dt>username</dt><dd>&lt;p&gt;vintasoftwar'
-               u'e&lt;/p&gt;</dd><dt>join date</dt><dd>Aug. 22, 2016</dd></dl>'
-               u'</p><p>Thanks, you rock!</p>')
+                       u'using:<dl><dt>username</dt><dd>&lt;p&gt;vintasoftwar'
+                       u'e&lt;/p&gt;</dd><dt>join date</dt><dd>Aug. 22, 2016</dd></dl>'
+                       u'</p><p>Thanks, you rock!</p>')
 
 NON_ESCAPED_SUBJECT_RESULT = 'My subject for <p>vintasoftware</p>'
 
