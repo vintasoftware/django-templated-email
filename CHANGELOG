@@ -1,3 +1,8 @@
+v3.0
+-----
+Add escaping to HTML parts in templates
+Add tests for django main version
+
 v2.4
 -----
 Add Python 3.7, 3.8 and 3.9 support
