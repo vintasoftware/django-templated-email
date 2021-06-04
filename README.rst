@@ -415,7 +415,7 @@ Execute the following commands::
 
     bumpversion [major,minor,patch]
     python setup.py publish
-    git push origin master --tags
+    git push origin --tags
 
 
 Commercial Support
