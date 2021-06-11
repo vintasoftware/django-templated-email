@@ -119,6 +119,10 @@ class TemplateBackend(object):
                           template_dir=None, file_extension=None,
                           attachments=None, create_link=False):
 
+        from_email = from_email or settings.DEFAULT_FROM_EMAIL
+
+        context = context or {}
+
         if create_link:
             email_uuid = uuid.uuid4()
             link_context = dict(context)
@@ -234,7 +238,7 @@ class TemplateBackend(object):
         parts['plain'] = plain_func(parts['html'])
         return True
 
-    def send(self, template_name, from_email, recipient_list, context,
+    def send(self, template_name, from_email=None, recipient_list=None, context=None,
              cc=None, bcc=None,
              fail_silently=False,
              headers=None,
