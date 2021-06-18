@@ -113,7 +113,7 @@ class TemplateBackend(object):
 
         return response
 
-    def get_email_message(self, template_name, context, from_email=None, to=None,
+    def get_email_message(self, template_name, context=None, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None,
