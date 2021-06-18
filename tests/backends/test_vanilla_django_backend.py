@@ -137,7 +137,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
@@ -155,7 +155,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_with_create_link(self, mocked):
         self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
             create_link=True)
@@ -192,7 +192,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_custom_emailmessage_klass(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, AnymailMessage))
@@ -205,7 +205,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_without_subject(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
@@ -215,7 +215,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEqual(message.cc, ['cc@example.com'])
         self.assertEqual(message.bcc, ['bcc@example.com'])
         self.assertEqual(message.from_email, 'from@example.com')
-    
+
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
@@ -273,7 +273,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_without_subject_multiple_templates(self, mock):
         message = self.backend.get_email_message(
-            ['woo.email', 'foo.email'], {},
+            ['woo.email', 'foo.email'],
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
@@ -290,7 +290,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_generated_plain_text(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
@@ -309,12 +309,12 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     @override_settings(TEMPLATED_EMAIL_PLAIN_FUNCTION=lambda x: 'hi')
     def test_get_email_message_custom_func_generated_plain_text(self, mock):
-        message = self.backend.get_email_message('foo.email', {})
+        message = self.backend.get_email_message('foo.email')
         self.assertEqual(message.body, 'hi')
 
     def test_get_multi_match_last_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
-            ['multi-template.email', 'foo.email', ], {},
+            ['multi-template.email', 'foo.email', ],
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
@@ -326,7 +326,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
 
     def test_get_multi_first_match_email_message_generated_plain_text(self):
         message = self.backend.get_email_message(
-            ['foo.email', 'multi-template.email', ], {},
+            ['foo.email', 'multi-template.email', ],
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
@@ -338,7 +338,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
 
     def test_get_multi_options_select_last_plain_only(self):
         message = self.backend.get_email_message(
-            ['non-existing.email', 'also-non-existing.email', 'non-existing-without-suffix', 'foo.email', 'multi-template.email', ], {},
+            ['non-existing.email', 'also-non-existing.email', 'non-existing-without-suffix', 'foo.email', 'multi-template.email', ],
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertEqual(message.body, MULTI_TEMPLATE_PLAIN_RESULT)
@@ -355,7 +355,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_with_plain_and_html(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMultiAlternatives))
@@ -375,7 +375,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     def test_get_email_message_with_no_body_parts(self, mock):
         with pytest.raises(EmailRenderException):
             self.backend.get_email_message(
-                'foo.email', {},
+                'foo.email',
                 from_email='from@example.com', cc=['cc@example.com'],
                 bcc=['bcc@example.com'], to=['to@example.com'])
 
@@ -387,7 +387,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_custom_emailmessage_klass_multipart(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, AnymailMessage))
@@ -400,7 +400,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_html_only(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'])
         self.assertTrue(isinstance(message, EmailMessage))
@@ -419,7 +419,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_send(self, render_mock):
         ret = self.backend.send('mixed_template', 'from@example.com',
-                                ['to@example.com', 'to2@example.com'], {},
+                                ['to@example.com', 'to2@example.com'],
                                 headers={'Message-Id': 'a_message_id'})
         self.assertEqual(ret, 'a_message_id')
         self.assertEqual(len(mail.outbox), 1)
@@ -492,7 +492,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_send_attachment_mime_base(self, render_mock):
         self.backend.send('plain_template', 'from@example.com',
-                          ['to@example.com', 'to2@example.com'], {},
+                          ['to@example.com', 'to2@example.com'],
                           attachments=[MIMEImage(TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
         self.assertEqual(decode_b64_msg(attachment.get_payload()),
@@ -505,7 +505,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_send_attachment_tripple(self, render_mock):
         self.backend.send('plain_template', 'from@example.com',
-                          ['to@example.com', 'to2@example.com'], {},
+                          ['to@example.com', 'to2@example.com'],
                           attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
         attachment = mail.outbox[0].attachments[0]
         self.assertEqual(('black_pixel.png', TXT_FILE, 'text/plain'),
@@ -517,7 +517,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_attachment_mime_base(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
             attachments=[MIMEImage(TXT_FILE, 'text/plain')])
@@ -531,7 +531,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     )
     def test_get_email_message_attachment_tripple(self, mock):
         message = self.backend.get_email_message(
-            'foo.email', {},
+            'foo.email',
             from_email='from@example.com', cc=['cc@example.com'],
             bcc=['bcc@example.com'], to=['to@example.com'],
             attachments=[('black_pixel.png', TXT_FILE, 'text/plain')])
