@@ -313,7 +313,7 @@ Attributes:
 **templated_email_send_on_failure** (default: False):
     This attribute tells django-templated-email to send an email if the form is invalid.
 
-**templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**):
+**templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**. If it's also not defined, falls back to **DEFAULT_FROM_EMAIL**):
     String containing the email to send the email from.
 
 Methods:
