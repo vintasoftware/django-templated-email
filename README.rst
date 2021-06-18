@@ -428,8 +428,8 @@ This library, as others, is used in projects of Vinta clients. We are always loo
 .. _Django: http://djangoproject.com
 .. |GitterBadge| image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
 .. _GitterBadge: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-.. |TravisBadge| image:: https://travis-ci.org/vintasoftware/django-templated-email.svg?branch=develop
-.. _TravisBadge: https://travis-ci.org/vintasoftware/django-templated-email
+.. |TravisBadge| image:: https://travis-ci.com/vintasoftware/django-templated-email.svg?branch=develop
+.. _TravisBadge: https://travis-ci.com/vintasoftware/django-templated-email
 .. |CoverageBadge| image:: https://coveralls.io/repos/github/vintasoftware/django-templated-email/badge.svg?branch=develop
 .. _CoverageBadge: https://coveralls.io/github/vintasoftware/django-templated-email?branch=develop
 .. |PypiversionBadge| image:: https://img.shields.io/pypi/v/django-templated-email.svg
