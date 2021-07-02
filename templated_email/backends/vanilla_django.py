@@ -119,7 +119,7 @@ class TemplateBackend(object):
                           template_dir=None, file_extension=None,
                           attachments=None, create_link=False):
 
-        from_email = from_email or settings.DEFAULT_FROM_EMAIL
+        from_email = from_email or getattr(settings, 'TEMPLATED_EMAIL_FROM_EMAIL', None) or settings.DEFAULT_FROM_EMAIL
 
         context = context or {}
 

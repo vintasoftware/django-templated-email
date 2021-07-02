@@ -232,7 +232,24 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEqual(message.bcc, ['bcc@example.com'])
         self.assertEqual(message.from_email, 'webmaster@localhost')
 
-    @override_settings(DEFAULT_FROM_EMAIL='default.email@localhost')
+    @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='default.templated.email@localhost')
+    @patch.object(
+        template_backend_klass, '_render_email',
+        return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
+    )
+    def test_get_email_message_without_from_email_when_templated_email_from_email_is_set(self, mock):
+        message = self.backend.get_email_message(
+            'foo.email', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'])
+        self.assertTrue(isinstance(message, EmailMessage))
+        self.assertEqual(message.body, PLAIN_RESULT)
+        self.assertEqual(message.subject, SUBJECT_RESULT)
+        self.assertEqual(message.to, ['to@example.com'])
+        self.assertEqual(message.cc, ['cc@example.com'])
+        self.assertEqual(message.bcc, ['bcc@example.com'])
+        self.assertEqual(message.from_email, 'default.templated.email@localhost')
+
+    @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='default.templated.email@localhost', DEFAULT_FROM_EMAIL='default.email@localhost')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'plain': PLAIN_RESULT, 'subject': SUBJECT_RESULT}
@@ -247,7 +264,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         self.assertEqual(message.to, ['to@example.com'])
         self.assertEqual(message.cc, ['cc@example.com'])
         self.assertEqual(message.bcc, ['bcc@example.com'])
-        self.assertEqual(message.from_email, 'default.email@localhost')
+        self.assertEqual(message.from_email, 'default.templated.email@localhost')
 
     @patch.object(
         template_backend_klass, '_render_email',
