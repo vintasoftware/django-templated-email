@@ -5,7 +5,7 @@ from templated_email.backends.vanilla_django import TemplateBackend
 from templated_email.utils import InlineImage  # noqa
 
 
-def get_connection(backend=None, template_prefix=None, template_suffix=None,
+def get_default_template_backend(backend=None, template_prefix=None, template_suffix=None,
                    fail_silently=False, **kwargs):
     """Load a templated e-mail backend and return an instance of it.
 
@@ -52,17 +52,18 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
 
 
 def send_templated_mail(template_name, from_email, recipient_list, context,
-                        cc=None, bcc=None, fail_silently=False, connection=None,
-                        headers=None, template_prefix=None,
+                        cc=None, bcc=None, fail_silently=False, template_backend=None,
+                        connection=None, headers=None, template_prefix=None,
                         template_suffix=None,
                         create_link=False, **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.
 
     Final behaviour of sending depends on the currently selected engine.
     See BackendClass.send.__doc__
-    """
-    connection = connection or get_connection(template_prefix=template_prefix,
+    """ 
+    template_backend = template_backend or get_default_template_backend(template_prefix=template_prefix,
                                               template_suffix=template_suffix)
-    return connection.send(template_name, from_email, recipient_list, context,
+    return template_backend.send(template_name, from_email, recipient_list, context,
                            cc=cc, bcc=bcc, fail_silently=fail_silently,
-                           headers=headers, create_link=create_link, **kwargs)
+                           connection=connection, headers=headers, create_link=create_link,
+                           **kwargs)
