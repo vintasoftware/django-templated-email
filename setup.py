@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 
 DESCRIPTION = "A Django oriented templated / transaction email abstraction"
-VERSION = '3.0.0'
+VERSION = '3.0.1'
 LONG_DESCRIPTION = None
 try:
     LONG_DESCRIPTION = open('README.rst').read()

@@ -1,3 +1,7 @@
+v3.0.1
+-----
+Remove all newlines from subject
+
 v3.0
 -----
 Add escaping to HTML parts in templates
