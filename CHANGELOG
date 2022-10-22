@@ -1,3 +1,20 @@
+v3.0.1
+-----
+Remove all newlines from subject
+
+v3.0
+-----
+Add escaping to HTML parts in templates
+Add tests for django main version
+
+v2.4
+-----
+Add Python 3.7, 3.8 and 3.9 support
+Drop Python <3.4 support
+Add Django 3.1 and 3.2 support
+Drop Django 3.0 support
+Remove six dependency
+
 v2.3
 -----
 Remove Django as explicit dependency

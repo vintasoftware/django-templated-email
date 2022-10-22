@@ -5,7 +5,7 @@ from io import BytesIO
 from django.conf import settings
 from django.core.mail import get_connection
 from django.template import Context
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.core.files.storage import default_storage
 
 from templated_email.utils import (
@@ -82,7 +82,6 @@ class TemplateBackend(object):
                       template_dir=None, file_extension=None):
         response = {}
         errors = {}
-        render_context = Context(context, autoescape=False)
 
         file_extension = file_extension or self.template_suffix
         if file_extension.startswith('.'):
@@ -102,6 +101,7 @@ class TemplateBackend(object):
             full_template_names.append(one_full_template_name)
 
         for part in ['subject', 'html', 'plain']:
+            render_context = Context(context, autoescape=(part == 'html'))
             try:
                 response[part] = render_block_to_string(full_template_names, part, render_context)
             except BlockNotFound as error:
@@ -158,7 +158,7 @@ class TemplateBackend(object):
                 subject_template = subject_dict.get(template_name,
                                                     _('%s email subject' % template_name))
             subject = subject_template % context
-        subject = subject.strip('\n\r')  # strip newlines from subject
+        subject = subject.strip('\n\r').replace('\n', ' ').replace('\r', ' ')  # strip newlines from subject
 
         if not plain_part:
             plain_part = self._generate_plain_part(parts)
