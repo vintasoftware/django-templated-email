@@ -1,6 +1,9 @@
 v3.0.1
 -----
 Remove all newlines from subject
+Use GitHub Actions for testing
+Drop Django 2.2 and 3.1 support
+Add Python 3.10 and 3.11 support
 
 v3.0
 -----

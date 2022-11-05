@@ -27,8 +27,8 @@ stable pypi/master: https://github.com/vintasoftware/django-templated-email/blob
 
 Requirements
 =================
-* Python (3.6, 3.7, 3.8, 3.9)
-* Django (2.2, 3.1, 3.2)
+* Python (3.6, 3.7, 3.8, 3.9, 3.10, 3.11)
+* Django (3.2, 4.0, 4.1)
 
 We **highly recommend** and only officially support the latest patch release of
 each Python and Django series.
