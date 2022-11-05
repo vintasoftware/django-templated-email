@@ -6,7 +6,7 @@ Django-Templated-Email
 
 :Info: A Django oriented templated email sending class
 :Author: Bradley Whittington (http://github.com/bradwhittington, http://twitter.com/darb)
-:Tests: |TravisBadge|_ |CoverageBadge|_
+:Tests: |GABadge|_ |CoverageBadge|_
 
 
 Overview
@@ -432,8 +432,8 @@ This project, as other `Vinta Software <https://www.vinta.com.br/>`_ open-source
 .. _Django: http://djangoproject.com
 .. |GitterBadge| image:: https://badges.gitter.im/vintasoftware/django-templated-email.svg
 .. _GitterBadge: https://gitter.im/vintasoftware/django-templated-email?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-.. |TravisBadge| image:: https://travis-ci.com/vintasoftware/django-templated-email.svg?branch=develop
-.. _TravisBadge: https://travis-ci.com/vintasoftware/django-templated-email
+.. |GABadge| image:: https://github.com/mpasternak/django-templated-email/actions/workflows/tests.yml/badge.svg
+.. _GABadge: https://github.com/mpasternak/django-templated-email/actions
 .. |CoverageBadge| image:: https://coveralls.io/repos/github/vintasoftware/django-templated-email/badge.svg?branch=develop
 .. _CoverageBadge: https://coveralls.io/github/vintasoftware/django-templated-email?branch=develop
 .. |PypiversionBadge| image:: https://img.shields.io/pypi/v/django-templated-email.svg
