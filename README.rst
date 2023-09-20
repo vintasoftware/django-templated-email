@@ -367,19 +367,16 @@ You can configure Django-Templated-Email by setting the following settings
 
 .. code-block:: python
 
-    TEMPLATED_EMAIL_FROM_EMAIL      # String containing the email to send the email from - fallback to DEFAULT_FROM_EMAIL  
-    TEMPLATED_EMAIL_BACKEND         # The backend that will send the email  
-    TEMPLATED_EMAIL_TEMPLATE_DIR    # The directory containing the templates, use '' if using the top level
-    TEMPLATED_EMAIL_FILE_EXTENSION  # The file extension of the template files
-    TEMPLATED_EMAIL_AUTO_PLAIN      # Disable the behavior of calculating the plain part from the html part of the email when `html2text <https://pypi.python.org/pypi/html2text>` is installed
-    TEMPLATED_EMAIL_PLAIN_FUNCTION  # Specify a custom function that converts from HTML to the plain part
+    TEMPLATED_EMAIL_FROM_EMAIL = None                 # String containing the email to send the email from - fallback to DEFAULT_FROM_EMAIL  
+    TEMPLATED_EMAIL_BACKEND = TemplateBackend         # The backend class that will send the email, as a string like 'foo.bar.TemplateBackend' or the class reference itself
+    TEMPLATED_EMAIL_TEMPLATE_DIR = 'templated_email/' # The directory containing the templates, use '' if using the top level
+    TEMPLATED_EMAIL_FILE_EXTENSION = 'email'          # The file extension of the template files
+    TEMPLATED_EMAIL_AUTO_PLAIN = True                 # Set to false to disable the behavior of calculating the plain part from the html part of the email when `html2text <https://pypi.python.org/pypi/html2text>` is installed
+    TEMPLATED_EMAIL_PLAIN_FUNCTION = None             # Specify a custom function that converts from HTML to the plain part
 
-    # vanilla_django
-    TEMPLATED_EMAIL_DJANGO_SUBJECTS # Deprecated, prefer to use **{% block subject %}**
-
-    # anymail
-    TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS           # Replaces django.core.mail.EmailMessage
-    TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS # Replaces django.core.mail.EmailMultiAlternatives
+    # Specific for anymail integration:
+    TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS = 'django.core.mail.EmailMessage'                     # Replaces django.core.mail.EmailMessage
+    TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS = 'django.core.mail.EmailMultiAlternatives' # Replaces django.core.mail.EmailMultiAlternatives
 
 Future Plans
 =============
