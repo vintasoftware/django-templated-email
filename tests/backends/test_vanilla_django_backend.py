@@ -5,7 +5,7 @@ from email.mime.image import MIMEImage
 
 from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.core.files.storage import get_storage_class
+from django.core.files.storage import storages
 from django.template import TemplateDoesNotExist
 from django.core import mail
 
@@ -69,7 +69,7 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     template_backend_klass = TemplateBackend
 
     def setUp(self):
-        self.storage_mock = Mock(wraps=get_storage_class())()
+        self.storage_mock = Mock(wraps=storages["default"])()
         self.storage_mock.save = Mock()
         self.backend = self.template_backend_klass()
         self.context = {'username': 'vintasoftware',
