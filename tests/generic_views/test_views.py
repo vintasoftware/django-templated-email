@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory, override_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core import mail
 
-import mock
+import unittest.mock
 
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 from tests.generic_views.views import AuthorCreateView
