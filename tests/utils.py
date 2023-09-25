@@ -6,7 +6,7 @@ class MockedNetworkTestCaseMixin(object):
     # See: https://code.djangoproject.com/ticket/24380
     @classmethod
     def setUpClass(cls):
-        cls.getfqdn_patcher = mock.patch(
+        cls.getfqdn_patcher = unittest.mock.patch(
             'django.core.mail.utils.socket.getfqdn',
             return_value='vinta.local')
         cls.getfqdn_patcher.start()
