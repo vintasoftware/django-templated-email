@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 
 from templated_email import send_templated_mail
 
