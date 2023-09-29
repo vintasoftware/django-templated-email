@@ -51,9 +51,9 @@ def get_templated_mail(template_name, context, from_email=None, to=None,
                                        create_link=create_link)
 
 
-def send_templated_mail(template_name, from_email, recipient_list, context,
-                        cc=None, bcc=None, fail_silently=False, connection=None,
-                        headers=None, template_prefix=None,
+def send_templated_mail(template_name, from_email=None, recipient_list=None,
+                        context=None, cc=None, bcc=None, fail_silently=False,
+                        connection=None, headers=None, template_prefix=None,
                         template_suffix=None,
                         create_link=False, **kwargs):
     """Easy wrapper for sending a templated email to a recipient list.

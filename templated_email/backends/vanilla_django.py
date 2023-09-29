@@ -113,11 +113,15 @@ class TemplateBackend(object):
 
         return response
 
-    def get_email_message(self, template_name, context, from_email=None, to=None,
+    def get_email_message(self, template_name, context=None, from_email=None, to=None,
                           cc=None, bcc=None, headers=None,
                           template_prefix=None, template_suffix=None,
                           template_dir=None, file_extension=None,
                           attachments=None, create_link=False):
+
+        from_email = from_email or getattr(settings, 'TEMPLATED_EMAIL_FROM_EMAIL', None) or settings.DEFAULT_FROM_EMAIL
+
+        context = context or {}
 
         if create_link:
             email_uuid = uuid.uuid4()
@@ -234,7 +238,7 @@ class TemplateBackend(object):
         parts['plain'] = plain_func(parts['html'])
         return True
 
-    def send(self, template_name, from_email, recipient_list, context,
+    def send(self, template_name, from_email=None, recipient_list=None, context=None,
              cc=None, bcc=None,
              fail_silently=False,
              headers=None,

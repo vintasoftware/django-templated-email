@@ -314,7 +314,7 @@ Attributes:
 **templated_email_send_on_failure** (default: False):
     This attribute tells django-templated-email to send an email if the form is invalid.
 
-**templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**):
+**templated_email_from_email** (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**. If it's also not defined, falls back to **DEFAULT_FROM_EMAIL**):
     String containing the email to send the email from.
 
 Methods:
@@ -415,6 +415,7 @@ For legacy purposes you can specify email subjects in your settings file (but, t
 
 Additionally you can call **send_templated_mail** and optionally override the following parameters::
 
+    from_email='your.email@com/'          # Override the email sender. Default: (default: **settings.TEMPLATED_EMAIL_FROM_EMAIL**. If it's also not defined, falls back to **DEFAULT_FROM_EMAIL**)
     template_prefix='your_template_dir/'  # Override where the method looks for email templates (alternatively, use template_dir)
     template_suffix='email'               # Override the file extension of the email templates (alternatively, use file_extension)
     cc=['fubar@example.com']              # Set a CC on the mail
