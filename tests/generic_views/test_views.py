@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory, override_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core import mail
 
-import mock
+from unittest.mock import patch
 
 from templated_email.generic_views import TemplatedEmailFormViewMixin
 from tests.generic_views.views import AuthorCreateView
@@ -44,10 +44,10 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
                           self.mixin_object.templated_email_get_recipients,
                           form=None)
 
-    @mock.patch.object(TemplatedEmailFormViewMixin,
+    @patch.object(TemplatedEmailFormViewMixin,
                        'templated_email_get_template_names',
                        return_value=['template'])
-    @mock.patch.object(TemplatedEmailFormViewMixin,
+    @patch.object(TemplatedEmailFormViewMixin,
                        'templated_email_get_recipients',
                        return_value=['foo@example.com'])
     def test_templated_email_get_send_email_kwargs_valid(
@@ -65,10 +65,10 @@ class TemplatedEmailFormViewMixinUnitTestCase(TestCase):
         self.assertEqual(kwargs['recipient_list'], ['foo@example.com'])
         self.assertEqual(kwargs['context'], {'form_data': 'foo'})
 
-    @mock.patch.object(TemplatedEmailFormViewMixin,
+    @patch.object(TemplatedEmailFormViewMixin,
                        'templated_email_get_template_names',
                        return_value=['template'])
-    @mock.patch.object(TemplatedEmailFormViewMixin,
+    @patch.object(TemplatedEmailFormViewMixin,
                        'templated_email_get_recipients',
                        return_value=['foo@example.com'])
     def test_templated_email_get_send_email_kwargs_not_valid(
