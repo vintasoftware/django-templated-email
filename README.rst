@@ -424,6 +424,12 @@ Additionally you can call **send_templated_mail** and optionally override the fo
     auth_user='username'                  # Override the user that the django mail backend uses, per **django.core.mail.send_mail**
     auth_password='password'              # Override the password that the django mail backend uses, per **django.core.mail.send_mail**
 
+Using templated_email_md
+------------------------
+
+This is a third-party backend that uses Markdown to render the email templates. 
+
+For installation and usage, see the [django-templated-email-md](https://github.com/OmenApps/django-templated-email-md/) repository, and the associated [documentation](https://django-templated-email-md.readthedocs.io/).
 
 Releasing a new version of this package:
 ========================================
