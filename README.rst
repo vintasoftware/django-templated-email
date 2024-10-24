@@ -429,7 +429,7 @@ Using templated_email_md
 
 This is a third-party backend that uses Markdown to render the email templates. 
 
-For installation and usage, see the [django-templated-email-md](https://github.com/OmenApps/django-templated-email-md/) repository, and the associated [documentation](https://django-templated-email-md.readthedocs.io/).
+For installation and usage, see the `django-templated-email-md <https://github.com/OmenApps/django-templated-email-md/>`_ repository, and the associated `documentation <https://django-templated-email-md.readthedocs.io/>`_.
 
 Releasing a new version of this package:
 ========================================
