@@ -134,10 +134,27 @@ class TemplatedEmailFormViewMixinTestCase(MockedNetworkTestCaseMixin, TestCase):
         AuthorCreateView.templated_email_send_on_failure = default_value
 
     @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='from@vinta.com.br')
-    def test_from_email(self):
+    def test_from_email_with_templated_email_from_email_setting(self):
         AuthorCreateView.as_view()(self.good_request)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].from_email, 'from@vinta.com.br')
+
+    @override_settings(DEFAULT_FROM_EMAIL='default@vinta.com.br')
+    def test_from_email_with_default_django_from_email_setting(self):
+        AuthorCreateView.as_view()(self.good_request)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, 'default@vinta.com.br')
+
+    @override_settings(TEMPLATED_EMAIL_FROM_EMAIL='from@vinta.com.br', DEFAULT_FROM_EMAIL='default@vinta.com.br')
+    def test_from_email_with_both_templated_mail_and_default_django_from_email_settings(self):
+        AuthorCreateView.as_view()(self.good_request)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, 'from@vinta.com.br')
+
+    def test_from_email_default(self):
+        AuthorCreateView.as_view()(self.good_request)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, 'webmaster@localhost')
 
     def test_from_email_with_templated_email_from_email(self):
         default_value = AuthorCreateView.templated_email_from_email
