@@ -1,3 +1,14 @@
+UNRELEASED
+----------
+
+v3.1.0
+-----
+Drop Python 3.6, 3.7, and 3.8 support
+Drop Django 2.2, 3.1, and 3.2 support
+Add Python 3.10, 3.11, 3.12, and 3.13 support
+Add Django 4.2, 5.0, and 5.1 support
+Use GitHub Actions for testing
+
 v3.0.1
 -----
 Remove all newlines from subject

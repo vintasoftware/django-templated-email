@@ -5,12 +5,19 @@ from email.mime.image import MIMEImage
 
 from django.test import TestCase, override_settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.core.files.storage import get_storage_class
+try:
+    from django.core.files.storage import get_storage_class
+except ImportError:
+    from django.core.files.storage import storages
+
+    def get_storage_class(s):
+        storages[s]
+
 from django.template import TemplateDoesNotExist
 from django.core import mail
 
 import pytest
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from anymail.message import AnymailMessage
 
 from templated_email.backends.vanilla_django import TemplateBackend, EmailRenderException
@@ -69,16 +76,10 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
     template_backend_klass = TemplateBackend
 
     def setUp(self):
-        self.storage_mock = Mock(wraps=get_storage_class())()
-        self.storage_mock.save = Mock()
         self.backend = self.template_backend_klass()
         self.context = {'username': 'vintasoftware',
                         'joindate': date(2016, 8, 22),
                         'full_name': 'Foo Bar'}
-
-    def patch_storage(self):
-        return patch('django.core.files.storage.default_storage._wrapped',
-                     self.storage_mock)
 
     def test_inexistent_base_email(self):
         try:
@@ -168,22 +169,23 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
             uuid=uuid)
         self.assertEqual(saved_email.content, HTML_RESULT)
 
+    @patch('django.core.files.storage.FileSystemStorage.save')
+    @patch('django.core.files.storage.FileSystemStorage.url')
     @patch.object(
         template_backend_klass, '_render_email',
         return_value={'html': HTML_RESULT, 'plain': PLAIN_RESULT,
                       'subject': SUBJECT_RESULT}
     )
-    def test_get_email_message_with_inline_image(self, mocked):
-        self.storage_mock.save = Mock(return_value='saved_url')
-        with self.patch_storage():
-            self.backend.get_email_message(
-                'foo.email', {'an_image': InlineImage('file.png', b'foo',
-                                                      subtype='png')},
-                from_email='from@example.com', cc=['cc@example.com'],
-                bcc=['bcc@example.com'], to=['to@example.com'],
-                create_link=True)
-        second_call_context = mocked.call_args_list[1][0][1]
-        self.assertEqual(second_call_context['an_image'], '/media/saved_url')
+    def test_get_email_message_with_inline_image(self, mock_render_email, mock_url, mock_save):
+        mock_url.return_value = 'media/saved_url'
+        self.backend.get_email_message(
+            'foo.email', {'an_image': InlineImage('file.png', b'foo',
+                                                    subtype='png')},
+            from_email='from@example.com', cc=['cc@example.com'],
+            bcc=['bcc@example.com'], to=['to@example.com'],
+            create_link=True)
+        second_call_context = mock_render_email.call_args_list[1][0][1]
+        self.assertEqual(second_call_context['an_image'], 'media/saved_url')
 
     @override_settings(TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS='anymail.message.AnymailMessage')
     @patch.object(
@@ -496,30 +498,32 @@ class TemplateBackendTestCase(MockedNetworkTestCaseMixin,
         except TemplateDoesNotExist as e:
             self.assertEqual(e.args[0], 'templated_email/legacy.email')
 
-    def test_host_inline_image_if_not_exist(self):
+    @patch('django.core.files.storage.FileSystemStorage.url')
+    @patch('django.core.files.storage.FileSystemStorage.save')
+    def test_host_inline_image_if_not_exist(self, mock_save, mock_url):
+        mock_url.return_value = 'media/saved_url'
         inline_image = InlineImage('foo.jpg', b'bar')
-        self.storage_mock.save = Mock(return_value='saved_url')
 
-        with self.patch_storage():
-            filename = self.backend.host_inline_image(inline_image)
-        self.assertEqual(filename, '/media/saved_url')
-        self.storage_mock.save.assert_called_once()
-        name, content = self.storage_mock.save.call_args[0]
+        filename = self.backend.host_inline_image(inline_image)
+        self.assertEqual(filename, 'media/saved_url')
+        mock_save.assert_called_once()
+        name, content = mock_save.call_args[0]
         self.assertEqual(
             name,
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
         self.assertTrue(isinstance(content, BytesIO))
 
-    def test_host_inline_image_if_exist(self):
+    @patch('django.core.files.storage.FileSystemStorage.exists')
+    @patch('django.core.files.storage.FileSystemStorage.save')
+    def test_host_inline_image_if_exist(self, mock_save, mock_exists):
         inline_image = InlineImage('foo.jpg', b'bar')
-        self.storage_mock.exists = Mock(return_value=True)
+        mock_exists.return_value = True
 
-        with self.patch_storage():
-            filename = self.backend.host_inline_image(inline_image)
+        filename = self.backend.host_inline_image(inline_image)
         self.assertEqual(
             filename,
             '/media/templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')
 
-        self.storage_mock.save.assert_not_called()
-        self.storage_mock.exists.assert_called_once_with(
+        mock_save.assert_not_called()
+        mock_exists.assert_called_once_with(
             'templated_email/37b51d194a7513e45b56f6524f2d51f2foo.jpg')

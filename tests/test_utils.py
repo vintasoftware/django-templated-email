@@ -1,4 +1,4 @@
-import mock
+from unittest.mock import patch, Mock
 
 from django.test import TestCase
 
@@ -23,11 +23,11 @@ class InlineMessageTestCase(MockedNetworkTestCaseMixin, TestCase):
         str(self.inline_image)
         self.assertIsNotNone(self.inline_image._content_id)
 
-    @mock.patch('templated_email.utils.make_msgid', return_value='foo')
+    @patch('templated_email.utils.make_msgid', return_value='foo')
     def test_str(self, mocked):
         self.assertEqual(str(self.inline_image), 'cid:foo')
 
-    @mock.patch('templated_email.utils.make_msgid', return_value='foo')
+    @patch('templated_email.utils.make_msgid', return_value='foo')
     def test_should_cache_cid(self, mocked):
         str(self.inline_image)
         str(self.inline_image)
@@ -45,7 +45,7 @@ class InlineMessageTestCase(MockedNetworkTestCaseMixin, TestCase):
         self.assertNotEqual(cid2, cid3)
 
     def test_attach_to_message(self):
-        message = mock.Mock()
+        message = Mock()
         self.inline_image.attach_to_message(message)
         mimeimage = message.attach.call_args[0][0]
         self.assertEqual(mimeimage.get('Content-ID'),

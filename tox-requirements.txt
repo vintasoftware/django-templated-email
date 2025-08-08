@@ -2,7 +2,6 @@ django-anymail
 django-pytest
 django-render-block
 html2text
-mock
 pytest
 pytest-django
 pytest-pythonpath
