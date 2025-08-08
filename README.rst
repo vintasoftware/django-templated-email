@@ -456,7 +456,8 @@ Releasing a new version of this package:
 
 - Finally, publish the new version to PyPI executing::
 
-    python setup.py publish
+    python -m build
+    python -m twine upload dist/*
 
 - Update develop branch with the changes from main, and push it to the remote repository::
 
