@@ -380,6 +380,13 @@ You can configure Django-Templated-Email by setting the following settings
     TEMPLATED_EMAIL_EMAIL_MESSAGE_CLASS = 'django.core.mail.EmailMessage'                     # Replaces django.core.mail.EmailMessage
     TEMPLATED_EMAIL_EMAIL_MULTIALTERNATIVES_CLASS = 'django.core.mail.EmailMultiAlternatives' # Replaces django.core.mail.EmailMultiAlternatives
 
+Management Commands
+===================
+
+**sendtesttemplatedemail**
+
+This command allows you to send test emails using django-templated-email. It supports the same arguments as Django's built-in `sendtestemail` command, making it easy to test your email configuration and delivery.
+
 Future Plans
 =============
 
